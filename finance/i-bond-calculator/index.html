@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Series I Bond Calculator — I Bond Rate &amp; Return Calculator</title>
+  <meta name="description" content="Calculate your Series I Bond composite rate, total return, and compare to HYSA. Uses fixed rate + inflation adjustment formula. Includes 3-month penalty for early redemption.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/i-bond-calculator/">
+  <meta property="og:title" content="Series I Bond Calculator — I Bond Rate &amp; Return Calculator">
+  <meta property="og:description" content="Calculate your Series I Bond composite rate, total return, and compare to HYSA. Free, no login.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/i-bond-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Series I Bond Calculator — I Bond Rate &amp; Return Calculator">
+  <meta name="twitter:description" content="Calculate your Series I Bond composite rate, total return, and compare to HYSA. Free, no login.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.compare { border-color:var(--accent);box-shadow:0 0 0 1px rgba(88,166,255,0.12); }
+    .result-card.winner { border-color:#d29922;box-shadow:0 0 0 1px rgba(210,153,34,0.2); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .result-card.winner .result-value { color:#d29922; }
+    table { width:100%;border-collapse:collapse;font-size:0.85rem; }
+    th { text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border); }
+    td { padding:8px 12px;border-bottom:1px solid rgba(48,54,61,0.5); }
+    tr:last-child td { border-bottom:none; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 0 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .note { font-size:0.82rem;color:var(--muted);margin-top:6px; }
+    .info-box { background:rgba(88,166,255,0.07);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:0.85rem;color:var(--muted);line-height:1.5; }
+    .info-box strong { color:var(--text); }
+    .penalty-note { font-size:0.8rem;color:#d29922;margin-top:8px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Series I Bond Calculator</h1>
+  <p class="page-subtitle">Calculate your I Bond composite rate, total return, and compare against a High-Yield Savings Account.</p>
+
+  <div class="info-box">
+    <strong>How I Bond rates work:</strong> The composite rate combines a fixed rate (set at purchase, never changes) and a semi-annual inflation adjustment based on CPI-U. Composite rate = <strong>fixed + 2×inflation + fixed×inflation</strong>. Rate resets every 6 months.
+  </div>
+
+  <div class="card">
+    <div class="card-title">I Bond Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="investment">Investment amount ($)</label>
+        <input type="number" id="investment" value="10000" min="25" max="10000" step="25">
+        <span class="note">Annual purchase limit: $10,000/person</span>
+      </div>
+      <div class="field">
+        <label for="holdingMonths">Holding period (months)</label>
+        <input type="number" id="holdingMonths" value="36" min="12" max="120" step="1">
+        <span class="note">Min 12 months; must hold 5+ years to avoid penalty</span>
+      </div>
+      <div class="field">
+        <label for="fixedRate">Fixed rate (%)</label>
+        <input type="number" id="fixedRate" value="1.20" min="0" max="5" step="0.05">
+        <span class="note">Set at purchase, never changes (~1.20% currently)</span>
+      </div>
+      <div class="field">
+        <label for="inflationRate">Semi-annual CPI-U inflation (%)</label>
+        <input type="number" id="inflationRate" value="1.48" min="0" max="10" step="0.01">
+        <span class="note">Current: ~1.48% semi-annual (≈2.96% annualized)</span>
+      </div>
+      <div class="field">
+        <label for="hysa">HYSA APY for comparison (%)</label>
+        <input type="number" id="hysa" value="4.50" min="0" max="10" step="0.01">
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate I Bond Returns</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Results</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Composite Rate</div>
+          <div class="result-value" id="compositeRate">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">I Bond Value</div>
+          <div class="result-value" id="ibondValue">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">I Bond Interest</div>
+          <div class="result-value" id="ibondInterest">—</div>
+        </div>
+        <div class="result-card compare">
+          <div class="result-label">HYSA Value</div>
+          <div class="result-value" id="hysaValue">—</div>
+        </div>
+        <div class="result-card compare">
+          <div class="result-label">HYSA Interest</div>
+          <div class="result-value" id="hysaInterest">—</div>
+        </div>
+        <div class="result-card winner">
+          <div class="result-label">Better Choice</div>
+          <div class="result-value" id="winner">—</div>
+        </div>
+      </div>
+      <div id="penaltyNote" class="penalty-note" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Year-by-Year Breakdown</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>I Bond Value</th>
+              <th>I Bond Gain</th>
+              <th>HYSA Value</th>
+              <th>HYSA Gain</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+<script>
+  function fmt(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+  function fmtPct(n) {
+    return n.toFixed(2) + '%';
+  }
+
+  function calculate() {
+    const principal = parseFloat(document.getElementById('investment').value) || 10000;
+    const months = parseInt(document.getElementById('holdingMonths').value) || 36;
+    const fixedRate = parseFloat(document.getElementById('fixedRate').value) / 100;
+    const semiInflation = parseFloat(document.getElementById('inflationRate').value) / 100;
+    const hysaAPY = parseFloat(document.getElementById('hysa').value) / 100;
+
+    // Composite rate formula (annualized)
+    const composite = fixedRate + 2 * semiInflation + fixedRate * semiInflation;
+
+    // I Bond grows semi-annually: every 6-month period earns composite/2
+    // Model month-by-month, applying semi-annual rate every 6 months
+    const semiRate = composite / 2;
+
+    // Build year-by-year (approximate: apply semi-annual rate per 6-month block)
+    let ibondBalance = principal;
+    const yearRows = [];
+
+    const years = Math.ceil(months / 12);
+    let monthsProcessed = 0;
+    for (let y = 1; y <= years; y++) {
+      const monthsThisYear = Math.min(12, months - monthsProcessed);
+      // Number of 6-month periods this year (may be partial at end)
+      const periodsThisYear = monthsThisYear / 6;
+      ibondBalance = ibondBalance * Math.pow(1 + semiRate, periodsThisYear);
+      monthsProcessed += monthsThisYear;
+      yearRows.push({ year: y, ibond: ibondBalance });
+    }
+
+    // 3-month early redemption penalty if held < 60 months (5 years)
+    let finalIBond = ibondBalance;
+    const penaltyApplies = months < 60;
+    if (penaltyApplies) {
+      // Penalty = 3 months of interest at composite rate
+      const monthlyRate = composite / 12;
+      const penalty = finalIBond * (1 - 1 / Math.pow(1 + monthlyRate, 3));
+      finalIBond -= penalty;
+    }
+
+    // HYSA compounding (monthly compounding)
+    const hysaMonthly = Math.pow(1 + hysaAPY, 1/12) - 1;
+    const hysaFinal = principal * Math.pow(1 + hysaMonthly, months);
+
+    // Year rows for HYSA
+    const hysa = [];
+    for (let y = 1; y <= years; y++) {
+      const m = Math.min(y * 12, months);
+      hysa.push(principal * Math.pow(1 + hysaMonthly, m));
+    }
+
+    // Render results
+    document.getElementById('compositeRate').textContent = fmtPct(composite * 100);
+    document.getElementById('ibondValue').textContent = fmt(finalIBond);
+    document.getElementById('ibondInterest').textContent = fmt(finalIBond - principal);
+    document.getElementById('hysaValue').textContent = fmt(hysaFinal);
+    document.getElementById('hysaInterest').textContent = fmt(hysaFinal - principal);
+
+    const ibondWins = finalIBond > hysaFinal;
+    const diff = Math.abs(finalIBond - hysaFinal);
+    document.getElementById('winner').textContent = ibondWins ? 'I Bond' : 'HYSA';
+
+    const penaltyEl = document.getElementById('penaltyNote');
+    if (penaltyApplies) {
+      penaltyEl.style.display = 'block';
+      penaltyEl.textContent = '⚠ Early redemption penalty applied (3 months interest forfeited — you\'re redeeming before the 5-year mark). Hold to month 60+ to avoid this.';
+    } else {
+      penaltyEl.style.display = 'none';
+    }
+
+    // Table
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    yearRows.forEach((row, i) => {
+      const ibondVal = i === yearRows.length - 1 ? finalIBond : row.ibond;
+      const hysaVal = hysa[i];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>Year ${row.year}</td>
+        <td>${fmt(ibondVal)}</td>
+        <td style="color:var(--green)">+${fmt(ibondVal - principal)}</td>
+        <td>${fmt(hysaVal)}</td>
+        <td style="color:var(--accent)">+${fmt(hysaVal - principal)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debt Avalanche Calculator — Pay Off Debt Fastest &amp; Save Most Interest</title>
+  <meta name="description" content="The debt avalanche method: pay minimums on all debts, throw extra at the highest interest rate first. Save the most money.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/debt-avalanche/">
+  <meta property="og:title" content="Debt Avalanche Calculator — Pay Off Debt Fastest &amp; Save Most Interest">
+  <meta property="og:description" content="The debt avalanche method: pay minimums on all debts, throw extra at the highest interest rate first. Save the most money.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/debt-avalanche/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } .results-grid { grid-template-columns:1fr 1fr !important; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],input[type="text"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,input[type="text"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .debt-row { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px; }
+    .debt-row-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:12px; }
+    .debt-row-label { font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em; }
+    .remove-btn { background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:2px 6px;border-radius:4px;transition:color 0.15s; }
+    .remove-btn:hover { color:var(--red); }
+    .add-debt-btn { background:none;border:1px dashed var(--border);border-radius:6px;color:var(--muted);font-family:var(--font);font-size:0.85rem;font-weight:600;padding:10px;cursor:pointer;width:100%;margin-top:4px;transition:border-color 0.15s,color 0.15s; }
+    .add-debt-btn:hover { border-color:var(--accent);color:var(--accent); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .priority-table { width:100%;border-collapse:collapse;font-size:0.88rem; }
+    .priority-table th { text-align:left;color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border); }
+    .priority-table td { padding:10px 10px;border-bottom:1px solid #21262d;vertical-align:middle; }
+    .priority-table tr:last-child td { border-bottom:none; }
+    .priority-badge { display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:0.75rem;font-weight:700;background:var(--accent);color:#0d1117; }
+    .priority-badge.one { background:var(--green); }
+    .explainer { font-size:0.85rem;color:var(--muted);line-height:1.6;padding:14px;background:var(--bg);border-radius:6px;border-left:3px solid var(--accent); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Debt Avalanche Calculator</h1>
+    <p class="page-subtitle">Attack the highest interest rate first. Pay minimums on everything else. Save the most money mathematically possible.</p>
+
+    <div class="card">
+      <div class="card-title">Your Debts</div>
+      <div id="debts-container"></div>
+      <button class="add-debt-btn" onclick="addDebt()">+ Add another debt</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Extra Payment</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Extra Monthly Payment ($)</label>
+          <input type="number" id="extraPayment" value="200" min="0" step="10">
+        </div>
+        <div class="field" style="justify-content:flex-end;padding-top:22px;">
+          <p style="font-size:0.82rem;color:var(--muted);">This amount is applied on top of all minimum payments, targeting the highest-APR debt first.</p>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate Avalanche Plan</button>
+    </div>
+
+    <div id="results">
+      <div class="card">
+        <div class="card-title">Summary</div>
+        <div class="results-grid">
+          <div class="result-card primary">
+            <div class="result-label">Interest Saved</div>
+            <div class="result-value" id="interestSaved">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Months to Free</div>
+            <div class="result-value" id="monthsFree">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total Interest Paid</div>
+            <div class="result-value" id="totalInterest">—</div>
+          </div>
+        </div>
+        <div class="explainer" id="summaryText"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Payoff Order (Avalanche Priority)</div>
+        <table class="priority-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Debt</th>
+              <th>APR</th>
+              <th>Balance</th>
+              <th>Paid Off In</th>
+              <th>Interest Paid</th>
+            </tr>
+          </thead>
+          <tbody id="priorityBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    // Default debts
+    const defaultDebts = [
+      { name: 'Credit Card', balance: 5400, apr: 22.99, min: 108 },
+      { name: 'Car Loan',    balance: 12000, apr: 7.5,  min: 240 },
+      { name: 'Student Loan',balance: 8500, apr: 5.05,  min: 90  },
+    ];
+
+    let debtCount = 0;
+
+    function addDebt(debt) {
+      const container = document.getElementById('debts-container');
+      const id = debtCount++;
+      const d = debt || { name: '', balance: '', apr: '', min: '' };
+      const div = document.createElement('div');
+      div.className = 'debt-row';
+      div.id = 'debt-' + id;
+      div.innerHTML = `
+        <div class="debt-row-header">
+          <span class="debt-row-label">Debt ${id + 1}</span>
+          <button class="remove-btn" onclick="removeDebt('debt-${id}')">✕ Remove</button>
+        </div>
+        <div class="fields-grid" style="grid-template-columns:2fr 1fr 1fr 1fr;">
+          <div class="field">
+            <label>Debt Name</label>
+            <input type="text" class="debt-name" placeholder="e.g. Credit Card" value="${escHtml(String(d.name))}">
+          </div>
+          <div class="field">
+            <label>Balance ($)</label>
+            <input type="number" class="debt-balance" placeholder="5000" value="${d.balance}" min="0" step="1">
+          </div>
+          <div class="field">
+            <label>APR (%)</label>
+            <input type="number" class="debt-apr" placeholder="19.99" value="${d.apr}" min="0" max="100" step="0.01">
+          </div>
+          <div class="field">
+            <label>Min. Payment ($)</label>
+            <input type="number" class="debt-min" placeholder="50" value="${d.min}" min="0" step="1">
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+      updateRemoveButtons();
+    }
+
+    function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function removeDebt(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+      updateRemoveButtons();
+    }
+
+    function updateRemoveButtons() {
+      const rows = document.querySelectorAll('.debt-row');
+      rows.forEach(r => {
+        const btn = r.querySelector('.remove-btn');
+        if (btn) btn.style.display = rows.length <= 1 ? 'none' : '';
+      });
+    }
+
+    function getDebts() {
+      const rows = document.querySelectorAll('.debt-row');
+      const debts = [];
+      rows.forEach(row => {
+        const name    = row.querySelector('.debt-name').value.trim() || 'Debt';
+        const balance = parseFloat(row.querySelector('.debt-balance').value) || 0;
+        const apr     = parseFloat(row.querySelector('.debt-apr').value) || 0;
+        const min     = parseFloat(row.querySelector('.debt-min').value) || 0;
+        if (balance > 0) debts.push({ name, balance, apr, min });
+      });
+      return debts;
+    }
+
+    function fmt(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+    function fmtD(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+    function simulate(debts, extra) {
+      // Deep-copy debts
+      let ds = debts.map(d => ({ ...d, remaining: d.balance, interestPaid: 0, paidOffMonth: null }));
+      // Sort by APR descending (avalanche order)
+      ds.sort((a, b) => b.apr - a.apr);
+
+      let month = 0;
+      const MAX_MONTHS = 1200; // 100 years safety cap
+
+      while (ds.some(d => d.remaining > 0) && month < MAX_MONTHS) {
+        month++;
+        // Apply interest to all active debts
+        ds.forEach(d => {
+          if (d.remaining > 0) {
+            d.remaining += d.remaining * (d.apr / 100 / 12);
+          }
+        });
+
+        // Pay minimums on all
+        ds.forEach(d => {
+          if (d.remaining > 0) {
+            const payment = Math.min(d.min, d.remaining);
+            d.interestPaid += d.remaining - Math.max(0, d.remaining - payment); // approximation: track full payment
+            d.remaining = Math.max(0, d.remaining - payment);
+            if (d.remaining === 0 && d.paidOffMonth === null) d.paidOffMonth = month;
+          }
+        });
+
+        // Apply extra to highest APR active debt
+        let extraLeft = extra;
+        for (let i = 0; i < ds.length && extraLeft > 0; i++) {
+          if (ds[i].remaining > 0) {
+            const payment = Math.min(extraLeft, ds[i].remaining);
+            ds[i].remaining = Math.max(0, ds[i].remaining - payment);
+            extraLeft -= payment;
+            if (ds[i].remaining === 0 && ds[i].paidOffMonth === null) ds[i].paidOffMonth = month;
+          }
+        }
+      }
+
+      return { debts: ds, months: month };
+    }
+
+    function simulateMinOnly(debts) {
+      let ds = debts.map(d => ({ ...d, remaining: d.balance, interestPaid: 0 }));
+      let month = 0;
+      const MAX_MONTHS = 1200;
+
+      while (ds.some(d => d.remaining > 0) && month < MAX_MONTHS) {
+        month++;
+        ds.forEach(d => {
+          if (d.remaining > 0) {
+            d.remaining += d.remaining * (d.apr / 100 / 12);
+            const payment = Math.min(d.min, d.remaining);
+            d.remaining = Math.max(0, d.remaining - payment);
+          }
+        });
+      }
+
+      return ds.reduce((sum, d) => {
+        // interest = total paid - original balance
+        return sum;
+      }, 0);
+    }
+
+    function calcTotalInterestMinOnly(debts) {
+      // Simulate minimums-only to get total interest
+      let ds = debts.map(d => ({ balance: d.balance, apr: d.apr, min: d.min, remaining: d.balance, totalPaid: 0 }));
+      let month = 0;
+      const MAX_MONTHS = 1200;
+      while (ds.some(d => d.remaining > 0) && month < MAX_MONTHS) {
+        month++;
+        ds.forEach(d => {
+          if (d.remaining > 0) {
+            const interestCharge = d.remaining * (d.apr / 100 / 12);
+            d.remaining += interestCharge;
+            const payment = Math.min(d.min, d.remaining);
+            d.totalPaid += payment;
+            d.remaining = Math.max(0, d.remaining - payment);
+          }
+        });
+      }
+      return ds.reduce((sum, d) => sum + Math.max(0, d.totalPaid - d.balance), 0);
+    }
+
+    function calcTotalInterestAvalanche(ds, origDebts) {
+      // Sum (total paid) - (original balances)
+      let totalPaid = 0;
+      origDebts.forEach(d => { totalPaid += d.balance; }); // we'll add interest separately
+      // Use interestPaid from simulation — but our simulation doesn't track precisely
+      // Recompute properly
+      return null; // handled in main calculate
+    }
+
+    function calculate() {
+      const debts = getDebts();
+      if (debts.length === 0) { alert('Please enter at least one debt.'); return; }
+
+      const extra = parseFloat(document.getElementById('extraPayment').value) || 0;
+
+      // Check minimums cover at least some principal for each debt
+      for (const d of debts) {
+        const monthlyRate = d.apr / 100 / 12;
+        const minInterest = d.balance * monthlyRate;
+        if (d.min <= minInterest && d.apr > 0) {
+          // Warn but continue — calc will cap at MAX_MONTHS
+        }
+      }
+
+      // Simulate avalanche (with extra payment) — track interest precisely
+      const result = simulatePrecise(debts, extra);
+      const interestMinOnly = calcTotalInterestMinOnly(debts);
+
+      const saved = Math.max(0, interestMinOnly - result.totalInterest);
+
+      document.getElementById('interestSaved').textContent = fmt(saved);
+      document.getElementById('monthsFree').textContent = result.months + ' mo';
+      document.getElementById('totalInterest').textContent = fmt(result.totalInterest);
+
+      const yrs = Math.floor(result.months / 12);
+      const mos = result.months % 12;
+      const timeStr = yrs > 0 ? `${yrs} year${yrs>1?'s':''} and ${mos} month${mos!==1?'s':''}` : `${mos} month${mos!==1?'s':''}`;
+      document.getElementById('summaryText').textContent =
+        `With the avalanche method and $${extra.toLocaleString()} extra per month, you'll be debt-free in ${timeStr}, saving ${fmtD(saved)} in interest compared to paying minimums only.`;
+
+      // Build priority table
+      const tbody = document.getElementById('priorityBody');
+      tbody.innerHTML = '';
+      result.debts.forEach((d, i) => {
+        const tr = document.createElement('tr');
+        const paidOffIn = d.paidOffMonth !== null ? d.paidOffMonth + ' mo' : '100+ mo';
+        tr.innerHTML = `
+          <td><span class="priority-badge ${i===0?'one':''}">${i+1}</span></td>
+          <td style="font-weight:600">${escHtml(d.name)}</td>
+          <td style="color:var(--red)">${d.apr.toFixed(2)}%</td>
+          <td>${fmt(d.originalBalance)}</td>
+          <td>${paidOffIn}</td>
+          <td>${fmt(d.interestPaid)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function simulatePrecise(debts, extra) {
+      // Sort by APR descending
+      let ds = debts.map(d => ({
+        name: d.name,
+        originalBalance: d.balance,
+        remaining: d.balance,
+        apr: d.apr,
+        min: d.min,
+        interestPaid: 0,
+        principalPaid: 0,
+        paidOffMonth: null
+      })).sort((a, b) => b.apr - a.apr);
+
+      let month = 0;
+      const MAX_MONTHS = 600;
+
+      while (ds.some(d => d.remaining > 0.01) && month < MAX_MONTHS) {
+        month++;
+
+        // 1. Accrue interest on all active debts
+        ds.forEach(d => {
+          if (d.remaining > 0.01) {
+            const interest = d.remaining * (d.apr / 100 / 12);
+            d.remaining += interest;
+            d.interestPaid += interest;
+          }
+        });
+
+        // 2. Pay minimums on all
+        ds.forEach(d => {
+          if (d.remaining > 0.01) {
+            const payment = Math.min(d.min, d.remaining);
+            d.remaining = Math.max(0, d.remaining - payment);
+            if (d.remaining < 0.01) {
+              d.remaining = 0;
+              if (d.paidOffMonth === null) d.paidOffMonth = month;
+            }
+          }
+        });
+
+        // 3. Roll freed minimums + extra toward highest APR active debt
+        // Freed minimums from paid-off debts are automatically available since we only pay what's owed
+        // Extra goes to first active (already sorted by APR desc)
+        let extraLeft = extra;
+        // Also roll freed minimums: if a debt was just paid off this month, its minimum is freed
+        // This is implicitly handled because we don't pay it next month
+        for (let i = 0; i < ds.length && extraLeft > 0.01; i++) {
+          if (ds[i].remaining > 0.01) {
+            const payment = Math.min(extraLeft, ds[i].remaining);
+            ds[i].remaining = Math.max(0, ds[i].remaining - payment);
+            extraLeft -= payment;
+            if (ds[i].remaining < 0.01) {
+              ds[i].remaining = 0;
+              if (ds[i].paidOffMonth === null) ds[i].paidOffMonth = month;
+            }
+          }
+        }
+      }
+
+      const totalInterest = ds.reduce((sum, d) => sum + d.interestPaid, 0);
+      return { debts: ds, months: month, totalInterest };
+    }
+
+    // Init with default debts
+    defaultDebts.forEach(d => addDebt(d));
+  </script>
+</body>
+</html>

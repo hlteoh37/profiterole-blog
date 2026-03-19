@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Insurance Plan Comparison Calculator — HDHP vs PPO</title>
+  <meta name="description" content="Compare the true annual cost of health insurance plans. HDHP vs PPO vs HMO. Find the break-even point based on your expected healthcare use. Free, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/health-insurance-calculator/">
+  <meta property="og:title" content="Health Insurance Plan Comparison Calculator — HDHP vs PPO">
+  <meta property="og:description" content="Compare the true annual cost of health insurance plans. HDHP vs PPO vs HMO. Find the break-even point based on your expected healthcare use.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/health-insurance-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Health Insurance Plan Comparison Calculator — HDHP vs PPO">
+  <meta name="twitter:description" content="Compare the true annual cost of health insurance plans. HDHP vs PPO. Free calculator.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:760px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    /* Two-plan grid */
+    .plans-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px; }
+    @media (max-width:560px) { .plans-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .plan-col { display:flex;flex-direction:column;gap:14px; }
+    .plan-header { font-size:0.85rem;font-weight:700;padding:6px 10px;border-radius:6px;margin-bottom:4px;text-align:center; }
+    .plan-a-header { background:rgba(63,185,80,0.12);color:var(--green);border:1px solid rgba(63,185,80,0.25); }
+    .plan-b-header { background:rgba(88,166,255,0.10);color:var(--accent);border:1px solid rgba(88,166,255,0.2); }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .compare-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px; }
+    @media (max-width:560px) { .compare-grid { grid-template-columns:1fr; } }
+    .plan-result { border-radius:10px;padding:20px;border:1px solid var(--border); }
+    .plan-result.plan-a { border-color:rgba(63,185,80,0.35);background:rgba(63,185,80,0.05); }
+    .plan-result.plan-b { border-color:rgba(88,166,255,0.3);background:rgba(88,166,255,0.05); }
+    .plan-result.winner { box-shadow:0 0 0 2px currentColor; }
+    .plan-result-title { font-weight:700;font-size:0.9rem;margin-bottom:14px; }
+    .plan-result.plan-a .plan-result-title { color:var(--green); }
+    .plan-result.plan-b .plan-result-title { color:var(--accent); }
+    .line-item { display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;padding:5px 0;border-bottom:1px solid rgba(48,54,61,0.4); }
+    .line-item:last-child { border-bottom:none; }
+    .line-label { color:var(--muted); }
+    .line-value { font-weight:600; }
+    .total-line { display:flex;justify-content:space-between;align-items:center;font-size:1rem;padding:10px 0 0;margin-top:6px; }
+    .total-label { font-weight:700; }
+    .total-value { font-size:1.4rem;font-weight:700; }
+    .plan-result.plan-a .total-value { color:var(--green); }
+    .plan-result.plan-b .total-value { color:var(--accent); }
+    .winner-banner { background:rgba(210,153,34,0.1);border:1px solid rgba(210,153,34,0.3);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:0.9rem;color:#d29922;font-weight:600; }
+    .winner-banner span { color:var(--text);font-weight:400; }
+    table { width:100%;border-collapse:collapse;font-size:0.85rem; }
+    th { text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border); }
+    td { padding:8px 12px;border-bottom:1px solid rgba(48,54,61,0.5); }
+    tr:last-child td { border-bottom:none; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .note { font-size:0.82rem;color:var(--muted);margin-top:6px; }
+    .section-divider { margin:20px 0 16px;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:10px; }
+    .hsa-savings { color:var(--green); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Health Insurance Plan Comparison</h1>
+  <p class="page-subtitle">Compare the true annual cost of HDHP vs PPO (or any two plans). Includes HSA tax savings, deductibles, coinsurance, and out-of-pocket maximums.</p>
+
+  <div class="card">
+    <div class="section-divider">Plan Details</div>
+    <div class="plans-grid">
+      <!-- Plan A -->
+      <div class="plan-col">
+        <div class="plan-header plan-a-header">Plan A (HDHP)</div>
+        <div class="field">
+          <label for="aPremium">Monthly premium ($)</label>
+          <input type="number" id="aPremium" value="150" min="0" step="1">
+        </div>
+        <div class="field">
+          <label for="aDeductible">Annual deductible ($)</label>
+          <input type="number" id="aDeductible" value="1500" min="0" step="50">
+        </div>
+        <div class="field">
+          <label for="aOOP">Out-of-pocket maximum ($)</label>
+          <input type="number" id="aOOP" value="3500" min="0" step="50">
+        </div>
+        <div class="field">
+          <label for="aCoins">Coinsurance after deductible (%)</label>
+          <input type="number" id="aCoins" value="20" min="0" max="100" step="1">
+        </div>
+        <div class="field">
+          <label for="aHSA">Employer HSA contribution ($)</label>
+          <input type="number" id="aHSA" value="2000" min="0" step="50">
+          <span class="note">HSA only available with HDHP. Set to $0 if none.</span>
+        </div>
+        <div class="field">
+          <label for="aTaxRate">Your marginal tax rate (%)</label>
+          <input type="number" id="aTaxRate" value="22" min="0" max="60" step="1">
+          <span class="note">For HSA tax savings calculation</span>
+        </div>
+      </div>
+      <!-- Plan B -->
+      <div class="plan-col">
+        <div class="plan-header plan-b-header">Plan B (PPO)</div>
+        <div class="field">
+          <label for="bPremium">Monthly premium ($)</label>
+          <input type="number" id="bPremium" value="400" min="0" step="1">
+        </div>
+        <div class="field">
+          <label for="bDeductible">Annual deductible ($)</label>
+          <input type="number" id="bDeductible" value="500" min="0" step="50">
+        </div>
+        <div class="field">
+          <label for="bOOP">Out-of-pocket maximum ($)</label>
+          <input type="number" id="bOOP" value="5000" min="0" step="50">
+        </div>
+        <div class="field">
+          <label for="bCoins">Coinsurance after deductible (%)</label>
+          <input type="number" id="bCoins" value="20" min="0" max="100" step="1">
+        </div>
+        <div class="field" style="visibility:hidden;">
+          <label>HSA contribution</label>
+          <input type="number" value="0" disabled>
+        </div>
+        <div class="field" style="visibility:hidden;">
+          <label>Tax rate</label>
+          <input type="number" value="0" disabled>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider">Expected Usage</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="medExpenses">Expected annual medical expenses ($)</label>
+        <input type="number" id="medExpenses" value="2000" min="0" step="100">
+        <span class="note">Before insurance; include copays, prescriptions, procedures</span>
+      </div>
+    </div>
+
+    <button class="calc-btn" style="margin-top:20px;" onclick="calculate()">Compare Plans</button>
+  </div>
+
+  <div id="results">
+    <div id="winnerBanner" class="winner-banner"></div>
+
+    <div class="compare-grid">
+      <div class="plan-result plan-a" id="planAResult">
+        <div class="plan-result-title">Plan A (HDHP)</div>
+        <div class="line-item"><span class="line-label">Annual premiums</span><span class="line-value" id="aPremiumAnn">—</span></div>
+        <div class="line-item"><span class="line-label">Out-of-pocket costs</span><span class="line-value" id="aOOPCost">—</span></div>
+        <div class="line-item hsa-savings"><span class="line-label">HSA employer contribution</span><span class="line-value" id="aHSABenefit">—</span></div>
+        <div class="line-item hsa-savings"><span class="line-label">HSA tax savings</span><span class="line-value" id="aHSATax">—</span></div>
+        <div class="total-line"><span class="total-label">True Annual Cost</span><span class="total-value" id="aTotalCost">—</span></div>
+      </div>
+      <div class="plan-result plan-b" id="planBResult">
+        <div class="plan-result-title">Plan B (PPO)</div>
+        <div class="line-item"><span class="line-label">Annual premiums</span><span class="line-value" id="bPremiumAnn">—</span></div>
+        <div class="line-item"><span class="line-label">Out-of-pocket costs</span><span class="line-value" id="bOOPCost">—</span></div>
+        <div class="line-item" style="opacity:0.3;"><span class="line-label">HSA employer contribution</span><span class="line-value">N/A</span></div>
+        <div class="line-item" style="opacity:0.3;"><span class="line-label">HSA tax savings</span><span class="line-value">N/A</span></div>
+        <div class="total-line"><span class="total-label">True Annual Cost</span><span class="total-value" id="bTotalCost">—</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Break-Even Analysis</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Annual Medical Spend</th>
+              <th>Plan A (HDHP) Cost</th>
+              <th>Plan B (PPO) Cost</th>
+              <th>Better Plan</th>
+            </tr>
+          </thead>
+          <tbody id="breakEvenBody"></tbody>
+        </table>
+      </div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:12px;" id="breakEvenText"></p>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+<script>
+  function fmt(n) {
+    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  // Calculate out-of-pocket costs given medical expenses and plan parameters
+  // Returns { oop: number } — the amount the insured pays (not counting premiums)
+  function calcOOP(medExp, deductible, oopMax, coinsurancePct) {
+    if (medExp <= 0) return 0;
+    // First, pay full deductible (up to total expenses)
+    const metDeductible = Math.min(medExp, deductible);
+    const remaining = medExp - metDeductible;
+    // After deductible, pay coinsurance on remaining, capped at OOP max
+    const coinsuranceOwed = remaining * (coinsurancePct / 100);
+    // Total OOP is deductible portion + coinsurance, but cannot exceed OOP max
+    const totalOOP = Math.min(metDeductible + coinsuranceOwed, oopMax);
+    return totalOOP;
+  }
+
+  function calcTrueCost(premiumMonthly, medExp, deductible, oopMax, coinsurancePct, hsaEmployer, taxRate) {
+    const annualPremium = premiumMonthly * 12;
+    const oopCost = calcOOP(medExp, deductible, oopMax, coinsurancePct);
+    // HSA employer contribution reduces net cost
+    const hsaBenefit = hsaEmployer;
+    // Tax savings: employee can contribute pre-tax to HSA; but here we model employer HSA tax savings
+    // The employer HSA contribution is effectively tax-free income, saving taxRate % on it
+    const hsaTaxSavings = hsaEmployer * (taxRate / 100);
+    const trueCost = annualPremium + oopCost - hsaBenefit - hsaTaxSavings;
+    return { annualPremium, oopCost, hsaBenefit, hsaTaxSavings, trueCost };
+  }
+
+  function calculate() {
+    const aPremium = parseFloat(document.getElementById('aPremium').value) || 0;
+    const aDeduct = parseFloat(document.getElementById('aDeductible').value) || 0;
+    const aOOP = parseFloat(document.getElementById('aOOP').value) || 0;
+    const aCoins = parseFloat(document.getElementById('aCoins').value) || 0;
+    const aHSA = parseFloat(document.getElementById('aHSA').value) || 0;
+    const aTax = parseFloat(document.getElementById('aTaxRate').value) || 0;
+
+    const bPremium = parseFloat(document.getElementById('bPremium').value) || 0;
+    const bDeduct = parseFloat(document.getElementById('bDeductible').value) || 0;
+    const bOOP = parseFloat(document.getElementById('bOOP').value) || 0;
+    const bCoins = parseFloat(document.getElementById('bCoins').value) || 0;
+
+    const medExp = parseFloat(document.getElementById('medExpenses').value) || 0;
+
+    const a = calcTrueCost(aPremium, medExp, aDeduct, aOOP, aCoins, aHSA, aTax);
+    const b = calcTrueCost(bPremium, medExp, bDeduct, bOOP, bCoins, 0, 0);
+
+    document.getElementById('aPremiumAnn').textContent = fmt(a.annualPremium);
+    document.getElementById('aOOPCost').textContent = fmt(a.oopCost);
+    document.getElementById('aHSABenefit').textContent = a.hsaBenefit > 0 ? '−' + fmt(a.hsaBenefit) : '$0';
+    document.getElementById('aHSATax').textContent = a.hsaTaxSavings > 0 ? '−' + fmt(a.hsaTaxSavings) : '$0';
+    document.getElementById('aTotalCost').textContent = fmt(a.trueCost);
+
+    document.getElementById('bPremiumAnn').textContent = fmt(b.annualPremium);
+    document.getElementById('bOOPCost').textContent = fmt(b.oopCost);
+    document.getElementById('bTotalCost').textContent = fmt(b.trueCost);
+
+    const aWins = a.trueCost <= b.trueCost;
+    const diff = Math.abs(a.trueCost - b.trueCost);
+    const banner = document.getElementById('winnerBanner');
+    if (aWins) {
+      banner.textContent = `Plan A (HDHP) saves you ${fmt(diff)} per year at $${medExp.toLocaleString()} in expected medical expenses.`;
+    } else {
+      banner.textContent = `Plan B (PPO) saves you ${fmt(diff)} per year at $${medExp.toLocaleString()} in expected medical expenses.`;
+    }
+
+    // Break-even table: scan medical expense levels
+    const levels = [0, 500, 1000, 2000, 3000, 5000, 7500, 10000, 15000, 20000];
+    const tbody = document.getElementById('breakEvenBody');
+    tbody.innerHTML = '';
+    let breakEvenLow = null, breakEvenHigh = null;
+    let prevAWins = null;
+
+    levels.forEach(lvl => {
+      const ra = calcTrueCost(aPremium, lvl, aDeduct, aOOP, aCoins, aHSA, aTax);
+      const rb = calcTrueCost(bPremium, lvl, bDeduct, bOOP, bCoins, 0, 0);
+      const curAWins = ra.trueCost <= rb.trueCost;
+      if (prevAWins !== null && curAWins !== prevAWins) {
+        breakEvenLow = levels[levels.indexOf(lvl) - 1];
+        breakEvenHigh = lvl;
+      }
+      prevAWins = curAWins;
+      const tr = document.createElement('tr');
+      const winner = curAWins ? 'Plan A (HDHP)' : 'Plan B (PPO)';
+      const winColor = curAWins ? 'var(--green)' : 'var(--accent)';
+      tr.innerHTML = `
+        <td>${fmt(lvl)}</td>
+        <td>${fmt(ra.trueCost)}</td>
+        <td>${fmt(rb.trueCost)}</td>
+        <td style="color:${winColor};font-weight:600;">${winner}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const breakEvenText = document.getElementById('breakEvenText');
+    if (breakEvenLow !== null) {
+      breakEvenText.textContent = `Break-even point is somewhere between ${fmt(breakEvenLow)} and ${fmt(breakEvenHigh)} in annual medical expenses. Below that, one plan is cheaper; above it, the other wins.`;
+    } else if (prevAWins) {
+      breakEvenText.textContent = 'Plan A (HDHP) is cheaper across all expense levels shown.';
+    } else {
+      breakEvenText.textContent = 'Plan B (PPO) is cheaper across all expense levels shown.';
+    }
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+</body>
+</html>

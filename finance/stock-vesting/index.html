@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Vesting Calculator — RSU &amp; Option Vesting Schedule</title>
+  <meta name="description" content="Calculate your RSU or stock option vesting schedule. See how much equity vests per quarter/year and total value at different stock prices.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/stock-vesting/">
+  <meta property="og:title" content="Stock Vesting Calculator — RSU &amp; Option Vesting Schedule">
+  <meta property="og:description" content="Calculate your RSU or stock option vesting schedule. See how much equity vests per quarter/year and total value at different stock prices.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/stock-vesting/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Stock Vesting Calculator — RSU &amp; Option Vesting Schedule">
+  <meta name="twitter:description" content="Calculate your RSU or stock option vesting schedule. See how much equity vests per quarter/year and total value at different stock prices.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    table { width:100%;border-collapse:collapse;font-size:0.85rem; }
+    th { text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border); }
+    td { padding:8px 12px;border-bottom:1px solid rgba(48,54,61,0.5); }
+    tr:last-child td { border-bottom:none; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .note { font-size:0.82rem;color:var(--muted);margin-top:6px; }
+    .highlight-row td { color:var(--accent);font-weight:600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Stock Vesting Calculator</h1>
+  <p class="page-subtitle">Calculate your RSU or stock option vesting schedule. See exactly how much equity vests each period and what it's worth.</p>
+
+  <div class="card">
+    <div class="card-title">Grant Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="totalShares">Total shares granted</label>
+        <input type="number" id="totalShares" value="10000" min="1" step="1">
+      </div>
+      <div class="field">
+        <label for="grantYear">Grant year</label>
+        <input type="number" id="grantYear" value="2024" min="2000" max="2040" step="1">
+      </div>
+      <div class="field">
+        <label for="cliffMonths">Cliff period (months)</label>
+        <input type="number" id="cliffMonths" value="12" min="0" max="24" step="1">
+      </div>
+      <div class="field">
+        <label for="vestingMonths">Total vesting period (months)</label>
+        <input type="number" id="vestingMonths" value="48" min="12" max="120" step="1">
+      </div>
+      <div class="field">
+        <label for="vestingFreq">Vesting frequency</label>
+        <select id="vestingFreq">
+          <option value="monthly">Monthly</option>
+          <option value="quarterly" selected>Quarterly</option>
+          <option value="annually">Annually</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="stockPrice">Current stock price ($)</label>
+        <input type="number" id="stockPrice" value="25.00" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label for="grantPrice">Grant / strike price ($)</label>
+        <input type="number" id="grantPrice" value="0" min="0" step="0.01">
+        <span class="note">Set to $0 for RSUs</span>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Vesting Schedule</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Summary</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Total Vested Value</div>
+          <div class="result-value" id="totalValue">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Cliff Vesting</div>
+          <div class="result-value" id="cliffShares">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Per Period After Cliff</div>
+          <div class="result-value" id="perPeriod">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Total Shares</div>
+          <div class="result-value" id="totalSharesOut">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Intrinsic Value/Share</div>
+          <div class="result-value" id="intrinsicPerShare">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Fully Vested Year</div>
+          <div class="result-value" id="vestedYear">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Yearly Vesting Schedule</div>
+      <div style="overflow-x:auto;">
+        <table id="vestingTable">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Shares Vesting</th>
+              <th>Cumulative Shares</th>
+              <th>% Vested</th>
+              <th>Value at Current Price</th>
+            </tr>
+          </thead>
+          <tbody id="vestingTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+<script>
+  function fmt(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+  function fmtShares(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  }
+
+  function calculate() {
+    const totalShares = parseFloat(document.getElementById('totalShares').value) || 0;
+    const grantYear = parseInt(document.getElementById('grantYear').value) || 2024;
+    const cliffMonths = parseFloat(document.getElementById('cliffMonths').value) || 0;
+    const vestingMonths = parseFloat(document.getElementById('vestingMonths').value) || 48;
+    const freq = document.getElementById('vestingFreq').value;
+    const stockPrice = parseFloat(document.getElementById('stockPrice').value) || 0;
+    const grantPrice = parseFloat(document.getElementById('grantPrice').value) || 0;
+
+    // Intrinsic value per share (relevant for options; for RSUs grant price = 0)
+    const intrinsic = Math.max(0, stockPrice - grantPrice);
+
+    // Determine period length in months
+    const periodMonths = freq === 'monthly' ? 1 : freq === 'quarterly' ? 3 : 12;
+
+    // Shares that vest at cliff
+    // At cliff, shares = (cliff / vestingMonths) * totalShares, then remaining vest periodically
+    const cliffShares = cliffMonths > 0 ? Math.round((cliffMonths / vestingMonths) * totalShares) : 0;
+    const remainingShares = totalShares - cliffShares;
+
+    // Number of periods after cliff
+    const remainingMonths = vestingMonths - cliffMonths;
+    const numPeriods = remainingMonths > 0 ? Math.floor(remainingMonths / periodMonths) : 0;
+    const sharesPerPeriod = numPeriods > 0 ? remainingShares / numPeriods : 0;
+
+    // Build a month-by-month vesting map, then roll up by year
+    // year index from grant year
+    const yearMap = {}; // year -> shares vesting that year
+
+    // Cliff event
+    if (cliffMonths > 0 && cliffShares > 0) {
+      const y = grantYear + Math.floor(cliffMonths / 12);
+      yearMap[y] = (yearMap[y] || 0) + cliffShares;
+    } else if (cliffMonths === 0) {
+      // No cliff: first period vests normally (handled below)
+    }
+
+    // Periodic vesting after cliff
+    if (numPeriods > 0) {
+      let sharesAssigned = cliffShares;
+      for (let p = 1; p <= numPeriods; p++) {
+        const monthOffset = cliffMonths + p * periodMonths;
+        const isLast = p === numPeriods;
+        let sharesThisPeriod;
+        if (isLast) {
+          sharesThisPeriod = totalShares - sharesAssigned;
+        } else {
+          sharesThisPeriod = Math.round(sharesPerPeriod);
+        }
+        sharesAssigned += sharesThisPeriod;
+        const y = grantYear + Math.floor(monthOffset / 12);
+        yearMap[y] = (yearMap[y] || 0) + sharesThisPeriod;
+      }
+    }
+
+    // If no cliff and no periods somehow, just assign all at end
+    if (Object.keys(yearMap).length === 0) {
+      yearMap[grantYear + Math.floor(vestingMonths / 12)] = totalShares;
+    }
+
+    // Sorted years
+    const years = Object.keys(yearMap).map(Number).sort((a, b) => a - b);
+
+    // Build table rows
+    const tbody = document.getElementById('vestingTableBody');
+    tbody.innerHTML = '';
+    let cumulative = 0;
+    let finalYear = grantYear;
+    years.forEach(yr => {
+      const shares = yearMap[yr];
+      cumulative += shares;
+      const pct = ((cumulative / totalShares) * 100).toFixed(1);
+      const value = shares * intrinsic;
+      const cumValue = cumulative * intrinsic;
+      finalYear = yr;
+      const tr = document.createElement('tr');
+      if (cumulative >= totalShares) tr.className = 'highlight-row';
+      tr.innerHTML = `
+        <td>${yr}</td>
+        <td>${fmtShares(shares)}</td>
+        <td>${fmtShares(cumulative)}</td>
+        <td>${pct}%</td>
+        <td>${fmt(value)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Summary
+    document.getElementById('totalValue').textContent = fmt(totalShares * intrinsic);
+    document.getElementById('cliffShares').textContent = cliffMonths > 0 ? fmtShares(cliffShares) + ' shares' : 'No cliff';
+    document.getElementById('perPeriod').textContent = numPeriods > 0 ? fmtShares(sharesPerPeriod) + ' shares' : '—';
+    document.getElementById('totalSharesOut').textContent = fmtShares(totalShares);
+    document.getElementById('intrinsicPerShare').textContent = '$' + intrinsic.toFixed(2);
+    document.getElementById('vestedYear').textContent = finalYear;
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+</body>
+</html>
