@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unicode Character Inspector — Free Online Tool</title>
+  <meta name="description" content="Free Unicode character inspector. Paste any text to see code points, names, categories, and hex values for every character. Supports emoji, CJK, and all Unicode blocks.">
+  <meta name="keywords" content="unicode character inspector, unicode code point lookup, unicode character name, unicode category, unicode hex value, inspect unicode string, emoji unicode">
+  <meta property="og:title" content="Unicode Character Inspector — Free Online Tool">
+  <meta property="og:description" content="Paste any text and instantly see Unicode code points, character names, categories, and more for every character. Free, no signup.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/unicode/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/unicode/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='60'>U</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 52px;
+    }
+    .nav-brand {
+      font-weight: 700; font-size: 1rem; color: #f0f6fc;
+      text-decoration: none; margin-right: 28px; letter-spacing: -0.01em;
+    }
+    .nav-brand:hover { color: #58a6ff; }
+    .nav-links { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+    .nav-links a {
+      color: #8b949e; text-decoration: none; font-size: 0.88rem;
+      padding: 6px 12px; border-radius: 6px; transition: background 0.15s, color 0.15s;
+    }
+    .nav-links a:hover { background: #21262d; color: #e6edf3; }
+    .nav-coffee {
+      color: #f0f6fc; text-decoration: none; font-size: 0.82rem; font-weight: 600;
+      background: #21262d; border: 1px solid #30363d; border-radius: 6px;
+      padding: 5px 12px; transition: background 0.15s;
+    }
+    .nav-coffee:hover { background: #30363d; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 36px 20px 80px; }
+    .back-link {
+      display: inline-block; color: #58a6ff; text-decoration: none;
+      font-size: 0.85rem; margin-bottom: 20px;
+    }
+    .back-link:hover { text-decoration: underline; }
+    h1 { font-size: 2rem; font-weight: 700; color: #f0f6fc; margin-bottom: 6px; }
+    .tagline { color: #8b949e; margin-bottom: 32px; font-size: 1rem; }
+
+    .input-area {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .input-area label {
+      display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 8px; font-weight: 500;
+    }
+    textarea {
+      width: 100%; background: #0d1117; color: #e6edf3;
+      border: 1px solid #30363d; border-radius: 6px;
+      padding: 12px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 1rem; resize: vertical; min-height: 80px; outline: none;
+      transition: border-color 0.15s;
+    }
+    textarea:focus { border-color: #58a6ff; }
+    textarea::placeholder { color: #484f58; }
+
+    .examples-row {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+    }
+    .ex-btn {
+      background: #21262d; border: 1px solid #30363d; border-radius: 6px;
+      color: #8b949e; font-size: 0.8rem; padding: 4px 10px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .ex-btn:hover { background: #30363d; color: #e6edf3; }
+
+    .stats-bar {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      font-size: 0.82rem; color: #8b949e; margin-bottom: 16px;
+    }
+    .stats-bar span { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 4px 10px; }
+    .stats-bar .stat-val { color: #58a6ff; font-weight: 600; }
+
+    .view-toggle {
+      display: flex; gap: 4px; margin-bottom: 16px;
+    }
+    .view-btn {
+      background: #21262d; border: 1px solid #30363d; border-radius: 6px;
+      color: #8b949e; font-size: 0.82rem; padding: 5px 12px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .view-btn.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+    .view-btn:hover:not(.active) { background: #30363d; color: #e6edf3; }
+
+    /* Card grid view */
+    .char-grid {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .char-card {
+      background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+      padding: 10px 12px; min-width: 140px; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .char-card:hover { border-color: #58a6ff; background: #1c2128; }
+    .char-glyph {
+      font-size: 2rem; line-height: 1; text-align: center; margin-bottom: 8px;
+      min-height: 2.2rem; display: flex; align-items: center; justify-content: center;
+    }
+    .char-glyph.ctrl { font-size: 0.75rem; color: #484f58; background: #21262d; border-radius: 4px; padding: 4px; }
+    .char-codepoint {
+      font-family: monospace; font-size: 0.82rem; color: #58a6ff;
+      text-align: center; margin-bottom: 2px;
+    }
+    .char-name {
+      font-size: 0.7rem; color: #8b949e; text-align: center;
+      line-height: 1.3; min-height: 2.1em;
+    }
+    .char-category {
+      display: inline-block; font-size: 0.65rem; border-radius: 4px;
+      padding: 1px 6px; margin-top: 4px; font-weight: 600;
+    }
+
+    /* Table view */
+    .char-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .char-table th {
+      text-align: left; padding: 8px 12px; border-bottom: 1px solid #30363d;
+      color: #8b949e; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .char-table td { padding: 8px 12px; border-bottom: 1px solid #21262d; vertical-align: middle; }
+    .char-table tr:hover td { background: #161b22; }
+    .char-table .glyph-cell { font-size: 1.4rem; text-align: center; min-width: 44px; }
+    .char-table .glyph-cell.ctrl { font-size: 0.72rem; color: #484f58; background: #21262d; border-radius: 4px; padding: 2px 4px; text-align: center; }
+    .char-table .cp-cell { font-family: monospace; color: #58a6ff; white-space: nowrap; }
+    .char-table .name-cell { color: #e6edf3; }
+    .char-table .cat-cell { }
+    .char-table .copy-btn {
+      background: #21262d; border: 1px solid #30363d; border-radius: 4px;
+      color: #8b949e; font-size: 0.75rem; padding: 2px 8px; cursor: pointer;
+      transition: background 0.15s; white-space: nowrap;
+    }
+    .char-table .copy-btn:hover { background: #30363d; color: #e6edf3; }
+
+    /* Category colors */
+    .cat-Lu { background: #1f3d6f; color: #79c0ff; }
+    .cat-Ll { background: #1f3d6f; color: #79c0ff; }
+    .cat-Lt { background: #1f3d6f; color: #79c0ff; }
+    .cat-Lm { background: #1f3d6f; color: #79c0ff; }
+    .cat-Lo { background: #1f3d6f; color: #79c0ff; }
+    .cat-Nd { background: #3d2b1f; color: #ffa657; }
+    .cat-Nl { background: #3d2b1f; color: #ffa657; }
+    .cat-No { background: #3d2b1f; color: #ffa657; }
+    .cat-Zs { background: #2d2d2d; color: #8b949e; }
+    .cat-Zl { background: #2d2d2d; color: #8b949e; }
+    .cat-Zp { background: #2d2d2d; color: #8b949e; }
+    .cat-Cc { background: #3d1f1f; color: #ff7b72; }
+    .cat-Cf { background: #3d1f1f; color: #ff7b72; }
+    .cat-So { background: #1f3d2b; color: #56d364; }
+    .cat-Sm { background: #1f3d2b; color: #56d364; }
+    .cat-Sc { background: #1f3d2b; color: #56d364; }
+    .cat-Sk { background: #1f3d2b; color: #56d364; }
+    .cat-Po { background: #2d2522; color: #d2a679; }
+    .cat-Ps { background: #2d2522; color: #d2a679; }
+    .cat-Pe { background: #2d2522; color: #d2a679; }
+    .cat-Pi { background: #2d2522; color: #d2a679; }
+    .cat-Pf { background: #2d2522; color: #d2a679; }
+    .cat-Pd { background: #2d2522; color: #d2a679; }
+    .cat-Pc { background: #2d2522; color: #d2a679; }
+    .cat-Mn { background: #1f2d3d; color: #a5d6ff; }
+    .cat-Mc { background: #1f2d3d; color: #a5d6ff; }
+    .cat-Me { background: #1f2d3d; color: #a5d6ff; }
+    .cat-other { background: #2d2d2d; color: #8b949e; }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: #484f58;
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+
+    .lookup-section {
+      background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+      padding: 20px; margin-bottom: 24px;
+    }
+    .lookup-section h3 { font-size: 1rem; color: #e6edf3; margin-bottom: 12px; }
+    .lookup-row { display: flex; gap: 8px; align-items: center; }
+    .lookup-input {
+      background: #0d1117; color: #e6edf3; border: 1px solid #30363d;
+      border-radius: 6px; padding: 8px 12px; font-family: monospace; font-size: 0.95rem;
+      flex: 1; outline: none; max-width: 220px;
+    }
+    .lookup-input:focus { border-color: #58a6ff; }
+    .lookup-btn {
+      background: #1f6feb; border: none; border-radius: 6px; color: #fff;
+      font-size: 0.88rem; font-weight: 600; padding: 8px 16px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .lookup-btn:hover { background: #388bfd; }
+    .lookup-result {
+      margin-top: 14px; padding: 14px; background: #0d1117;
+      border: 1px solid #30363d; border-radius: 8px; display: none;
+    }
+    .lookup-result.show { display: block; }
+    .lookup-result .big-char { font-size: 3.5rem; line-height: 1; margin-bottom: 10px; }
+    .lookup-result table { border-collapse: collapse; font-size: 0.87rem; }
+    .lookup-result td { padding: 4px 12px 4px 0; color: #e6edf3; vertical-align: top; }
+    .lookup-result td:first-child { color: #8b949e; min-width: 120px; }
+
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px;
+    }
+    @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-card {
+      background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 18px;
+    }
+    .info-card h3 { font-size: 0.9rem; color: #8b949e; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .info-card p, .info-card li { font-size: 0.85rem; color: #8b949e; line-height: 1.7; }
+    .info-card ul { padding-left: 18px; }
+    .info-card code {
+      background: #21262d; border-radius: 4px; padding: 1px 5px;
+      font-family: monospace; font-size: 0.82rem; color: #e6edf3;
+    }
+
+    .copied-toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #238636; color: #fff; border-radius: 8px;
+      padding: 10px 18px; font-size: 0.88rem; font-weight: 600;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 100;
+    }
+    .copied-toast.show { opacity: 1; }
+
+    footer {
+      margin-top: 60px; padding: 32px 20px; border-top: 1px solid #21262d;
+      text-align: center; color: #484f58; font-size: 0.82rem;
+    }
+    footer a { color: #8b949e; text-decoration: none; }
+    footer a:hover { color: #e6edf3; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/profiterole-blog/">Profiterole</a>
+  <div class="nav-links">
+    <a href="/profiterole-blog/posts/">Dispatches</a>
+    <a href="/profiterole-blog/projects/">Projects</a>
+    <a href="/profiterole-blog/cron/">Cron</a>
+    <a href="/profiterole-blog/timestamp/">Timestamp</a>
+    <a href="/profiterole-blog/regex/">Regex</a>
+    <a href="/profiterole-blog/base64/">Base64</a>
+    <a href="/profiterole-blog/json/">JSON</a>
+    <a href="/profiterole-blog/jwt/">JWT</a>
+    <a href="/profiterole-blog/url/">URL</a>
+    <a href="/profiterole-blog/unicode/">Unicode</a>
+  </div>
+  <a class="nav-coffee" href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">Buy me a coffee</a>
+</nav>
+
+<div class="container">
+  <a href="/profiterole-blog/projects/" class="back-link">&larr; All tools</a>
+
+  <h1>Unicode Character Inspector</h1>
+  <p class="tagline">Paste any text — see code points, names, and categories for every character.</p>
+
+  <div class="input-area">
+    <label for="text-input">Text to inspect</label>
+    <textarea id="text-input" placeholder="Paste or type any text here — emoji, CJK, accented letters, control characters…" rows="3"></textarea>
+    <div class="examples-row">
+      <span style="font-size:0.78rem;color:#484f58;align-self:center;">Try:</span>
+      <button class="ex-btn" onclick="setExample('Hello, 世界! 🌍')">Hello, 世界! 🌍</button>
+      <button class="ex-btn" onclick="setExample('café résumé naïve')">café résumé naïve</button>
+      <button class="ex-btn" onclick="setExample('①②③ ½ ∞ ≠ √ π')">① ½ ∞ √ π</button>
+      <button class="ex-btn" onclick="setExample('😀🔥👋🏽🇺🇸')">emoji + flags</button>
+      <button class="ex-btn" onclick="setExample('\u0000\u0001\u0009\u000A\u000D\u001B')">control chars</button>
+      <button class="ex-btn" onclick="setExample('مرحبا')">Arabic</button>
+      <button class="ex-btn" onclick="setExample('Ω β Δ Σ φ')">Greek</button>
+    </div>
+  </div>
+
+  <div id="output-area" style="display:none">
+    <div class="stats-bar" id="stats-bar"></div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btn-grid" onclick="setView('grid')">Cards</button>
+      <button class="view-btn" id="btn-table" onclick="setView('table')">Table</button>
+    </div>
+    <div id="char-display"></div>
+  </div>
+  <div id="empty-state" class="empty-state">
+    <div class="icon">U+</div>
+    <p>Type or paste text above to inspect its Unicode characters.</p>
+  </div>
+
+  <!-- Single character lookup -->
+  <div class="lookup-section" style="margin-top:32px;">
+    <h3>Look up a single code point</h3>
+    <div class="lookup-row">
+      <input class="lookup-input" id="lookup-input" type="text" placeholder="U+1F600 or 0x1F600 or 128512">
+      <button class="lookup-btn" onclick="doLookup()">Inspect</button>
+    </div>
+    <div class="lookup-result" id="lookup-result"></div>
+  </div>
+
+  <!-- Info cards -->
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>What is a Unicode code point?</h3>
+      <p>Every character in Unicode has a unique number called a <strong>code point</strong>, written as <code>U+XXXX</code> in hex. For example, <code>A</code> is <code>U+0041</code>, <code>€</code> is <code>U+20AC</code>, and <code>😀</code> is <code>U+1F600</code>.</p>
+    </div>
+    <div class="info-card">
+      <h3>Categories explained</h3>
+      <ul>
+        <li><strong>Lu/Ll/Lt/Lm/Lo</strong> — Letters (uppercase, lowercase, titlecase, modifier, other)</li>
+        <li><strong>Nd/Nl/No</strong> — Numbers (decimal, letter-number, other)</li>
+        <li><strong>Zs/Zl/Zp</strong> — Separators (space, line, paragraph)</li>
+        <li><strong>Cc/Cf</strong> — Control / Format characters</li>
+        <li><strong>So/Sm/Sc</strong> — Symbols (other, math, currency)</li>
+        <li><strong>Po/Ps/Pe/Pi/Pf</strong> — Punctuation</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>Encoding vs. code points</h3>
+      <p>A code point is the abstract number. An <em>encoding</em> (UTF-8, UTF-16, UTF-32) is how that number is stored in bytes. A single emoji like 😀 (<code>U+1F600</code>) takes 4 bytes in UTF-8 but occupies one code point in this inspector.</p>
+    </div>
+    <div class="info-card">
+      <h3>About this tool</h3>
+      <p>Runs entirely in your browser — no text is sent to any server. Character names come from the browser's JavaScript engine via <code>String.prototype.codePointAt()</code>, and categories are computed locally. Works offline after first load.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Unicode Character Inspector &mdash; free forever &mdash; by <a href="/profiterole-blog/">Profiterole</a></p>
+  <p style="margin-top:6px;"><a href="/profiterole-blog/projects/">More free tools</a> &mdash; <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">Buy me a coffee</a></p>
+</footer>
+
+<div class="copied-toast" id="toast">Copied!</div>
+
+<script>
+// ── Unicode category data ──────────────────────────────────────────────────
+// We approximate category from code point ranges (covers the most common blocks)
+function getCategory(cp) {
+  // Control characters
+  if (cp < 0x20 || (cp >= 0x7F && cp <= 0x9F)) return 'Cc';
+  // Basic Latin letters
+  if ((cp >= 0x41 && cp <= 0x5A)) return 'Lu';
+  if ((cp >= 0x61 && cp <= 0x7A)) return 'Ll';
+  // ASCII digits
+  if (cp >= 0x30 && cp <= 0x39) return 'Nd';
+  // ASCII punctuation / symbols
+  if ((cp >= 0x21 && cp <= 0x2F) || (cp >= 0x3A && cp <= 0x40) ||
+      (cp >= 0x5B && cp <= 0x60) || (cp >= 0x7B && cp <= 0x7E)) return 'Po';
+  // Space
+  if (cp === 0x20 || cp === 0x00A0 || cp === 0x202F || cp === 0x3000) return 'Zs';
+  // Line/paragraph separators
+  if (cp === 0x2028) return 'Zl';
+  if (cp === 0x2029) return 'Zp';
+  // Latin extended letters (common diacritics range)
+  if (cp >= 0x00C0 && cp <= 0x00D6) return 'Lu';
+  if (cp >= 0x00D8 && cp <= 0x00DE) return 'Lu';
+  if (cp >= 0x00DF && cp <= 0x00F6) return 'Ll';
+  if (cp >= 0x00F8 && cp <= 0x00FF) return 'Ll';
+  if (cp >= 0x0100 && cp <= 0x024F) {
+    return (cp % 2 === 0) ? 'Lu' : 'Ll'; // approximate alternating
+  }
+  // Greek & Coptic
+  if (cp >= 0x0391 && cp <= 0x03A9) return 'Lu';
+  if (cp >= 0x03B1 && cp <= 0x03C9) return 'Ll';
+  // Cyrillic
+  if (cp >= 0x0410 && cp <= 0x042F) return 'Lu';
+  if (cp >= 0x0430 && cp <= 0x044F) return 'Ll';
+  // Hebrew
+  if (cp >= 0x05D0 && cp <= 0x05EA) return 'Lo';
+  // Arabic
+  if (cp >= 0x0600 && cp <= 0x06FF) return 'Lo';
+  // Devanagari
+  if (cp >= 0x0900 && cp <= 0x097F) return 'Lo';
+  // CJK Unified Ideographs
+  if (cp >= 0x4E00 && cp <= 0x9FFF) return 'Lo';
+  if (cp >= 0x3400 && cp <= 0x4DBF) return 'Lo';
+  if (cp >= 0x20000 && cp <= 0x2A6DF) return 'Lo';
+  // Hiragana / Katakana
+  if (cp >= 0x3040 && cp <= 0x309F) return 'Lo';
+  if (cp >= 0x30A0 && cp <= 0x30FF) return 'Lo';
+  // Hangul
+  if (cp >= 0xAC00 && cp <= 0xD7AF) return 'Lo';
+  // Math operators
+  if (cp >= 0x2200 && cp <= 0x22FF) return 'Sm';
+  // Currency symbols
+  if (cp >= 0x20A0 && cp <= 0x20CF) return 'Sc';
+  if (cp === 0x0024 || cp === 0x00A2 || cp === 0x00A3 || cp === 0x00A5) return 'Sc';
+  // Number forms / fractions
+  if (cp >= 0x2150 && cp <= 0x218F) return 'No';
+  // Enclosed alphanumeric (①, etc.)
+  if (cp >= 0x2460 && cp <= 0x24FF) return 'No';
+  // General punctuation
+  if (cp >= 0x2000 && cp <= 0x206F) return 'Po';
+  // Arrows / box drawing / geometric shapes
+  if (cp >= 0x2190 && cp <= 0x21FF) return 'So';
+  if (cp >= 0x2500 && cp <= 0x25FF) return 'So';
+  if (cp >= 0x2600 && cp <= 0x27BF) return 'So';
+  // Emoji ranges
+  if (cp >= 0x1F300 && cp <= 0x1FAFF) return 'So';
+  if (cp >= 0x1F000 && cp <= 0x1F02F) return 'So';
+  // Dingbats
+  if (cp >= 0x2700 && cp <= 0x27BF) return 'So';
+  // Zero-width / format
+  if (cp === 0x200B || cp === 0x200C || cp === 0x200D || cp === 0xFEFF) return 'Cf';
+  // Combining marks
+  if (cp >= 0x0300 && cp <= 0x036F) return 'Mn';
+  if (cp >= 0x1DC0 && cp <= 0x1DFF) return 'Mn';
+  // Surrogates (shouldn't appear but handle gracefully)
+  if (cp >= 0xD800 && cp <= 0xDFFF) return 'Cs';
+  // Private use
+  if (cp >= 0xE000 && cp <= 0xF8FF) return 'Co';
+  // Default: other letter if in letter-ish range, else other
+  if (cp > 0x7F) return 'Lo';
+  return 'other';
+}
+
+const CATEGORY_LABELS = {
+  Lu:'Uppercase Letter', Ll:'Lowercase Letter', Lt:'Titlecase Letter',
+  Lm:'Modifier Letter', Lo:'Other Letter',
+  Nd:'Decimal Digit', Nl:'Letter Number', No:'Other Number',
+  Zs:'Space Separator', Zl:'Line Separator', Zp:'Paragraph Separator',
+  Cc:'Control', Cf:'Format', Cs:'Surrogate', Co:'Private Use',
+  Sm:'Math Symbol', Sc:'Currency Symbol', Sk:'Modifier Symbol', So:'Other Symbol',
+  Po:'Other Punctuation', Ps:'Open Punctuation', Pe:'Close Punctuation',
+  Pi:'Initial Punctuation', Pf:'Final Punctuation', Pd:'Dash Punctuation', Pc:'Connector Punctuation',
+  Mn:'Non-spacing Mark', Mc:'Spacing Mark', Me:'Enclosing Mark',
+  other:'Other',
+};
+
+// Get Unicode block name from code point (simplified)
+function getBlock(cp) {
+  if (cp <= 0x007F) return 'Basic Latin';
+  if (cp <= 0x00FF) return 'Latin-1 Supplement';
+  if (cp <= 0x024F) return 'Latin Extended';
+  if (cp <= 0x02FF) return 'Spacing Modifiers';
+  if (cp <= 0x036F) return 'Combining Diacritics';
+  if (cp <= 0x03FF) return 'Greek & Coptic';
+  if (cp <= 0x04FF) return 'Cyrillic';
+  if (cp <= 0x05FF) return 'Hebrew / Armenian';
+  if (cp <= 0x06FF) return 'Arabic';
+  if (cp <= 0x09FF) return 'Devanagari / Bengali';
+  if (cp <= 0x0FFF) return 'South Asian Scripts';
+  if (cp <= 0x1FFF) return 'Southeast Asian Scripts';
+  if (cp <= 0x2BFF) return 'Symbols & Punctuation';
+  if (cp <= 0x2FFF) return 'CJK Radicals';
+  if (cp <= 0x3FFF) return 'CJK / Kana';
+  if (cp <= 0x4DBF) return 'CJK Extension A';
+  if (cp <= 0x9FFF) return 'CJK Unified Ideographs';
+  if (cp <= 0xD7FF) return 'Hangul';
+  if (cp <= 0xF8FF) return 'Private Use / Compat';
+  if (cp <= 0xFFFF) return 'Specials / Compat';
+  if (cp <= 0x1FFFF) return 'SMP / Emoji / Historic';
+  if (cp <= 0x2FFFF) return 'CJK Extension B–F';
+  return 'Supplementary Private Use';
+}
+
+// Control character display names
+const CTRL_NAMES = {
+  0:'\x00 NUL', 1:'SOH', 2:'STX', 3:'ETX', 4:'EOT', 5:'ENQ', 6:'ACK', 7:'BEL',
+  8:'BS', 9:'HT (tab)', 10:'LF (newline)', 11:'VT', 12:'FF', 13:'CR (return)',
+  14:'SO', 15:'SI', 27:'ESC', 32:'SPACE', 127:'DEL',
+  8203:'ZWSP', 8204:'ZWNJ', 8205:'ZWJ', 65279:'BOM/ZWNBSP',
+};
+
+// ── Parse text into codepoint objects ──────────────────────────────────────
+function parseText(text) {
+  const chars = [];
+  for (let i = 0; i < text.length; ) {
+    const cp = text.codePointAt(i);
+    const isSurrogate = cp > 0xFFFF;
+    chars.push({
+      cp,
+      char: String.fromCodePoint(cp),
+      hex: 'U+' + cp.toString(16).toUpperCase().padStart(4, '0'),
+      decimal: cp,
+      htmlEntity: '&#' + cp + ';',
+      jsEscape: cp <= 0xFFFF ? '\\u' + cp.toString(16).toUpperCase().padStart(4, '0')
+                             : '\\u{' + cp.toString(16).toUpperCase() + '}',
+      category: getCategory(cp),
+      block: getBlock(cp),
+    });
+    i += isSurrogate ? 2 : 1;
+  }
+  return chars;
+}
+
+function charDisplayGlyph(charObj) {
+  const cp = charObj.cp;
+  if (cp < 32 || (cp >= 127 && cp <= 159)) {
+    return CTRL_NAMES[cp] || ('0x' + cp.toString(16).toUpperCase());
+  }
+  if (cp === 0x200B || cp === 0x200C || cp === 0x200D || cp === 0xFEFF) {
+    return CTRL_NAMES[cp] || ('U+' + cp.toString(16).toUpperCase());
+  }
+  return charObj.char;
+}
+
+function isCtrl(cp) {
+  return cp < 32 || (cp >= 127 && cp <= 159) || cp === 0x200B || cp === 0x200C || cp === 0x200D || cp === 0xFEFF;
+}
+
+// ── Rendering ──────────────────────────────────────────────────────────────
+let currentView = 'grid';
+let currentChars = [];
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('btn-grid').classList.toggle('active', v === 'grid');
+  document.getElementById('btn-table').classList.toggle('active', v === 'table');
+  renderChars(currentChars);
+}
+
+function renderChars(chars) {
+  const el = document.getElementById('char-display');
+  if (currentView === 'grid') {
+    el.innerHTML = renderGrid(chars);
+  } else {
+    el.innerHTML = renderTable(chars);
+  }
+}
+
+function renderGrid(chars) {
+  if (!chars.length) return '';
+  const cards = chars.map((c, i) => {
+    const glyph = charDisplayGlyph(c);
+    const ctrl = isCtrl(c.cp);
+    const cat = c.category;
+    const catLabel = CATEGORY_LABELS[cat] || cat;
+    return `<div class="char-card" onclick="copyToClip('${c.hex}', ${i})">
+      <div class="char-glyph${ctrl ? ' ctrl' : ''}">${escHtml(glyph)}</div>
+      <div class="char-codepoint">${c.hex}</div>
+      <div class="char-name">${c.block}</div>
+      <div><span class="char-category cat-${cat}" title="${catLabel}">${cat}</span></div>
+    </div>`;
+  });
+  return `<div class="char-grid">${cards.join('')}</div>`;
+}
+
+function renderTable(chars) {
+  if (!chars.length) return '';
+  const rows = chars.map((c, i) => {
+    const glyph = charDisplayGlyph(c);
+    const ctrl = isCtrl(c.cp);
+    const cat = c.category;
+    const catLabel = CATEGORY_LABELS[cat] || cat;
+    return `<tr>
+      <td class="glyph-cell${ctrl ? ' ctrl' : ''}">${escHtml(glyph)}</td>
+      <td class="cp-cell">${c.hex}</td>
+      <td style="font-family:monospace;color:#8b949e">${c.decimal}</td>
+      <td class="name-cell">${catLabel}</td>
+      <td><span class="char-category cat-${cat}">${cat}</span></td>
+      <td style="font-family:monospace;font-size:0.8rem;color:#8b949e">${escHtml(c.jsEscape)}</td>
+      <td><button class="copy-btn" onclick="copyToClip('${c.hex}', ${i})">Copy U+</button>
+          <button class="copy-btn" style="margin-left:4px" onclick="copyRaw('${escHtml(c.char).replace(/'/g, "\\'")}', ${i})">Copy char</button></td>
+    </tr>`;
+  });
+  return `<table class="char-table">
+    <thead><tr>
+      <th>Char</th><th>Code Point</th><th>Decimal</th><th>Category</th><th>Cat.</th><th>JS Escape</th><th>Copy</th>
+    </tr></thead>
+    <tbody>${rows.join('')}</tbody>
+  </table>`;
+}
+
+function updateStats(chars) {
+  const bar = document.getElementById('stats-bar');
+  const uniq = new Set(chars.map(c => c.cp)).size;
+  const cats = {};
+  chars.forEach(c => { cats[c.category] = (cats[c.category] || 0) + 1; });
+  const catSummary = Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,3)
+    .map(([k,v]) => `${k}:${v}`).join(' ');
+  bar.innerHTML = `
+    <span><span class="stat-val">${chars.length}</span> code points</span>
+    <span><span class="stat-val">${uniq}</span> unique</span>
+    <span>${catSummary}</span>
+  `;
+}
+
+// ── Input handler ──────────────────────────────────────────────────────────
+document.getElementById('text-input').addEventListener('input', function() {
+  const text = this.value;
+  const empty = document.getElementById('empty-state');
+  const out = document.getElementById('output-area');
+
+  if (!text) {
+    empty.style.display = '';
+    out.style.display = 'none';
+    return;
+  }
+
+  currentChars = parseText(text);
+  empty.style.display = 'none';
+  out.style.display = '';
+  updateStats(currentChars);
+  renderChars(currentChars);
+});
+
+function setExample(text) {
+  const ta = document.getElementById('text-input');
+  ta.value = text;
+  ta.dispatchEvent(new Event('input'));
+}
+
+// ── Single character lookup ────────────────────────────────────────────────
+document.getElementById('lookup-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLookup();
+});
+
+function doLookup() {
+  const raw = document.getElementById('lookup-input').value.trim();
+  const resultEl = document.getElementById('lookup-result');
+  if (!raw) { resultEl.classList.remove('show'); return; }
+
+  let cp;
+  // Try U+XXXX or 0xXXXX or plain hex like 1F600 or decimal
+  const m = raw.match(/^(?:U\+|0x|\\u\{?)([0-9a-fA-F]+)\}?$/i);
+  if (m) {
+    cp = parseInt(m[1], 16);
+  } else if (/^\d+$/.test(raw)) {
+    cp = parseInt(raw, 10);
+  } else {
+    // Maybe it's just the character itself
+    cp = raw.codePointAt(0);
+  }
+
+  if (cp === undefined || isNaN(cp) || cp < 0 || cp > 0x10FFFF) {
+    resultEl.innerHTML = '<p style="color:#ff7b72">Invalid code point. Try: U+1F600, 0x41, or 65.</p>';
+    resultEl.classList.add('show');
+    return;
+  }
+
+  const charObj = {
+    cp, char: String.fromCodePoint(cp),
+    hex: 'U+' + cp.toString(16).toUpperCase().padStart(4, '0'),
+    decimal: cp,
+    htmlEntity: '&#' + cp + ';',
+    jsEscape: cp <= 0xFFFF ? '\\u' + cp.toString(16).toUpperCase().padStart(4, '0')
+                           : '\\u{' + cp.toString(16).toUpperCase() + '}',
+    category: getCategory(cp),
+    block: getBlock(cp),
+  };
+
+  const glyph = charDisplayGlyph(charObj);
+  const ctrl = isCtrl(cp);
+  const catLabel = CATEGORY_LABELS[charObj.category] || charObj.category;
+
+  resultEl.innerHTML = `
+    <div class="big-char">${ctrl ? escHtml(glyph) : escHtml(charObj.char)}</div>
+    <table>
+      <tr><td>Code Point</td><td><strong style="font-family:monospace;color:#58a6ff">${charObj.hex}</strong></td></tr>
+      <tr><td>Decimal</td><td style="font-family:monospace">${charObj.decimal}</td></tr>
+      <tr><td>Hex</td><td style="font-family:monospace">0x${cp.toString(16).toUpperCase()}</td></tr>
+      <tr><td>HTML Entity</td><td style="font-family:monospace">${escHtml(charObj.htmlEntity)}</td></tr>
+      <tr><td>JS Escape</td><td style="font-family:monospace">${escHtml(charObj.jsEscape)}</td></tr>
+      <tr><td>Category</td><td><span class="char-category cat-${charObj.category}">${charObj.category}</span> ${catLabel}</td></tr>
+      <tr><td>Block</td><td>${charObj.block}</td></tr>
+      <tr><td>UTF-8 bytes</td><td style="font-family:monospace">${utf8Bytes(cp)}</td></tr>
+    </table>
+  `;
+  resultEl.classList.add('show');
+}
+
+function utf8Bytes(cp) {
+  const bytes = [];
+  const str = String.fromCodePoint(cp);
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    if (code < 0x80) bytes.push(code.toString(16).toUpperCase().padStart(2,'0'));
+  }
+  // Encode properly via TextEncoder
+  try {
+    const enc = new TextEncoder().encode(String.fromCodePoint(cp));
+    return Array.from(enc).map(b => b.toString(16).toUpperCase().padStart(2,'0')).join(' ');
+  } catch(e) {
+    return '—';
+  }
+}
+
+// ── Utilities ──────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyToClip(text, idx) {
+  navigator.clipboard.writeText(text).then(() => showToast('Copied ' + text));
+}
+
+function copyRaw(char, idx) {
+  navigator.clipboard.writeText(String.fromCodePoint(currentChars[idx].cp))
+    .then(() => showToast('Copied character'));
+}
+
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+</script>
+</body>
+</html>
