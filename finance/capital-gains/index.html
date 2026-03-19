@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capital Gains Tax Calculator 2024 — Long-Term vs Short-Term</title>
+  <meta name="description" content="Calculate your capital gains tax for 2024. See the difference between long-term (0%, 15%, 20%) and short-term rates. Know your exact tax bill before you sell.">
+  <meta name="keywords" content="capital gains tax calculator 2024, long term capital gains tax, short term capital gains tax, capital gains calculator, tax on stock sales, investment tax calculator">
+  <meta property="og:title" content="Capital Gains Tax Calculator 2024 — Long-Term vs Short-Term">
+  <meta property="og:description" content="Calculate your 2024 capital gains tax. Long-term rates: 0%, 15%, 20%. Short-term: ordinary income. See your exact tax bill before you sell.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/capital-gains/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/capital-gains/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>📈</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      border-bottom: 1px solid #30363d;
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    header .logo { font-weight: 700; font-size: 1rem; color: #e6edf3; }
+    header .logo span { color: #58a6ff; }
+
+    .container { max-width: 820px; margin: 0 auto; padding: 32px 20px; }
+    .back { color: #8b949e; font-size: 0.85rem; display: inline-block; margin-bottom: 20px; }
+    .back:hover { color: #58a6ff; }
+
+    h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .subtitle { color: #8b949e; font-size: 0.95rem; margin-bottom: 32px; }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.8rem; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    label { display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 6px; }
+    input, select {
+      width: 100%; padding: 10px 12px;
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+      color: #e6edf3; font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { outline: none; border-color: #58a6ff; }
+
+    .field { margin-bottom: 0; }
+
+    .toggle-group { display: flex; gap: 8px; }
+    .toggle-btn {
+      flex: 1; padding: 10px; border-radius: 8px; cursor: pointer;
+      border: 1px solid #30363d; background: #0d1117;
+      color: #8b949e; font-size: 0.9rem; font-weight: 500;
+      transition: all 0.2s; text-align: center;
+    }
+    .toggle-btn.active {
+      background: #1f3d5c; border-color: #58a6ff; color: #58a6ff;
+    }
+
+    .results { display: none; }
+    .results.visible { display: block; }
+
+    .result-hero {
+      text-align: center; padding: 28px 20px;
+      background: linear-gradient(135deg, #1f3d5c, #162032);
+      border: 1px solid #2d5a8e; border-radius: 12px; margin-bottom: 20px;
+    }
+    .result-hero .tax-label { color: #8b949e; font-size: 0.85rem; margin-bottom: 6px; }
+    .result-hero .tax-amount { font-size: 2.8rem; font-weight: 700; color: #58a6ff; letter-spacing: -1px; }
+    .result-hero .tax-rate { color: #8b949e; font-size: 0.9rem; margin-top: 6px; }
+
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .result-grid { grid-template-columns: 1fr 1fr; } }
+
+    .stat { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 16px; text-align: center; }
+    .stat .s-val { font-size: 1.3rem; font-weight: 700; }
+    .stat .s-lbl { font-size: 0.75rem; color: #8b949e; margin-top: 4px; }
+    .green { color: #3fb950; }
+    .red { color: #f85149; }
+    .blue { color: #58a6ff; }
+    .yellow { color: #d29922; }
+
+    .compare-card {
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+      padding: 20px; margin-bottom: 20px;
+    }
+    .compare-card h3 { font-size: 0.85rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+    .rate-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid #21262d;
+    }
+    .rate-row:last-child { border-bottom: none; }
+    .rate-row .rr-label { font-size: 0.9rem; }
+    .rate-row .rr-val { font-size: 0.9rem; font-weight: 600; }
+
+    .holding-callout {
+      background: #1a2a1a; border: 1px solid #3fb950; border-radius: 10px;
+      padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start;
+    }
+    .holding-callout.bad { background: #2a1a1a; border-color: #f85149; }
+    .holding-callout .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .holding-callout .text { font-size: 0.88rem; line-height: 1.5; }
+    .holding-callout .text strong { color: #e6edf3; }
+
+    .breakdown-table { width: 100%; border-collapse: collapse; }
+    .breakdown-table th {
+      text-align: left; padding: 8px 12px;
+      font-size: 0.78rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.3px;
+      border-bottom: 1px solid #30363d;
+    }
+    .breakdown-table td {
+      padding: 10px 12px; font-size: 0.9rem;
+      border-bottom: 1px solid #21262d;
+    }
+    .breakdown-table tr:last-child td { border-bottom: none; }
+
+    .niit-note {
+      background: #1f1a00; border: 1px solid #d29922; border-radius: 8px;
+      padding: 12px 14px; font-size: 0.85rem; margin-top: 12px; color: #d29922;
+    }
+
+    .faq { margin-top: 40px; }
+    .faq h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-item h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; color: #e6edf3; }
+    .faq-item p { font-size: 0.88rem; color: #8b949e; line-height: 1.6; }
+
+    .coffee {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #21262d; border: 1px solid #30363d; border-radius: 24px;
+      padding: 10px 16px; font-size: 0.85rem; color: #e6edf3;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+    .coffee:hover { background: #2d333b; border-color: #58a6ff; text-decoration: none; }
+
+    footer {
+      margin-top: 60px; padding-top: 20px; border-top: 1px solid #21262d;
+      font-size: 0.8rem; color: #8b949e; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/profiterole-blog/"><span>Profiterole</span></a>
+  <span style="color:#30363d">|</span>
+  <a href="/profiterole-blog/finance/" style="color:#8b949e;font-size:0.9rem;">Finance Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back">← All Calculators</a>
+
+  <h1>Capital Gains Tax Calculator 2024</h1>
+  <p class="subtitle">Know your tax bill before you sell — long-term vs short-term, NIIT included.</p>
+
+  <!-- Input Card -->
+  <div class="card">
+    <h2>Your Investment Sale</h2>
+    <div class="grid-2">
+      <div class="field">
+        <label>Sale Price ($)</label>
+        <input type="number" id="salePrice" value="50000" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Cost Basis ($)</label>
+        <input type="number" id="costBasis" value="20000" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Annual Income ($) <span style="color:#8b949e;font-size:0.8rem;">to determine your bracket</span></label>
+        <input type="number" id="income" value="85000" min="0" step="1000">
+      </div>
+      <div class="field">
+        <label>Filing Status</label>
+        <select id="filingStatus">
+          <option value="single">Single</option>
+          <option value="married" selected>Married Filing Jointly</option>
+          <option value="hoh">Head of Household</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:20px;">
+      <label style="margin-bottom:10px;">Holding Period</label>
+      <div class="toggle-group">
+        <div class="toggle-btn active" id="btn-lt" onclick="setHolding('long')">Long-Term (1+ year)</div>
+        <div class="toggle-btn" id="btn-st" onclick="setHolding('short')">Short-Term (under 1 year)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results visible" id="results">
+
+    <div class="result-hero">
+      <div class="tax-label">Estimated Capital Gains Tax</div>
+      <div class="tax-amount" id="heroTax">$0</div>
+      <div class="tax-rate" id="heroRate">Effective rate: 0%</div>
+    </div>
+
+    <div class="result-grid">
+      <div class="stat">
+        <div class="s-val green" id="statGain">$0</div>
+        <div class="s-lbl">Capital Gain</div>
+      </div>
+      <div class="stat">
+        <div class="s-val blue" id="statRate">0%</div>
+        <div class="s-lbl">Tax Rate</div>
+      </div>
+      <div class="stat">
+        <div class="s-val green" id="statProceeds">$0</div>
+        <div class="s-lbl">Net Proceeds After Tax</div>
+      </div>
+    </div>
+
+    <div id="holdingCallout" class="holding-callout">
+      <span class="icon">✓</span>
+      <div class="text"><strong>Long-term rate applies.</strong> You held for 1+ year. Great call — long-term rates are 0–20% vs short-term rates up to 37%.</div>
+    </div>
+
+    <div class="compare-card" style="margin-top:16px;">
+      <h3>Tax Rate Breakdown</h3>
+      <table class="breakdown-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Rate</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="breakdownBody">
+        </tbody>
+      </table>
+      <div class="niit-note" id="niitNote" style="display:none;">
+        ⚡ NIIT (Net Investment Income Tax) of 3.8% applies when your modified AGI exceeds $200K (single) or $250K (married). Added above where applicable.
+      </div>
+    </div>
+
+    <div class="compare-card">
+      <h3>Long-Term vs Short-Term Comparison</h3>
+      <div class="rate-row">
+        <span class="rr-label">Long-term tax (1+ year)</span>
+        <span class="rr-val green" id="ltTax">$0</span>
+      </div>
+      <div class="rate-row">
+        <span class="rr-label">Short-term tax (under 1 year)</span>
+        <span class="rr-val red" id="stTax">$0</span>
+      </div>
+      <div class="rate-row" style="font-weight:600;">
+        <span class="rr-label">Savings by holding long-term</span>
+        <span class="rr-val green" id="savings">$0</span>
+      </div>
+    </div>
+
+    <div class="compare-card">
+      <h3>2024 Long-Term Capital Gains Brackets</h3>
+      <div id="bracketsTable"></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2>Capital Gains Tax: Key Facts</h2>
+    <div class="faq-item">
+      <h3>What counts as long-term vs short-term?</h3>
+      <p>If you hold an asset for more than one year before selling, the profit is taxed at long-term capital gains rates (0%, 15%, or 20%). Hold for one year or less, and you pay short-term rates — which are the same as ordinary income tax rates, up to 37%.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What is the 0% capital gains rate?</h3>
+      <p>In 2024, single filers with taxable income under $47,025 pay 0% on long-term capital gains. Married filing jointly: under $94,050. This means if you're in a low income year, you can potentially realize gains completely tax-free.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What is NIIT?</h3>
+      <p>The Net Investment Income Tax is an additional 3.8% tax on investment income (including capital gains) for high earners. It applies when your modified AGI exceeds $200,000 (single) or $250,000 (married). So the effective maximum long-term rate is 23.8%, not 20%.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Does this include state taxes?</h3>
+      <p>No — this calculator covers federal taxes only. Most states also tax capital gains, often at ordinary income rates. States like Florida, Texas, Nevada, and Washington have no state income tax on capital gains.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What's the "step-up in basis"?</h3>
+      <p>When you inherit assets, your cost basis "steps up" to the fair market value at the time of death. This eliminates capital gains on the appreciation that occurred during the decedent's lifetime — a significant tax break for heirs.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Estimates only — consult a tax professional for your specific situation. Federal tax only, 2024 rates.</p>
+    <p style="margin-top:8px;"><a href="/profiterole-blog/finance/">← All Finance Calculators</a> · <a href="/profiterole-blog/">Profiterole</a></p>
+  </footer>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee">☕ Buy me a coffee</a>
+
+<script>
+  let holding = 'long';
+
+  function setHolding(h) {
+    holding = h;
+    document.getElementById('btn-lt').classList.toggle('active', h === 'long');
+    document.getElementById('btn-st').classList.toggle('active', h === 'short');
+    calculate();
+  }
+
+  // 2024 Long-term capital gains brackets
+  const ltBrackets = {
+    single:  [{ rate: 0, max: 47025 }, { rate: 0.15, max: 518900 }, { rate: 0.20, max: Infinity }],
+    married: [{ rate: 0, max: 94050 }, { rate: 0.15, max: 583750 }, { rate: 0.20, max: Infinity }],
+    hoh:     [{ rate: 0, max: 63000 }, { rate: 0.15, max: 551350 }, { rate: 0.20, max: Infinity }]
+  };
+
+  // 2024 Ordinary income brackets (for short-term)
+  const stBrackets = {
+    single:  [
+      { rate: 0.10, max: 11600 }, { rate: 0.12, max: 47150 }, { rate: 0.22, max: 100525 },
+      { rate: 0.24, max: 191950 }, { rate: 0.32, max: 243725 }, { rate: 0.35, max: 609350 },
+      { rate: 0.37, max: Infinity }
+    ],
+    married: [
+      { rate: 0.10, max: 23200 }, { rate: 0.12, max: 94300 }, { rate: 0.22, max: 201050 },
+      { rate: 0.24, max: 383900 }, { rate: 0.32, max: 487450 }, { rate: 0.35, max: 731200 },
+      { rate: 0.37, max: Infinity }
+    ],
+    hoh: [
+      { rate: 0.10, max: 16550 }, { rate: 0.12, max: 63100 }, { rate: 0.22, max: 100500 },
+      { rate: 0.24, max: 191950 }, { rate: 0.32, max: 243700 }, { rate: 0.35, max: 609350 },
+      { rate: 0.37, max: Infinity }
+    ]
+  };
+
+  const NIIT_THRESHOLD = { single: 200000, married: 250000, hoh: 200000 };
+
+  function getLTRate(income, status) {
+    const brackets = ltBrackets[status];
+    for (const b of brackets) {
+      if (income <= b.max) return b.rate;
+    }
+    return 0.20;
+  }
+
+  function calcSTTax(income, gain, status) {
+    // Marginal tax on gain added on top of income
+    const brackets = stBrackets[status];
+    let remaining = gain;
+    let tax = 0;
+    let incomeBase = income;
+    let prevMax = 0;
+
+    for (const b of brackets) {
+      const bracketSize = b.max - prevMax;
+      const space = Math.max(0, b.max - incomeBase);
+      const taxable = Math.min(space, remaining);
+      tax += taxable * b.rate;
+      remaining -= taxable;
+      prevMax = b.max;
+      incomeBase = Math.max(incomeBase, prevMax);
+      if (remaining <= 0) break;
+    }
+    return tax;
+  }
+
+  function fmt(n) {
+    if (n < 0) return '-$' + Math.abs(Math.round(n)).toLocaleString();
+    return '$' + Math.round(n).toLocaleString();
+  }
+  function pct(n) { return (n * 100).toFixed(1) + '%'; }
+
+  function calculate() {
+    const sale = parseFloat(document.getElementById('salePrice').value) || 0;
+    const basis = parseFloat(document.getElementById('costBasis').value) || 0;
+    const income = parseFloat(document.getElementById('income').value) || 0;
+    const status = document.getElementById('filingStatus').value;
+
+    const gain = Math.max(0, sale - basis);
+
+    // Long-term calculation
+    const ltRate = getLTRate(income, status);
+    let ltTax = gain * ltRate;
+    // NIIT check
+    const niitThreshold = NIIT_THRESHOLD[status];
+    const niitBase = Math.max(0, Math.min(gain, income + gain - niitThreshold));
+    const niit = niitBase > 0 ? niitBase * 0.038 : 0;
+    if (holding === 'long') ltTax += niit;
+
+    // Short-term calculation
+    const stTaxAmt = calcSTTax(income, gain, status);
+
+    const activeTax = holding === 'long' ? ltTax : stTaxAmt;
+    const activeRate = gain > 0 ? activeTax / gain : 0;
+    const netProceeds = sale - activeTax;
+
+    // Update hero
+    document.getElementById('heroTax').textContent = fmt(activeTax);
+    document.getElementById('heroRate').textContent = 'Effective rate on gain: ' + pct(activeRate);
+    document.getElementById('statGain').textContent = fmt(gain);
+    document.getElementById('statRate').textContent = pct(activeRate);
+    document.getElementById('statProceeds').textContent = fmt(netProceeds);
+
+    // Holding callout
+    const callout = document.getElementById('holdingCallout');
+    if (holding === 'long') {
+      callout.className = 'holding-callout';
+      callout.innerHTML = '<span class="icon">✓</span><div class="text"><strong>Long-term rate applies.</strong> You held for 1+ year. Long-term rates (0%–20%) are significantly lower than short-term ordinary income rates (up to 37%).</div>';
+    } else {
+      callout.className = 'holding-callout bad';
+      callout.innerHTML = '<span class="icon">⚠</span><div class="text"><strong>Short-term rate applies.</strong> Held under 1 year — taxed as ordinary income. If you can wait until the 1-year mark, you could save <strong>' + fmt(stTaxAmt - ltTax) + '</strong> in taxes.</div>';
+    }
+
+    // Breakdown table
+    const rows = [];
+    if (holding === 'long') {
+      rows.push(['Federal long-term capital gains', pct(ltRate), fmt(gain * ltRate)]);
+      if (niit > 0) rows.push(['Net Investment Income Tax (NIIT)', '3.8%', fmt(niit)]);
+    } else {
+      const marginalRate = gain > 0 ? stTaxAmt / gain : 0;
+      rows.push(['Short-term (ordinary income)', pct(marginalRate), fmt(stTaxAmt)]);
+    }
+    rows.push(['<strong>Total federal tax</strong>', '', '<strong>' + fmt(activeTax) + '</strong>']);
+
+    document.getElementById('breakdownBody').innerHTML = rows.map(r =>
+      `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`
+    ).join('');
+
+    document.getElementById('niitNote').style.display = (niit > 0 && holding === 'long') ? 'block' : 'none';
+
+    // Comparison
+    const ltTaxDisplay = gain * getLTRate(income, status) + (niitBase > 0 ? niitBase * 0.038 : 0);
+    document.getElementById('ltTax').textContent = fmt(ltTaxDisplay);
+    document.getElementById('stTax').textContent = fmt(stTaxAmt);
+    document.getElementById('savings').textContent = fmt(Math.max(0, stTaxAmt - ltTaxDisplay));
+
+    // Brackets table
+    const bData = ltBrackets[status];
+    const prevBounds = [0, ...bData.slice(0, -1).map(b => b.max)];
+    const bRows = bData.map((b, i) => {
+      const from = prevBounds[i].toLocaleString();
+      const to = b.max === Infinity ? 'and above' : b.max.toLocaleString();
+      const active = income >= prevBounds[i] && income < b.max;
+      return `<tr style="${active ? 'background:#1f3d5c;' : ''}">
+        <td style="padding:8px 12px;font-size:0.88rem;">${active ? '▶ ' : ''}$${from} – $${b.max === Infinity ? '∞' : b.max.toLocaleString()}</td>
+        <td style="padding:8px 12px;font-size:0.88rem;font-weight:600;color:${b.rate === 0 ? '#3fb950' : b.rate === 0.15 ? '#d29922' : '#f85149'}">${pct(b.rate)}</td>
+      </tr>`;
+    });
+    document.getElementById('bracketsTable').innerHTML = `<table style="width:100%;border-collapse:collapse;">
+      <thead><tr><th style="text-align:left;padding:8px 12px;font-size:0.78rem;color:#8b949e;border-bottom:1px solid #30363d;">Income Range</th><th style="text-align:left;padding:8px 12px;font-size:0.78rem;color:#8b949e;border-bottom:1px solid #30363d;">Rate</th></tr></thead>
+      <tbody>${bRows.join('')}</tbody></table>`;
+  }
+
+  // Live update
+  ['salePrice','costBasis','income','filingStatus'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculate);
+  });
+
+  calculate();
+</script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Security Benefit Estimator 2024 — Monthly Benefit Calculator</title>
+  <meta name="description" content="Estimate your Social Security retirement benefit. See how claiming age (62 vs 67 vs 70) affects your monthly payment. Based on 2024 SSA benefit formula.">
+  <meta name="keywords" content="social security calculator, social security benefit estimator, when to claim social security, social security at 62 vs 67 vs 70, retirement benefit calculator, SSA benefit calculator">
+  <meta property="og:title" content="Social Security Benefit Estimator 2024">
+  <meta property="og:description" content="Estimate your Social Security benefit and see how claiming age affects your monthly payment. Claim at 62, 67, or 70 — see the difference.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/social-security/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/social-security/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🏛️</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      border-bottom: 1px solid #30363d;
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    header .logo { font-weight: 700; font-size: 1rem; color: #e6edf3; }
+    header .logo span { color: #58a6ff; }
+
+    .container { max-width: 820px; margin: 0 auto; padding: 32px 20px; }
+    .back { color: #8b949e; font-size: 0.85rem; display: inline-block; margin-bottom: 20px; }
+    .back:hover { color: #58a6ff; }
+
+    h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .subtitle { color: #8b949e; font-size: 0.95rem; margin-bottom: 32px; }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title { font-size: 0.78rem; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    label { display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 6px; }
+    input, select {
+      width: 100%; padding: 10px 12px;
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+      color: #e6edf3; font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { outline: none; border-color: #58a6ff; }
+
+    .info-row {
+      display: flex; gap: 8px; align-items: flex-start; margin-top: 12px;
+      background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px;
+      font-size: 0.83rem; color: #8b949e;
+    }
+
+    .result-hero {
+      text-align: center; padding: 28px 20px;
+      background: linear-gradient(135deg, #1f3d5c, #162032);
+      border: 1px solid #2d5a8e; border-radius: 12px; margin-bottom: 20px;
+    }
+    .result-hero .label { color: #8b949e; font-size: 0.85rem; margin-bottom: 4px; }
+    .result-hero .amount { font-size: 2.8rem; font-weight: 700; color: #58a6ff; letter-spacing: -1px; }
+    .result-hero .sublabel { color: #8b949e; font-size: 0.85rem; margin-top: 6px; }
+
+    .age-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .age-grid { grid-template-columns: 1fr; } }
+
+    .age-card {
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+      padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s;
+    }
+    .age-card:hover { border-color: #58a6ff; }
+    .age-card.active { background: #1f3d5c; border-color: #58a6ff; }
+    .age-card.best { border-color: #3fb950; }
+    .age-card.best.active { background: #1a2a1a; border-color: #3fb950; }
+    .age-card .age-label { font-size: 0.78rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .age-card .age-benefit { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+    .age-card .age-pct { font-size: 0.8rem; font-weight: 500; }
+    .age-card .age-note { font-size: 0.75rem; color: #8b949e; margin-top: 6px; }
+
+    .best-badge {
+      display: inline-block; font-size: 0.68rem;
+      background: rgba(63,185,80,0.15); color: #3fb950;
+      border: 1px solid rgba(63,185,80,0.3); border-radius: 4px;
+      padding: 2px 6px; margin-top: 4px;
+    }
+
+    .breakeven-card {
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+      padding: 20px; margin-bottom: 20px;
+    }
+    .breakeven-card .bc-title { font-size: 0.78rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+    .breakeven-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #21262d;
+    }
+    .breakeven-row:last-child { border-bottom: none; }
+    .br-label { font-size: 0.88rem; }
+    .br-val { font-size: 0.88rem; font-weight: 600; color: #58a6ff; }
+
+    .lifetime-card {
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+      padding: 20px; margin-bottom: 20px;
+    }
+    .lifetime-card .lc-title { font-size: 0.78rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+    .lt-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #21262d;
+    }
+    .lt-row:last-child { border-bottom: none; }
+    .lt-label { font-size: 0.9rem; }
+    .lt-val { font-size: 0.9rem; font-weight: 600; }
+
+    .strategy-note {
+      background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+      padding: 16px 18px; margin-bottom: 20px;
+    }
+    .strategy-note .sn-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: #e6edf3; }
+    .strategy-note p { font-size: 0.85rem; color: #8b949e; line-height: 1.6; }
+
+    .faq { margin-top: 40px; }
+    .faq h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-item h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+    .faq-item p { font-size: 0.88rem; color: #8b949e; line-height: 1.6; }
+
+    .coffee {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #21262d; border: 1px solid #30363d; border-radius: 24px;
+      padding: 10px 16px; font-size: 0.85rem; color: #e6edf3;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+    .coffee:hover { background: #2d333b; border-color: #58a6ff; text-decoration: none; }
+
+    footer {
+      margin-top: 60px; padding-top: 20px; border-top: 1px solid #21262d;
+      font-size: 0.8rem; color: #8b949e; text-align: center;
+    }
+
+    .green { color: #3fb950; }
+    .yellow { color: #d29922; }
+    .red { color: #f85149; }
+    .blue { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/profiterole-blog/"><span>Profiterole</span></a>
+  <span style="color:#30363d">|</span>
+  <a href="/profiterole-blog/finance/" style="color:#8b949e;font-size:0.9rem;">Finance Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back">← All Calculators</a>
+
+  <h1>Social Security Benefit Estimator</h1>
+  <p class="subtitle">See how your claiming age affects your monthly benefit — and your total lifetime payout.</p>
+
+  <div class="card">
+    <div class="card-title">Your Information</div>
+    <div class="grid-2">
+      <div>
+        <label>Current Age</label>
+        <input type="number" id="currentAge" value="55" min="30" max="69">
+      </div>
+      <div>
+        <label>Current Annual Earnings ($)</label>
+        <input type="number" id="annualEarnings" value="75000" min="0" step="1000">
+      </div>
+      <div>
+        <label>Average Past Earnings ($) <span style="color:#8b949e;font-size:0.8rem;">over your career</span></label>
+        <input type="number" id="avgEarnings" value="65000" min="0" step="1000">
+      </div>
+      <div>
+        <label>Life Expectancy</label>
+        <select id="lifeExp">
+          <option value="75">75 years (below average)</option>
+          <option value="80" selected>80 years (average)</option>
+          <option value="85">85 years (above average)</option>
+          <option value="90">90 years (long life)</option>
+        </select>
+      </div>
+    </div>
+    <div class="info-row">
+      ℹ️ This calculator estimates your benefit based on the SSA's 2024 benefit formula (AIME → PIA calculation). For your actual benefit, use the SSA's official my Social Security tool at ssa.gov.
+    </div>
+  </div>
+
+  <!-- PIA / FRA display -->
+  <div class="card" style="padding:16px 24px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div class="card-title" style="margin-bottom:4px;">Full Retirement Age (FRA)</div>
+        <div style="font-size:1.1rem;font-weight:700;" id="fraDisplay">67</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="card-title" style="margin-bottom:4px;">Primary Insurance Amount (PIA)</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#58a6ff;" id="piaDisplay">$0/mo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Age comparison cards -->
+  <div class="age-grid" id="ageGrid">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- Breakeven analysis -->
+  <div class="breakeven-card">
+    <div class="bc-title">Break-Even Ages</div>
+    <div class="breakeven-row">
+      <span class="br-label">Claiming 67 vs 62: break-even age</span>
+      <span class="br-val" id="be6267">Age 0</span>
+    </div>
+    <div class="breakeven-row">
+      <span class="br-label">Claiming 70 vs 67: break-even age</span>
+      <span class="br-val" id="be6770">Age 0</span>
+    </div>
+    <div class="breakeven-row">
+      <span class="br-label">Claiming 70 vs 62: break-even age</span>
+      <span class="br-val" id="be6270">Age 0</span>
+    </div>
+  </div>
+
+  <!-- Lifetime totals -->
+  <div class="lifetime-card">
+    <div class="lc-title">Estimated Lifetime Benefits (to life expectancy)</div>
+    <div class="lt-row">
+      <span class="lt-label">Claim at 62</span>
+      <span class="lt-val" id="lt62">$0</span>
+    </div>
+    <div class="lt-row">
+      <span class="lt-label">Claim at 67 (FRA)</span>
+      <span class="lt-val" id="lt67">$0</span>
+    </div>
+    <div class="lt-row">
+      <span class="lt-label">Claim at 70</span>
+      <span class="lt-val" id="lt70">$0</span>
+    </div>
+    <div class="lt-row" style="font-weight:600;border-top:1px solid #30363d;margin-top:4px;padding-top:14px;">
+      <span class="lt-label">Best option for your life expectancy</span>
+      <span class="lt-val green" id="ltBest">—</span>
+    </div>
+  </div>
+
+  <div class="strategy-note">
+    <div class="sn-title">The Claiming Age Decision in Plain English</div>
+    <p>Claiming early means more checks but smaller ones. Claiming late means fewer checks but larger ones. The break-even age tells you when the cumulative total flips — if you live past that age, the later claim wins.</p>
+    <p style="margin-top:8px;">For most people: if you're healthy and have other income to live on until 70, waiting is mathematically better. If you need the money or have health concerns, claiming earlier makes sense. There's no universally "right" answer.</p>
+  </div>
+
+  <div class="faq">
+    <h2>Social Security: Key Facts</h2>
+    <div class="faq-item">
+      <h3>What is my Full Retirement Age (FRA)?</h3>
+      <p>Your FRA depends on your birth year. If you were born in 1943–1954, FRA is 66. Born 1955–1959, it phases up from 66+2 months to 66+10 months. Born 1960 or later, FRA is 67. This calculator uses 67 for most workers.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How much do I lose by claiming at 62?</h3>
+      <p>Claiming 5 years early (at 62 vs 67) permanently reduces your benefit by about 30%. If your FRA benefit is $2,000/month, claiming at 62 gives you roughly $1,400/month — for the rest of your life. The reduction is permanent and doesn't go away once you reach FRA.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How much do I gain by waiting until 70?</h3>
+      <p>Each year you delay past FRA, your benefit grows by 8% (called "delayed retirement credits"). Waiting from 67 to 70 increases your benefit by 24%. If your FRA benefit is $2,000/month, claiming at 70 gives you $2,480/month.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How does the SSA actually calculate benefits?</h3>
+      <p>The SSA takes your highest 35 years of earnings (indexed for inflation), averages them (this is your AIME — Average Indexed Monthly Earnings), then applies a progressive formula called "bend points" to get your PIA (Primary Insurance Amount). The first ~$1,174/month of AIME is replaced at 90%, the next ~$5,904 at 32%, and anything above at 15%. This formula intentionally benefits lower earners.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Are Social Security benefits taxable?</h3>
+      <p>Up to 85% of Social Security benefits may be taxable if your combined income (adjusted gross income + non-taxable interest + half of SS benefits) exceeds $34,000 (single) or $44,000 (married). For lower incomes, 50% or 0% may be taxable.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Estimates only — based on 2024 SSA bend points. Your actual benefit depends on your complete earnings history. Visit ssa.gov for official estimates.</p>
+    <p style="margin-top:8px;"><a href="/profiterole-blog/finance/">← All Finance Calculators</a> · <a href="/profiterole-blog/">Profiterole</a></p>
+  </footer>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee">☕ Buy me a coffee</a>
+
+<script>
+  // 2024 SSA bend points (monthly AIME)
+  const BEND1 = 1174; // 90% bracket up to here
+  const BEND2 = 7078; // 32% bracket up to here
+  // above BEND2: 15%
+
+  function calcAIME(avgAnnual) {
+    // AIME = avg annual / 12 (simplified — real formula uses 35-year indexed average)
+    return avgAnnual / 12;
+  }
+
+  function calcPIA(aime) {
+    let pia = 0;
+    if (aime <= BEND1) {
+      pia = aime * 0.90;
+    } else if (aime <= BEND2) {
+      pia = BEND1 * 0.90 + (aime - BEND1) * 0.32;
+    } else {
+      pia = BEND1 * 0.90 + (BEND2 - BEND1) * 0.32 + (aime - BEND2) * 0.15;
+    }
+    return Math.round(pia * 10) / 10;
+  }
+
+  // Reduction/increase factors
+  function benefitAtAge(pia, claimAge) {
+    // FRA = 67
+    const fraAge = 67;
+    if (claimAge === 62) {
+      // 30% reduction (5 years early)
+      return Math.round(pia * 0.70 * 10) / 10;
+    } else if (claimAge === 63) {
+      return Math.round(pia * 0.75 * 10) / 10;
+    } else if (claimAge === 64) {
+      return Math.round(pia * 0.80 * 10) / 10;
+    } else if (claimAge === 65) {
+      return Math.round(pia * 0.867 * 10) / 10;
+    } else if (claimAge === 66) {
+      return Math.round(pia * 0.933 * 10) / 10;
+    } else if (claimAge === fraAge) {
+      return pia;
+    } else if (claimAge === 68) {
+      return Math.round(pia * 1.08 * 10) / 10;
+    } else if (claimAge === 69) {
+      return Math.round(pia * 1.16 * 10) / 10;
+    } else if (claimAge === 70) {
+      return Math.round(pia * 1.24 * 10) / 10;
+    }
+    return pia;
+  }
+
+  function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+  function fmtMo(n) { return '$' + Math.round(n).toLocaleString() + '/mo'; }
+
+  function lifetimeTotal(monthly, claimAge, lifeExp) {
+    const months = Math.max(0, (lifeExp - claimAge) * 12);
+    return monthly * months;
+  }
+
+  function breakevenAge(monthly1, age1, monthly2, age2) {
+    // Find age where cumulative benefit from age2 surpasses age1
+    // Assume both start paying from their respective claim ages
+    // Both are compared from a common reference point (earlier age)
+    const startAge = Math.min(age1, age2);
+    // At each age past max(age1,age2), compare cumulative totals
+    for (let age = age2; age <= 100; age++) {
+      const months1 = (age - age1) * 12;
+      const months2 = (age - age2) * 12;
+      const total1 = monthly1 * months1;
+      const total2 = monthly2 * months2;
+      if (total2 >= total1) return age;
+    }
+    return null;
+  }
+
+  let selectedAge = 67;
+
+  function setAge(age) {
+    selectedAge = age;
+    calculate();
+  }
+
+  function calculate() {
+    const currentAge = parseInt(document.getElementById('currentAge').value) || 55;
+    const avgEarnings = parseFloat(document.getElementById('avgEarnings').value) || 65000;
+    const lifeExp = parseInt(document.getElementById('lifeExp').value) || 80;
+
+    const aime = calcAIME(avgEarnings);
+    const pia = calcPIA(aime);
+
+    const b62 = benefitAtAge(pia, 62);
+    const b67 = benefitAtAge(pia, 67);
+    const b70 = benefitAtAge(pia, 70);
+
+    document.getElementById('piaDisplay').textContent = fmtMo(pia);
+
+    // Lifetime totals
+    const lt62 = lifetimeTotal(b62, 62, lifeExp);
+    const lt67 = lifetimeTotal(b67, 67, lifeExp);
+    const lt70 = lifetimeTotal(b70, 70, lifeExp);
+
+    document.getElementById('lt62').textContent = fmt(lt62);
+    document.getElementById('lt67').textContent = fmt(lt67);
+    document.getElementById('lt70').textContent = fmt(lt70);
+
+    const maxLT = Math.max(lt62, lt67, lt70);
+    let bestAge = lt70 === maxLT ? '70' : lt67 === maxLT ? '67 (FRA)' : '62';
+    document.getElementById('ltBest').textContent = 'Claim at ' + bestAge + ' — ' + fmt(maxLT) + ' lifetime';
+
+    // Breakeven ages
+    const be6267 = breakevenAge(b62, 62, b67, 67);
+    const be6770 = breakevenAge(b67, 67, b70, 70);
+    const be6270 = breakevenAge(b62, 62, b70, 70);
+
+    document.getElementById('be6267').textContent = be6267 ? 'Age ' + be6267 : 'Never';
+    document.getElementById('be6770').textContent = be6770 ? 'Age ' + be6770 : 'Never';
+    document.getElementById('be6270').textContent = be6270 ? 'Age ' + be6270 : 'Never';
+
+    // Age cards
+    const ages = [
+      { age: 62, benefit: b62, pct: '70%', label: 'Early (62)', color: '#f85149', note: 'Permanent 30% reduction' },
+      { age: 67, benefit: b67, pct: '100%', label: 'Full (67)', color: '#58a6ff', note: 'Full Retirement Age' },
+      { age: 70, benefit: b70, pct: '124%', label: 'Delayed (70)', color: '#3fb950', note: '+24% vs FRA' }
+    ];
+
+    const ltArr = [lt62, lt67, lt70];
+    const bestLTIdx = ltArr.indexOf(Math.max(...ltArr));
+
+    document.getElementById('ageGrid').innerHTML = ages.map((a, i) => {
+      const isBest = i === bestLTIdx;
+      const isActive = selectedAge === a.age;
+      return `<div class="age-card ${isActive ? 'active' : ''} ${isBest ? 'best' : ''}" onclick="setAge(${a.age})">
+        <div class="age-label">${a.label}</div>
+        <div class="age-benefit" style="color:${a.color}">${fmtMo(a.benefit)}</div>
+        <div class="age-pct" style="color:${a.color}">${a.pct} of PIA</div>
+        <div class="age-note">${a.note}</div>
+        ${isBest ? '<div class="best-badge">Best for your life expectancy</div>' : ''}
+      </div>`;
+    }).join('');
+  }
+
+  ['currentAge','annualEarnings','avgEarnings','lifeExp'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculate);
+  });
+
+  calculate();
+</script>
+</body>
+</html>
