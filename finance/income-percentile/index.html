@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Income Percentile Calculator — Where Does Your Salary Rank?</title>
+  <meta name="description" content="Find out what income percentile you're in. See how your salary compares to all Americans. Based on US Census Bureau data. Free, instant, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/income-percentile/">
+  <meta property="og:title" content="US Income Percentile Calculator — Where Does Your Salary Rank?">
+  <meta property="og:description" content="Find out what income percentile you're in. Based on US Census Bureau data.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/income-percentile/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"], select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+    }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn { margin-top: 20px; background: var(--accent); color: #0d1117; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600; padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%; }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+    .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-card.primary { border-color: var(--green); box-shadow: 0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 8px; }
+    .result-value { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .result-card.primary .result-value { font-size: 1.9rem; color: var(--green); }
+    .percentile-bar { margin: 24px 0; }
+    .bar-label { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .bar-track { background: var(--border); border-radius: 999px; height: 12px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1f6feb, var(--green)); transition: width 0.6s ease; }
+    .context-text { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+    .context-text strong { color: var(--text); }
+    .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg); }
+    th { padding: 10px 14px; text-align: right; color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th:first-child { text-align: left; }
+    td { padding: 9px 14px; text-align: right; border-bottom: 1px solid rgba(48,54,61,0.5); color: var(--text); font-variant-numeric: tabular-nums; }
+    td:first-child { text-align: left; color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    tr.highlight td { background: rgba(63,185,80,0.07); color: var(--green); }
+    tr.highlight td:first-child { color: var(--green); }
+    tr:hover td { background: rgba(88,166,255,0.04); }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.2s; z-index: 100; }
+    .coffee-float:hover { border-color: var(--accent); text-decoration: none; color: var(--text); }
+    .related { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+    .related a { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 0.88rem; color: var(--text); transition: border-color 0.15s; }
+    .related a:hover { border-color: var(--accent); text-decoration: none; }
+    .related a span { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link" style="margin-bottom:16px;display:inline-flex;">&#8592; All Calculators</a>
+  <h1 class="page-title">US Income Percentile Calculator</h1>
+  <p class="page-subtitle">Find out how your income compares to all Americans. Based on US Census Bureau Current Population Survey 2023.</p>
+
+  <div class="card">
+    <div class="card-title">Your Income</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="income">Annual Income ($)</label>
+        <input type="number" id="income" placeholder="75000" min="0" step="1000">
+        <span class="field-hint">Pre-tax gross income from all sources</span>
+      </div>
+      <div class="field">
+        <label for="income-type">Compare As</label>
+        <select id="income-type">
+          <option value="individual">Individual earner</option>
+          <option value="household">Household income</option>
+        </select>
+        <span class="field-hint">Individual vs all household members</span>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate My Percentile</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Your Result</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Your Percentile</div>
+          <div class="result-value" id="r-percentile">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Earns More Than</div>
+          <div class="result-value" id="r-richer">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Income Bracket</div>
+          <div class="result-value" id="r-bracket">—</div>
+        </div>
+      </div>
+      <div class="percentile-bar">
+        <div class="bar-label"><span>$0</span><span id="bar-your-label">Your income</span><span>Top 1%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+      </div>
+      <p class="context-text" id="r-context"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">US Income Distribution (Census Bureau CPS 2023)</div>
+      <div class="table-wrapper">
+        <table id="dist-table">
+          <thead>
+            <tr>
+              <th>Percentile Range</th>
+              <th>Min Income</th>
+              <th>Max Income</th>
+              <th>Median in Range</th>
+            </tr>
+          </thead>
+          <tbody id="dist-tbody"></tbody>
+        </table>
+      </div>
+      <p class="note">Data: US Census Bureau Current Population Survey 2023. Individual = full-time workers aged 15+.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Related Calculators</div>
+    <div class="related">
+      <a href="/profiterole-blog/finance/wealth-percentile/">Wealth Percentile<span>Where does your net worth rank?</span></a>
+      <a href="/profiterole-blog/finance/tax-bracket/">Tax Bracket<span>Effective tax rate calculator</span></a>
+      <a href="/profiterole-blog/finance/salary-comparison/">Salary Comparison<span>Compare job offers</span></a>
+      <a href="/profiterole-blog/finance/gross-net-calculator/">Gross to Net Pay<span>Take-home pay estimator</span></a>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-float" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+
+<script>
+// Census Bureau CPS 2023 individual earner income percentiles (approximate)
+const INDIVIDUAL = [
+  { label: 'Bottom 10%', min: 0, max: 10000, median: 5000, pct: 5 },
+  { label: '10th–20th', min: 10000, max: 18000, median: 14000, pct: 15 },
+  { label: '20th–30th', min: 18000, max: 25000, median: 21500, pct: 25 },
+  { label: '30th–40th', min: 25000, max: 33000, median: 29000, pct: 35 },
+  { label: '40th–50th', min: 33000, max: 43000, median: 38000, pct: 45 },
+  { label: '50th–60th', min: 43000, max: 55000, median: 49000, pct: 55 },
+  { label: '60th–70th', min: 55000, max: 70000, median: 62000, pct: 65 },
+  { label: '70th–80th', min: 70000, max: 95000, median: 82000, pct: 75 },
+  { label: '80th–90th', min: 95000, max: 140000, median: 115000, pct: 85 },
+  { label: '90th–95th', min: 140000, max: 200000, median: 165000, pct: 92.5 },
+  { label: '95th–99th', min: 200000, max: 500000, median: 300000, pct: 97 },
+  { label: 'Top 1%', min: 500000, max: Infinity, median: 1000000, pct: 99.5 },
+];
+
+// Household income percentiles
+const HOUSEHOLD = [
+  { label: 'Bottom 10%', min: 0, max: 15000, median: 8000, pct: 5 },
+  { label: '10th–20th', min: 15000, max: 28000, median: 21000, pct: 15 },
+  { label: '20th–30th', min: 28000, max: 40000, median: 34000, pct: 25 },
+  { label: '30th–40th', min: 40000, max: 52000, median: 46000, pct: 35 },
+  { label: '40th–50th', min: 52000, max: 65000, median: 58500, pct: 45 },
+  { label: '50th–60th', min: 65000, max: 82000, median: 73000, pct: 55 },
+  { label: '60th–70th', min: 82000, max: 104000, median: 93000, pct: 65 },
+  { label: '70th–80th', min: 104000, max: 138000, median: 120000, pct: 75 },
+  { label: '80th–90th', min: 138000, max: 206000, median: 168000, pct: 85 },
+  { label: '90th–95th', min: 206000, max: 310000, median: 253000, pct: 92.5 },
+  { label: '95th–99th', min: 310000, max: 750000, median: 488000, pct: 97 },
+  { label: 'Top 1%', min: 750000, max: Infinity, median: 1500000, pct: 99.5 },
+];
+
+function fmt(n) {
+  if (!isFinite(n)) return n < 0 ? '–∞' : '∞';
+  if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+  if (Math.abs(n) >= 1e3) return '$' + Math.round(n/1e3) + 'K';
+  return '$' + n.toLocaleString();
+}
+
+function interpolate(income, brackets) {
+  for (let i = 0; i < brackets.length; i++) {
+    const b = brackets[i];
+    if (income < b.max || i === brackets.length - 1) {
+      const prev = i === 0 ? 0 : brackets[i-1].pct;
+      const prevMin = b.min;
+      const range = b.max === Infinity ? b.min : b.max - prevMin;
+      const pos = Math.max(0, Math.min(1, (income - prevMin) / (range || 1)));
+      return Math.min(99.9, prev + pos * (b.pct - prev));
+    }
+  }
+  return 99.9;
+}
+
+function getBracket(income, brackets) {
+  for (let i = 0; i < brackets.length; i++) {
+    if (income < brackets[i].max || i === brackets.length - 1) return brackets[i];
+  }
+  return brackets[brackets.length - 1];
+}
+
+function calculate() {
+  const income = parseFloat(document.getElementById('income').value);
+  const type = document.getElementById('income-type').value;
+  if (isNaN(income) || income < 0) { alert('Please enter a valid income.'); return; }
+
+  const brackets = type === 'individual' ? INDIVIDUAL : HOUSEHOLD;
+  const pct = interpolate(income, brackets);
+  const bracket = getBracket(income, brackets);
+  const typeLabel = type === 'individual' ? 'individual earners' : 'US households';
+
+  document.getElementById('r-percentile').textContent = pct.toFixed(1) + 'th';
+  document.getElementById('r-richer').textContent = pct.toFixed(0) + '%';
+  document.getElementById('r-bracket').textContent = bracket.label;
+  document.getElementById('bar-fill').style.width = Math.min(100, pct) + '%';
+  document.getElementById('bar-your-label').textContent = fmt(income);
+
+  let context = '';
+  if (pct >= 99) context = `You're in the <strong>top 1%</strong> of ${typeLabel} — a remarkably high earner by any measure.`;
+  else if (pct >= 90) context = `You're in the <strong>top 10%</strong> of ${typeLabel}, earning more than ${pct.toFixed(0)}% of Americans.`;
+  else if (pct >= 75) context = `You're in the <strong>top 25%</strong> of ${typeLabel}, comfortably above average.`;
+  else if (pct >= 50) context = `You're <strong>above the median</strong> for ${typeLabel}, earning more than ${pct.toFixed(0)}% of Americans.`;
+  else if (pct >= 25) context = `You're <strong>below the median</strong> for ${typeLabel}, earning more than ${pct.toFixed(0)}% of Americans.`;
+  else context = `You're in the bottom 25% for ${typeLabel}. Many people in this range are early in their careers or working part-time.`;
+  document.getElementById('r-context').innerHTML = context;
+
+  const tbody = document.getElementById('dist-tbody');
+  tbody.innerHTML = '';
+  brackets.forEach(b => {
+    const tr = document.createElement('tr');
+    if (b === bracket) tr.className = 'highlight';
+    tr.innerHTML = `<td>${b.label}</td><td>${fmt(b.min)}</td><td>${b.max === Infinity ? 'No limit' : fmt(b.max)}</td><td>${fmt(b.median)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('income').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

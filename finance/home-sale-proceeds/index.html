@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Sale Proceeds Calculator — How Much Will You Make?</title>
+  <meta name="description" content="Calculate your net proceeds from selling a home. Accounts for realtor commission, closing costs, mortgage payoff, and repairs. Free, instant, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/home-sale-proceeds/">
+  <meta property="og:title" content="Home Sale Proceeds Calculator — How Much Will You Make?">
+  <meta property="og:description" content="Calculate net proceeds from selling your home after commission, closing costs, and mortgage payoff.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/home-sale-proceeds/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950; --red: #f85149;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"], input[type="text"] {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn { margin-top: 20px; background: var(--accent); color: #0d1117; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600; padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%; }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .result-hero { background: var(--bg); border: 1px solid var(--green); border-radius: 10px; padding: 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 0 0 1px rgba(63,185,80,0.1); }
+    .result-hero-label { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 8px; }
+    .result-hero-value { font-size: 3rem; font-weight: 800; letter-spacing: -1px; }
+    .result-hero-value.positive { color: var(--green); }
+    .result-hero-value.negative { color: var(--red); }
+    .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,0.5); font-size: 0.9rem; }
+    .breakdown-row:last-child { border-bottom: none; font-weight: 700; font-size: 0.95rem; }
+    .breakdown-row.total { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 14px; }
+    .breakdown-label { color: var(--muted); }
+    .breakdown-value { font-variant-numeric: tabular-nums; }
+    .breakdown-value.negative { color: var(--red); }
+    .breakdown-value.positive { color: var(--green); }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.2s; z-index: 100; }
+    .coffee-float:hover { border-color: var(--accent); text-decoration: none; color: var(--text); }
+    .related { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+    .related a { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 0.88rem; color: var(--text); transition: border-color 0.15s; }
+    .related a:hover { border-color: var(--accent); text-decoration: none; }
+    .related a span { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link" style="margin-bottom:16px;display:inline-flex;">&#8592; All Calculators</a>
+  <h1 class="page-title">Home Sale Proceeds Calculator</h1>
+  <p class="page-subtitle">See exactly how much money you'll walk away with after selling your home — after commission, closing costs, and paying off your mortgage.</p>
+
+  <div class="card">
+    <div class="card-title">Sale Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="sale-price">Sale Price ($)</label>
+        <input type="number" id="sale-price" placeholder="450000" min="0" step="1000">
+      </div>
+      <div class="field">
+        <label for="mortgage-balance">Remaining Mortgage ($)</label>
+        <input type="number" id="mortgage-balance" placeholder="280000" min="0" step="1000">
+        <span class="field-hint">Enter 0 if you own outright</span>
+      </div>
+      <div class="field">
+        <label for="agent-commission">Agent Commission (%)</label>
+        <input type="number" id="agent-commission" value="5.5" min="0" max="10" step="0.1">
+        <span class="field-hint">Typically 5–6% split between both agents</span>
+      </div>
+      <div class="field">
+        <label for="closing-costs">Seller Closing Costs (%)</label>
+        <input type="number" id="closing-costs" value="1.5" min="0" max="5" step="0.1">
+        <span class="field-hint">Transfer taxes, title, attorney, etc.</span>
+      </div>
+      <div class="field">
+        <label for="repairs">Pre-Sale Repairs ($)</label>
+        <input type="number" id="repairs" value="0" min="0" step="500">
+        <span class="field-hint">Staging, repairs, and improvements</span>
+      </div>
+      <div class="field">
+        <label for="moving-costs">Moving Costs ($)</label>
+        <input type="number" id="moving-costs" value="0" min="0" step="100">
+        <span class="field-hint">Optional: cost to move out</span>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Net Proceeds</button>
+  </div>
+
+  <div id="results">
+    <div class="result-hero">
+      <div class="result-hero-label">Net Proceeds (Cash in Hand)</div>
+      <div class="result-hero-value" id="r-net">—</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Breakdown</div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Sale price</span>
+        <span class="breakdown-value positive" id="b-sale">—</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Agent commission</span>
+        <span class="breakdown-value negative" id="b-commission">—</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Seller closing costs</span>
+        <span class="breakdown-value negative" id="b-closing">—</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Mortgage payoff</span>
+        <span class="breakdown-value negative" id="b-mortgage">—</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Pre-sale repairs</span>
+        <span class="breakdown-value negative" id="b-repairs">—</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Moving costs</span>
+        <span class="breakdown-value negative" id="b-moving">—</span>
+      </div>
+      <div class="breakdown-row total">
+        <span class="breakdown-label">Net proceeds</span>
+        <span class="breakdown-value" id="b-net">—</span>
+      </div>
+      <p class="note">Note: This does not include capital gains tax, which may apply if profit exceeds $250K (single) or $500K (married filing jointly) on a primary residence.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Related Calculators</div>
+    <div class="related">
+      <a href="/profiterole-blog/finance/mortgage-calculator/">Mortgage Calculator<span>Monthly payment estimator</span></a>
+      <a href="/profiterole-blog/finance/rent-vs-buy/">Rent vs Buy<span>Is buying worth it?</span></a>
+      <a href="/profiterole-blog/finance/home-equity/">Home Equity<span>Track your equity</span></a>
+      <a href="/profiterole-blog/finance/capital-gains/">Capital Gains Tax<span>Estimate your tax bill</span></a>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-float" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+
+<script>
+function fmt(n, forceSign) {
+  const s = '$' + Math.abs(Math.round(n)).toLocaleString();
+  if (forceSign) return n >= 0 ? '+' + s : '−' + s;
+  return n >= 0 ? s : '−' + s;
+}
+
+function setBreakdown(id, value, isDeduction) {
+  const el = document.getElementById(id);
+  if (isDeduction && value > 0) {
+    el.textContent = '−$' + Math.round(value).toLocaleString();
+    el.className = 'breakdown-value negative';
+  } else if (!isDeduction) {
+    el.textContent = '+$' + Math.round(value).toLocaleString();
+    el.className = 'breakdown-value positive';
+  } else {
+    el.textContent = '$0';
+    el.className = 'breakdown-value';
+  }
+}
+
+function calculate() {
+  const salePrice = parseFloat(document.getElementById('sale-price').value) || 0;
+  const mortgage = parseFloat(document.getElementById('mortgage-balance').value) || 0;
+  const commission = parseFloat(document.getElementById('agent-commission').value) || 0;
+  const closing = parseFloat(document.getElementById('closing-costs').value) || 0;
+  const repairs = parseFloat(document.getElementById('repairs').value) || 0;
+  const moving = parseFloat(document.getElementById('moving-costs').value) || 0;
+
+  if (salePrice <= 0) { alert('Please enter a sale price.'); return; }
+
+  const commissionAmt = salePrice * (commission / 100);
+  const closingAmt = salePrice * (closing / 100);
+  const net = salePrice - commissionAmt - closingAmt - mortgage - repairs - moving;
+
+  const netEl = document.getElementById('r-net');
+  netEl.textContent = (net >= 0 ? '+' : '−') + '$' + Math.abs(Math.round(net)).toLocaleString();
+  netEl.className = 'result-hero-value ' + (net >= 0 ? 'positive' : 'negative');
+
+  setBreakdown('b-sale', salePrice, false);
+  setBreakdown('b-commission', commissionAmt, true);
+  setBreakdown('b-closing', closingAmt, true);
+  setBreakdown('b-mortgage', mortgage, true);
+  setBreakdown('b-repairs', repairs, true);
+  setBreakdown('b-moving', moving, true);
+
+  const bNet = document.getElementById('b-net');
+  bNet.textContent = (net >= 0 ? '+' : '−') + '$' + Math.abs(Math.round(net)).toLocaleString();
+  bNet.className = 'breakdown-value ' + (net >= 0 ? 'positive' : 'negative');
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('sale-price').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

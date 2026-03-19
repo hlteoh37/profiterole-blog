@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Wealth Percentile Calculator — Where Do You Rank?</title>
+  <meta name="description" content="Find out your net worth percentile in the United States. See where you rank compared to all Americans. Free, instant, no signup required.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/wealth-percentile/">
+  <meta property="og:title" content="US Wealth Percentile Calculator — Where Do You Rank?">
+  <meta property="og:description" content="Find out your net worth percentile in the United States. Based on Federal Reserve data.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/wealth-percentile/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="US Wealth Percentile Calculator — Where Do You Rank?">
+  <meta name="twitter:description" content="Find out your net worth percentile in the United States. Based on Federal Reserve data.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"], select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+    }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn { margin-top: 20px; background: var(--accent); color: #0d1117; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600; padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%; }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+    .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-card.primary { border-color: var(--green); box-shadow: 0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 8px; }
+    .result-value { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .result-card.primary .result-value { font-size: 1.9rem; color: var(--green); }
+    .percentile-bar { margin: 24px 0; }
+    .bar-label { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .bar-track { background: var(--border); border-radius: 999px; height: 12px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1f6feb, var(--green)); transition: width 0.6s ease; }
+    .context-text { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+    .context-text strong { color: var(--text); }
+    .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg); }
+    th { padding: 10px 14px; text-align: right; color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th:first-child { text-align: left; }
+    td { padding: 9px 14px; text-align: right; border-bottom: 1px solid rgba(48,54,61,0.5); color: var(--text); font-variant-numeric: tabular-nums; }
+    td:first-child { text-align: left; color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    tr.highlight td { background: rgba(63,185,80,0.07); color: var(--green); }
+    tr.highlight td:first-child { color: var(--green); }
+    tr:hover td { background: rgba(88,166,255,0.04); }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.2s; z-index: 100; }
+    .coffee-float:hover { border-color: var(--accent); text-decoration: none; color: var(--text); }
+    .related { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+    .related a { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 0.88rem; color: var(--text); transition: border-color 0.15s; }
+    .related a:hover { border-color: var(--accent); text-decoration: none; }
+    .related a span { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link" style="margin-bottom:16px;display:inline-flex;">&#8592; All Calculators</a>
+  <h1 class="page-title">US Wealth Percentile Calculator</h1>
+  <p class="page-subtitle">See where your net worth ranks compared to all Americans. Based on Federal Reserve Survey of Consumer Finances (2022).</p>
+
+  <div class="card">
+    <div class="card-title">Your Net Worth</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="networth">Net Worth ($)</label>
+        <input type="number" id="networth" placeholder="500000" min="-10000000" step="1000">
+        <span class="field-hint">Assets minus all debts. Can be negative.</span>
+      </div>
+      <div class="field">
+        <label for="age-group">Age Group</label>
+        <select id="age-group">
+          <option value="all">All ages (combined)</option>
+          <option value="under35">Under 35</option>
+          <option value="35-44">35–44</option>
+          <option value="45-54">45–54</option>
+          <option value="55-64">55–64</option>
+          <option value="65plus">65+</option>
+        </select>
+        <span class="field-hint">Age-adjusted comparison</span>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate My Percentile</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Your Result</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Your Percentile</div>
+          <div class="result-value" id="r-percentile">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Richer Than</div>
+          <div class="result-value" id="r-richer">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Bracket</div>
+          <div class="result-value" id="r-bracket">—</div>
+        </div>
+      </div>
+      <div class="percentile-bar">
+        <div class="bar-label"><span>$0</span><span id="bar-your-label">Your net worth</span><span>Top 1%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+      </div>
+      <p class="context-text" id="r-context"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">US Wealth Distribution (Federal Reserve SCF 2022)</div>
+      <div class="table-wrapper">
+        <table id="dist-table">
+          <thead>
+            <tr>
+              <th>Percentile</th>
+              <th>Min Net Worth</th>
+              <th>Max Net Worth</th>
+            </tr>
+          </thead>
+          <tbody id="dist-tbody"></tbody>
+        </table>
+      </div>
+      <p class="note">Data: Federal Reserve Survey of Consumer Finances 2022. Figures are household net worth.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Related Calculators</div>
+    <div class="related">
+      <a href="/profiterole-blog/finance/net-worth/">Net Worth Calculator<span>Track all assets & debts</span></a>
+      <a href="/profiterole-blog/finance/income-percentile/">Income Percentile<span>Where does your salary rank?</span></a>
+      <a href="/profiterole-blog/finance/fire-calculator/">FIRE Calculator<span>Early retirement number</span></a>
+      <a href="/profiterole-blog/finance/compound-interest/">Compound Interest<span>Grow your wealth</span></a>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-float" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+
+<script>
+// Federal Reserve SCF 2022 data (household net worth by percentile)
+const DATA = {
+  all: [
+    { label: 'Bottom 20%', min: -Infinity, max: 7838, pct: 10 },
+    { label: '20th–40th', min: 7838, max: 43760, pct: 30 },
+    { label: '40th–60th', min: 43760, max: 192700, pct: 50 },
+    { label: '60th–80th', min: 192700, max: 608900, pct: 70 },
+    { label: '80th–90th', min: 608900, max: 1580000, pct: 85 },
+    { label: '90th–95th', min: 1580000, max: 3220000, pct: 92.5 },
+    { label: '95th–99th', min: 3220000, max: 12500000, pct: 97 },
+    { label: 'Top 1%', min: 12500000, max: Infinity, pct: 99.5 },
+  ],
+  under35: [
+    { label: 'Bottom 20%', min: -Infinity, max: -12000, pct: 10 },
+    { label: '20th–40th', min: -12000, max: 4000, pct: 30 },
+    { label: '40th–60th', min: 4000, max: 39000, pct: 50 },
+    { label: '60th–80th', min: 39000, max: 132000, pct: 70 },
+    { label: '80th–90th', min: 132000, max: 319000, pct: 85 },
+    { label: '90th–95th', min: 319000, max: 691000, pct: 92.5 },
+    { label: '95th–99th', min: 691000, max: 2100000, pct: 97 },
+    { label: 'Top 1%', min: 2100000, max: Infinity, pct: 99.5 },
+  ],
+  '35-44': [
+    { label: 'Bottom 20%', min: -Infinity, max: -9000, pct: 10 },
+    { label: '20th–40th', min: -9000, max: 35000, pct: 30 },
+    { label: '40th–60th', min: 35000, max: 163000, pct: 50 },
+    { label: '60th–80th', min: 163000, max: 550000, pct: 70 },
+    { label: '80th–90th', min: 550000, max: 1200000, pct: 85 },
+    { label: '90th–95th', min: 1200000, max: 2500000, pct: 92.5 },
+    { label: '95th–99th', min: 2500000, max: 8000000, pct: 97 },
+    { label: 'Top 1%', min: 8000000, max: Infinity, pct: 99.5 },
+  ],
+  '45-54': [
+    { label: 'Bottom 20%', min: -Infinity, max: -3000, pct: 10 },
+    { label: '20th–40th', min: -3000, max: 60000, pct: 30 },
+    { label: '40th–60th', min: 60000, max: 280000, pct: 50 },
+    { label: '60th–80th', min: 280000, max: 890000, pct: 70 },
+    { label: '80th–90th', min: 890000, max: 2200000, pct: 85 },
+    { label: '90th–95th', min: 2200000, max: 4500000, pct: 92.5 },
+    { label: '95th–99th', min: 4500000, max: 14000000, pct: 97 },
+    { label: 'Top 1%', min: 14000000, max: Infinity, pct: 99.5 },
+  ],
+  '55-64': [
+    { label: 'Bottom 20%', min: -Infinity, max: 7000, pct: 10 },
+    { label: '20th–40th', min: 7000, max: 100000, pct: 30 },
+    { label: '40th–60th', min: 100000, max: 440000, pct: 50 },
+    { label: '60th–80th', min: 440000, max: 1200000, pct: 70 },
+    { label: '80th–90th', min: 1200000, max: 2800000, pct: 85 },
+    { label: '90th–95th', min: 2800000, max: 5500000, pct: 92.5 },
+    { label: '95th–99th', min: 5500000, max: 16000000, pct: 97 },
+    { label: 'Top 1%', min: 16000000, max: Infinity, pct: 99.5 },
+  ],
+  '65plus': [
+    { label: 'Bottom 20%', min: -Infinity, max: 11000, pct: 10 },
+    { label: '20th–40th', min: 11000, max: 93000, pct: 30 },
+    { label: '40th–60th', min: 93000, max: 373000, pct: 50 },
+    { label: '60th–80th', min: 373000, max: 1000000, pct: 70 },
+    { label: '80th–90th', min: 1000000, max: 2400000, pct: 85 },
+    { label: '90th–95th', min: 2400000, max: 5000000, pct: 92.5 },
+    { label: '95th–99th', min: 5000000, max: 15000000, pct: 97 },
+    { label: 'Top 1%', min: 15000000, max: Infinity, pct: 99.5 },
+  ],
+};
+
+function fmt(n) {
+  if (!isFinite(n)) return n < 0 ? '–∞' : '∞';
+  if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+  if (Math.abs(n) >= 1e3) return '$' + Math.round(n/1e3) + 'K';
+  return '$' + n.toLocaleString();
+}
+
+function interpolate(nw, brackets) {
+  for (let i = 0; i < brackets.length; i++) {
+    const b = brackets[i];
+    if (nw < b.max || i === brackets.length - 1) {
+      const prev = i === 0 ? 0 : brackets[i-1].pct;
+      const prevMax = i === 0 ? (b.min === -Infinity ? b.max - 100000 : b.min) : b.min;
+      const range = b.max === Infinity ? b.min * 2 : b.max - prevMax;
+      const pos = Math.max(0, Math.min(1, (nw - prevMax) / (range || 1)));
+      return Math.min(99.9, prev + pos * (b.pct - prev));
+    }
+  }
+  return 99.9;
+}
+
+function getBracket(nw, brackets) {
+  for (let i = 0; i < brackets.length; i++) {
+    if (nw < brackets[i].max || i === brackets.length - 1) return brackets[i];
+  }
+  return brackets[brackets.length - 1];
+}
+
+function calculate() {
+  const nw = parseFloat(document.getElementById('networth').value);
+  const ageKey = document.getElementById('age-group').value;
+  if (isNaN(nw)) { alert('Please enter your net worth.'); return; }
+
+  const brackets = DATA[ageKey];
+  const pct = interpolate(nw, brackets);
+  const bracket = getBracket(nw, brackets);
+
+  document.getElementById('r-percentile').textContent = pct.toFixed(1) + 'th';
+  document.getElementById('r-richer').textContent = pct.toFixed(1) + '%';
+  document.getElementById('r-bracket').textContent = bracket.label;
+  document.getElementById('bar-fill').style.width = Math.min(100, pct) + '%';
+  document.getElementById('bar-your-label').textContent = fmt(nw);
+
+  const ageLabel = ageKey === 'all' ? 'all US households' : 'US households aged ' + document.getElementById('age-group').options[document.getElementById('age-group').selectedIndex].text;
+  let context = '';
+  if (pct >= 99) context = `You're in the top 1% of ${ageLabel}. Exceptional wealth — you have more than <strong>99% of Americans</strong>.`;
+  else if (pct >= 90) context = `You're in the top 10% of ${ageLabel}, richer than <strong>${pct.toFixed(0)}% of Americans</strong> in your group.`;
+  else if (pct >= 75) context = `You're in the top 25% of ${ageLabel}, with more wealth than <strong>${pct.toFixed(0)}% of Americans</strong> in your group.`;
+  else if (pct >= 50) context = `You're above the median for ${ageLabel}, richer than <strong>${pct.toFixed(0)}% of Americans</strong> in your group.`;
+  else if (pct >= 25) context = `You're below the median for ${ageLabel}, with more wealth than <strong>${pct.toFixed(0)}% of Americans</strong> in your group.`;
+  else context = `You're in the bottom 25% for ${ageLabel}. Many people in this range are early in their careers or carrying significant debt — it's recoverable.`;
+  document.getElementById('r-context').innerHTML = context;
+
+  // Build table
+  const tbody = document.getElementById('dist-tbody');
+  tbody.innerHTML = '';
+  brackets.forEach(b => {
+    const tr = document.createElement('tr');
+    if (b === bracket) tr.className = 'highlight';
+    tr.innerHTML = `<td>${b.label}</td><td>${fmt(b.min)}</td><td>${b.max === Infinity ? 'No limit' : fmt(b.max)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('networth').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Affordability Calculator — How Much Car Can You Afford?</title>
+  <meta name="description" content="Find out how much car you can afford based on your income, down payment, and loan terms. Uses the 20/4/10 rule and true total cost. Free, instant, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/car-affordability/">
+  <meta property="og:title" content="Car Affordability Calculator — How Much Car Can You Afford?">
+  <meta property="og:description" content="How much car can you afford? Uses the 20/4/10 rule to give a financially sound answer.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/car-affordability/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"], select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+    }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn { margin-top: 20px; background: var(--accent); color: #0d1117; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600; padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%; }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+    .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-card.primary { border-color: var(--green); box-shadow: 0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 8px; }
+    .result-value { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .result-card.primary .result-value { font-size: 1.9rem; color: var(--green); }
+    .verdict { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+    .verdict.ok { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.3); }
+    .verdict.warn { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.3); }
+    .verdict.bad { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.3); }
+    .verdict-icon { font-size: 1.5rem; }
+    .verdict-text { font-size: 0.9rem; line-height: 1.5; }
+    .breakdown-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,0.5); font-size: 0.9rem; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-label { color: var(--muted); }
+    .breakdown-value { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .rule-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .rule-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); font-size: 0.88rem; }
+    .rule-item .rule-name { color: var(--muted); }
+    .rule-item .rule-status { font-weight: 700; font-size: 0.82rem; padding: 2px 8px; border-radius: 4px; }
+    .rule-item .rule-status.pass { background: rgba(63,185,80,0.15); color: var(--green); }
+    .rule-item .rule-status.fail { background: rgba(248,81,73,0.15); color: var(--red); }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.2s; z-index: 100; }
+    .coffee-float:hover { border-color: var(--accent); text-decoration: none; color: var(--text); }
+    .related { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+    .related a { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 0.88rem; color: var(--text); transition: border-color 0.15s; }
+    .related a:hover { border-color: var(--accent); text-decoration: none; }
+    .related a span { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link" style="margin-bottom:16px;display:inline-flex;">&#8592; All Calculators</a>
+  <h1 class="page-title">Car Affordability Calculator</h1>
+  <p class="page-subtitle">Find out how much car you can really afford — using the 20/4/10 rule and true cost of ownership.</p>
+
+  <div class="card">
+    <div class="card-title">Your Finances</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="gross-income">Annual Gross Income ($)</label>
+        <input type="number" id="gross-income" placeholder="80000" min="0" step="1000">
+      </div>
+      <div class="field">
+        <label for="monthly-debts">Other Monthly Debt Payments ($)</label>
+        <input type="number" id="monthly-debts" placeholder="500" min="0" step="50">
+        <span class="field-hint">Student loans, credit cards, etc.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Car Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="car-price">Car Price ($)</label>
+        <input type="number" id="car-price" placeholder="35000" min="0" step="500">
+      </div>
+      <div class="field">
+        <label for="down-payment">Down Payment ($)</label>
+        <input type="number" id="down-payment" placeholder="7000" min="0" step="500">
+        <span class="field-hint">20% recommended</span>
+      </div>
+      <div class="field">
+        <label for="loan-rate">Loan Interest Rate (%)</label>
+        <input type="number" id="loan-rate" value="7.0" min="0" max="30" step="0.1">
+      </div>
+      <div class="field">
+        <label for="loan-term">Loan Term</label>
+        <select id="loan-term">
+          <option value="36">36 months (3 yr)</option>
+          <option value="48" selected>48 months (4 yr)</option>
+          <option value="60">60 months (5 yr)</option>
+          <option value="72">72 months (6 yr)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="insurance">Monthly Insurance ($)</label>
+        <input type="number" id="insurance" value="150" min="0" step="10">
+      </div>
+      <div class="field">
+        <label for="gas-maintenance">Gas + Maintenance / month ($)</label>
+        <input type="number" id="gas-maintenance" value="200" min="0" step="10">
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Check Affordability</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Verdict</div>
+      <div id="verdict-box"></div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Monthly Payment</div>
+          <div class="result-value" id="r-payment">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Total Monthly Cost</div>
+          <div class="result-value" id="r-total-monthly">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">% of Gross Income</div>
+          <div class="result-value" id="r-pct">—</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 4px;">
+        <p style="font-size:0.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:10px;">20/4/10 Rule Check</p>
+        <ul class="rule-list" id="rule-list"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Full Cost Breakdown</div>
+      <div class="breakdown-row"><span class="breakdown-label">Car price</span><span class="breakdown-value" id="b-price">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Down payment</span><span class="breakdown-value" id="b-down">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Amount financed</span><span class="breakdown-value" id="b-financed">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Total interest paid</span><span class="breakdown-value" id="b-interest">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Total cost of loan</span><span class="breakdown-value" id="b-loan-total">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Insurance (total over loan term)</span><span class="breakdown-value" id="b-insurance-total">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Gas + maintenance (total over loan term)</span><span class="breakdown-value" id="b-gas-total">—</span></div>
+      <div class="breakdown-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:14px;font-weight:700;">
+        <span class="breakdown-label">True total cost of ownership</span>
+        <span class="breakdown-value" id="b-true-total">—</span>
+      </div>
+      <p class="note">True total includes all financing costs, insurance, and maintenance over the loan term — not just the sticker price.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Related Calculators</div>
+    <div class="related">
+      <a href="/profiterole-blog/finance/car-loan/">Car Loan Calculator<span>Monthly payment breakdown</span></a>
+      <a href="/profiterole-blog/finance/car-depreciation/">Car Depreciation<span>How fast does it lose value?</span></a>
+      <a href="/profiterole-blog/finance/budget-calculator/">Budget Calculator<span>Full monthly budget planner</span></a>
+      <a href="/profiterole-blog/finance/dti-calculator/">Debt-to-Income Ratio<span>Lender qualification check</span></a>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-float" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+
+<script>
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function monthlyPayment(principal, annualRate, months) {
+  if (annualRate === 0) return principal / months;
+  const r = annualRate / 100 / 12;
+  return principal * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+}
+
+function calculate() {
+  const grossIncome = parseFloat(document.getElementById('gross-income').value) || 0;
+  const otherDebts = parseFloat(document.getElementById('monthly-debts').value) || 0;
+  const carPrice = parseFloat(document.getElementById('car-price').value) || 0;
+  const downPayment = parseFloat(document.getElementById('down-payment').value) || 0;
+  const loanRate = parseFloat(document.getElementById('loan-rate').value) || 0;
+  const loanTerm = parseInt(document.getElementById('loan-term').value);
+  const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+  const gasMain = parseFloat(document.getElementById('gas-maintenance').value) || 0;
+
+  if (carPrice <= 0 || grossIncome <= 0) { alert('Please enter your income and car price.'); return; }
+
+  const financed = Math.max(0, carPrice - downPayment);
+  const payment = monthlyPayment(financed, loanRate, loanTerm);
+  const totalMonthly = payment + insurance + gasMain;
+  const monthlyGross = grossIncome / 12;
+  const pct = (totalMonthly / monthlyGross) * 100;
+  const totalInterest = payment * loanTerm - financed;
+  const loanTotal = payment * loanTerm;
+  const trueTotalCost = downPayment + loanTotal + insurance * loanTerm + gasMain * loanTerm;
+
+  // 20/4/10 rule
+  const rule20 = downPayment >= carPrice * 0.20;
+  const rule4 = loanTerm <= 48;
+  const rule10 = totalMonthly <= monthlyGross * 0.10;
+  const allPass = rule20 && rule4 && rule10;
+  const somePass = rule20 || rule4 || rule10;
+
+  document.getElementById('r-payment').textContent = fmt(payment) + '/mo';
+  document.getElementById('r-total-monthly').textContent = fmt(totalMonthly) + '/mo';
+  document.getElementById('r-pct').textContent = pct.toFixed(1) + '%';
+
+  // Verdict
+  const verdictBox = document.getElementById('verdict-box');
+  if (allPass) {
+    verdictBox.innerHTML = `<div class="verdict ok"><span class="verdict-icon">✓</span><div class="verdict-text"><strong>Financially sound.</strong> This car passes the 20/4/10 rule. At ${pct.toFixed(1)}% of your gross income for total transportation costs, this is within the recommended 10% guideline.</div></div>`;
+  } else if (somePass) {
+    verdictBox.innerHTML = `<div class="verdict warn"><span class="verdict-icon">⚠</span><div class="verdict-text"><strong>Caution.</strong> This car fails one or more parts of the 20/4/10 rule. You can afford it, but it's stretching your budget. Consider a lower price, larger down payment, or shorter term.</div></div>`;
+  } else {
+    verdictBox.innerHTML = `<div class="verdict bad"><span class="verdict-icon">✗</span><div class="verdict-text"><strong>Too much car.</strong> This vehicle fails all three parts of the 20/4/10 rule. At ${pct.toFixed(1)}% of gross income, transportation costs alone will strain your finances significantly.</div></div>`;
+  }
+
+  // Rule list
+  document.getElementById('rule-list').innerHTML = `
+    <li class="rule-item"><span class="rule-name">20% down payment (you: ${((downPayment/carPrice)*100).toFixed(0)}%)</span><span class="rule-status ${rule20 ? 'pass' : 'fail'}">${rule20 ? 'PASS' : 'FAIL'}</span></li>
+    <li class="rule-item"><span class="rule-name">4-year or shorter loan (you: ${loanTerm} months)</span><span class="rule-status ${rule4 ? 'pass' : 'fail'}">${rule4 ? 'PASS' : 'FAIL'}</span></li>
+    <li class="rule-item"><span class="rule-name">Total transportation ≤10% gross income (you: ${pct.toFixed(1)}%)</span><span class="rule-status ${rule10 ? 'pass' : 'fail'}">${rule10 ? 'PASS' : 'FAIL'}</span></li>
+  `;
+
+  // Breakdown
+  document.getElementById('b-price').textContent = fmt(carPrice);
+  document.getElementById('b-down').textContent = fmt(downPayment);
+  document.getElementById('b-financed').textContent = fmt(financed);
+  document.getElementById('b-interest').textContent = fmt(Math.max(0, totalInterest));
+  document.getElementById('b-loan-total').textContent = fmt(loanTotal);
+  document.getElementById('b-insurance-total').textContent = fmt(insurance * loanTerm);
+  document.getElementById('b-gas-total').textContent = fmt(gasMain * loanTerm);
+  document.getElementById('b-true-total').textContent = fmt(trueTotalCost);
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

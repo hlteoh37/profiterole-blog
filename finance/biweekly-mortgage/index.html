@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biweekly Mortgage Calculator — Save Years & Thousands</title>
+  <meta name="description" content="See how much interest you save by paying your mortgage biweekly instead of monthly. Calculate payoff date acceleration and total savings. Free, instant, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/biweekly-mortgage/">
+  <meta property="og:title" content="Biweekly Mortgage Calculator — Save Years & Thousands">
+  <meta property="og:description" content="Calculate savings from switching to biweekly mortgage payments. See payoff acceleration and total interest saved.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/biweekly-mortgage/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"] {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn { margin-top: 20px; background: var(--accent); color: #0d1117; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600; padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%; }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 520px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-col { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+    .compare-col.winner { border-color: var(--green); box-shadow: 0 0 0 1px rgba(63,185,80,0.15); }
+    .compare-col-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--muted); margin-bottom: 14px; }
+    .compare-col.winner .compare-col-label { color: var(--green); }
+    .compare-stat { margin-bottom: 10px; }
+    .compare-stat-label { font-size: 0.78rem; color: var(--muted); }
+    .compare-stat-value { font-size: 1.1rem; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .compare-col.winner .compare-stat-value { color: var(--green); }
+    .savings-hero { text-align: center; padding: 20px; background: rgba(63,185,80,0.06); border: 1px solid rgba(63,185,80,0.2); border-radius: 10px; margin-bottom: 20px; }
+    .savings-hero-label { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 6px; }
+    .savings-hero-value { font-size: 2.8rem; font-weight: 800; color: var(--green); letter-spacing: -1px; margin-bottom: 4px; }
+    .savings-hero-sub { font-size: 0.9rem; color: var(--muted); }
+    .savings-hero-sub strong { color: var(--text); }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.2s; z-index: 100; }
+    .coffee-float:hover { border-color: var(--accent); text-decoration: none; color: var(--text); }
+    .related { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+    .related a { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 0.88rem; color: var(--text); transition: border-color 0.15s; }
+    .related a:hover { border-color: var(--accent); text-decoration: none; }
+    .related a span { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link" style="margin-bottom:16px;display:inline-flex;">&#8592; All Calculators</a>
+  <h1 class="page-title">Biweekly Mortgage Calculator</h1>
+  <p class="page-subtitle">Paying every two weeks instead of monthly makes 26 half-payments = 13 full payments per year. See how much time and interest you save.</p>
+
+  <div class="card">
+    <div class="card-title">Your Mortgage</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="loan-amount">Loan Balance ($)</label>
+        <input type="number" id="loan-amount" placeholder="350000" min="0" step="1000">
+        <span class="field-hint">Current remaining balance</span>
+      </div>
+      <div class="field">
+        <label for="interest-rate">Annual Interest Rate (%)</label>
+        <input type="number" id="interest-rate" placeholder="6.5" min="0" max="20" step="0.05">
+      </div>
+      <div class="field">
+        <label for="remaining-years">Remaining Loan Term (years)</label>
+        <input type="number" id="remaining-years" placeholder="30" min="1" max="40" step="1">
+      </div>
+      <div class="field">
+        <label for="extra-biweekly">Extra Biweekly Payment ($)</label>
+        <input type="number" id="extra-biweekly" value="0" min="0" step="25">
+        <span class="field-hint">Optional additional amount per payment</span>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Savings</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Your Savings</div>
+      <div class="savings-hero">
+        <div class="savings-hero-label">Total Interest Saved</div>
+        <div class="savings-hero-value" id="r-savings">—</div>
+        <div class="savings-hero-sub">Pay off your mortgage <strong id="r-years-saved">—</strong> sooner</div>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-col-label">Monthly Payments</div>
+          <div class="compare-stat"><div class="compare-stat-label">Monthly payment</div><div class="compare-stat-value" id="m-payment">—</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">Payoff time</div><div class="compare-stat-value" id="m-payoff">—</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">Total interest</div><div class="compare-stat-value" id="m-interest">—</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">Total paid</div><div class="compare-stat-value" id="m-total">—</div></div>
+        </div>
+        <div class="compare-col winner">
+          <div class="compare-col-label">Biweekly Payments</div>
+          <div class="compare-stat"><div class="compare-stat-label">Biweekly payment</div><div class="compare-stat-value" id="b-payment">—</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">Payoff time</div><div class="compare-stat-value" id="b-payoff">—</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">Total interest</div><div class="compare-stat-value" id="b-interest">—</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">Total paid</div><div class="compare-stat-value" id="b-total">—</div></div>
+        </div>
+      </div>
+      <p class="note">Biweekly payments: half your monthly payment every 2 weeks. Result: 26 half-payments = 13 full payments per year vs 12 monthly. Interest accrues daily, so more frequent payments also reduce principal faster.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Related Calculators</div>
+    <div class="related">
+      <a href="/profiterole-blog/finance/mortgage-calculator/">Mortgage Calculator<span>Full amortization schedule</span></a>
+      <a href="/profiterole-blog/finance/amortization-schedule/">Amortization Schedule<span>Month-by-month breakdown</span></a>
+      <a href="/profiterole-blog/finance/home-affordability/">Home Affordability<span>How much house can you buy?</span></a>
+      <a href="/profiterole-blog/finance/heloc-calculator/">HELOC Calculator<span>Home equity line of credit</span></a>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-float" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+
+<script>
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtTime(months) {
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  if (m === 0) return y + ' yr';
+  return y + ' yr ' + m + ' mo';
+}
+
+function calcMonthly(principal, annualRate, months) {
+  if (annualRate === 0) return principal / months;
+  const r = annualRate / 100 / 12;
+  return principal * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+}
+
+function amortizeMonthly(principal, annualRate, payment) {
+  const r = annualRate / 100 / 12;
+  let balance = principal, totalInterest = 0, months = 0;
+  while (balance > 0.01 && months < 9999) {
+    const interest = balance * r;
+    const principal_paid = Math.min(payment - interest, balance);
+    balance -= principal_paid;
+    totalInterest += interest;
+    months++;
+  }
+  return { months, totalInterest };
+}
+
+function amortizeBiweekly(principal, annualRate, biweeklyPayment) {
+  const dailyRate = annualRate / 100 / 365;
+  let balance = principal, totalInterest = 0, payments = 0;
+  while (balance > 0.01 && payments < 99999) {
+    const interest = balance * dailyRate * 14;
+    const principalPaid = Math.min(biweeklyPayment - interest, balance);
+    if (principalPaid <= 0) break; // payment too small to cover interest
+    balance -= principalPaid;
+    totalInterest += interest;
+    payments++;
+  }
+  const months = Math.round(payments * 14 / 30.44);
+  return { months, totalInterest, payments };
+}
+
+function calculate() {
+  const principal = parseFloat(document.getElementById('loan-amount').value) || 0;
+  const rate = parseFloat(document.getElementById('interest-rate').value) || 0;
+  const years = parseFloat(document.getElementById('remaining-years').value) || 0;
+  const extra = parseFloat(document.getElementById('extra-biweekly').value) || 0;
+
+  if (principal <= 0 || rate <= 0 || years <= 0) { alert('Please fill in loan amount, rate, and term.'); return; }
+
+  const termMonths = years * 12;
+  const monthlyPayment = calcMonthly(principal, rate, termMonths);
+
+  // Monthly scenario
+  const mResult = amortizeMonthly(principal, rate, monthlyPayment);
+
+  // Biweekly scenario: half the monthly payment + extra, every 14 days
+  const biweeklyPayment = monthlyPayment / 2 + extra;
+  const bResult = amortizeBiweekly(principal, rate, biweeklyPayment);
+
+  const savedInterest = mResult.totalInterest - bResult.totalInterest;
+  const savedMonths = mResult.months - bResult.months;
+  const savedYears = Math.floor(savedMonths / 12);
+  const savedMos = savedMonths % 12;
+
+  document.getElementById('r-savings').textContent = fmt(Math.max(0, savedInterest));
+  const yearsStr = savedYears > 0 ? savedYears + ' yr ' : '';
+  const mosStr = savedMos > 0 ? savedMos + ' mo' : '';
+  document.getElementById('r-years-saved').textContent = (yearsStr + mosStr).trim() || 'a few months';
+
+  document.getElementById('m-payment').textContent = fmt(monthlyPayment) + '/mo';
+  document.getElementById('m-payoff').textContent = fmtTime(mResult.months);
+  document.getElementById('m-interest').textContent = fmt(mResult.totalInterest);
+  document.getElementById('m-total').textContent = fmt(principal + mResult.totalInterest);
+
+  document.getElementById('b-payment').textContent = fmt(biweeklyPayment) + '/2wk';
+  document.getElementById('b-payoff').textContent = fmtTime(bResult.months);
+  document.getElementById('b-interest').textContent = fmt(bResult.totalInterest);
+  document.getElementById('b-total').textContent = fmt(principal + bResult.totalInterest);
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

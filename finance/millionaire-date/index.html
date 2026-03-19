@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Millionaire Date Calculator — When Will You Become a Millionaire?</title>
+  <meta name="description" content="Find out exactly when you'll reach $1 million (or any target) based on your savings rate and investment returns. Free millionaire date calculator, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/millionaire-date/">
+  <meta property="og:title" content="Millionaire Date Calculator — When Will You Become a Millionaire?">
+  <meta property="og:description" content="Calculate exactly when you'll hit $1 million based on your current net worth, monthly savings, and expected returns.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/millionaire-date/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"] {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn { margin-top: 20px; background: var(--accent); color: #0d1117; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600; padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%; }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .milestone-hero { text-align: center; padding: 28px; background: rgba(63,185,80,0.06); border: 1px solid rgba(63,185,80,0.3); border-radius: 12px; margin-bottom: 20px; }
+    .milestone-hero-label { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 6px; }
+    .milestone-hero-year { font-size: 4rem; font-weight: 900; color: var(--green); letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
+    .milestone-hero-sub { font-size: 0.95rem; color: var(--muted); }
+    .milestone-hero-sub strong { color: var(--text); }
+    .milestones { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 8px; }
+    .milestone-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+    .milestone-card.reached { border-color: var(--green); }
+    .milestone-card .milestone-amt { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .milestone-card.reached .milestone-amt { color: var(--green); }
+    .milestone-card .milestone-yr { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+    .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg); position: sticky; top: 0; }
+    th { padding: 10px 14px; text-align: right; color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th:first-child { text-align: center; }
+    td { padding: 9px 14px; text-align: right; border-bottom: 1px solid rgba(48,54,61,0.5); color: var(--text); font-variant-numeric: tabular-nums; }
+    td:first-child { text-align: center; color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    tr.milestone-row td { background: rgba(63,185,80,0.05); color: var(--green); font-weight: 600; }
+    tr.milestone-row td:first-child { color: var(--green); }
+    tr:hover td { background: rgba(88,166,255,0.04); }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.2s; z-index: 100; }
+    .coffee-float:hover { border-color: var(--accent); text-decoration: none; color: var(--text); }
+    .related { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+    .related a { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 0.88rem; color: var(--text); transition: border-color 0.15s; }
+    .related a:hover { border-color: var(--accent); text-decoration: none; }
+    .related a span { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link" style="margin-bottom:16px;display:inline-flex;">&#8592; All Calculators</a>
+  <h1 class="page-title">Millionaire Date Calculator</h1>
+  <p class="page-subtitle">Enter your current net worth, monthly savings, and expected return — see exactly what year you'll hit $1 million (and beyond).</p>
+
+  <div class="card">
+    <div class="card-title">Your Inputs</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="current-nw">Current Net Worth ($)</label>
+        <input type="number" id="current-nw" placeholder="50000" min="0" step="1000">
+        <span class="field-hint">Investments, savings, minus debts</span>
+      </div>
+      <div class="field">
+        <label for="monthly-savings">Monthly Savings / Investment ($)</label>
+        <input type="number" id="monthly-savings" placeholder="1500" min="0" step="100">
+        <span class="field-hint">How much you add each month</span>
+      </div>
+      <div class="field">
+        <label for="return-rate">Expected Annual Return (%)</label>
+        <input type="number" id="return-rate" value="7" min="0" max="30" step="0.5">
+        <span class="field-hint">7% = historical S&P 500 real return</span>
+      </div>
+      <div class="field">
+        <label for="target">Target Amount ($)</label>
+        <input type="number" id="target" value="1000000" min="1" step="100000">
+        <span class="field-hint">Default: $1 million</span>
+      </div>
+      <div class="field">
+        <label for="current-age">Your Current Age</label>
+        <input type="number" id="current-age" placeholder="30" min="1" max="99" step="1">
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate My Millionaire Date</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Your Wealth Journey</div>
+      <div class="milestone-hero">
+        <div class="milestone-hero-label">You'll hit <span id="r-target-label">$1M</span> in</div>
+        <div class="milestone-hero-year" id="r-year">—</div>
+        <div class="milestone-hero-sub" id="r-hero-sub">—</div>
+      </div>
+      <div class="milestones" id="milestones-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Year-by-Year Growth</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Age</th>
+              <th>Contributed</th>
+              <th>Investment Gains</th>
+              <th>Net Worth</th>
+            </tr>
+          </thead>
+          <tbody id="growth-tbody"></tbody>
+        </table>
+      </div>
+      <p class="note">Assumes contributions made at start of each month. Returns compound monthly. Inflation not adjusted — use 7% for inflation-adjusted S&P 500 historical returns.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Related Calculators</div>
+    <div class="related">
+      <a href="/profiterole-blog/finance/fire-calculator/">FIRE Calculator<span>Full early retirement number</span></a>
+      <a href="/profiterole-blog/finance/compound-interest/">Compound Interest<span>See interest compounding</span></a>
+      <a href="/profiterole-blog/finance/savings-rate/">Savings Rate<span>What % should you save?</span></a>
+      <a href="/profiterole-blog/finance/wealth-percentile/">Wealth Percentile<span>Where do you rank now?</span></a>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-float" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+
+<script>
+function fmt(n) {
+  if (n >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function calculate() {
+  let nw = parseFloat(document.getElementById('current-nw').value);
+  const monthly = parseFloat(document.getElementById('monthly-savings').value) || 0;
+  const annualReturn = parseFloat(document.getElementById('return-rate').value) || 0;
+  const target = parseFloat(document.getElementById('target').value) || 1000000;
+  const age = parseFloat(document.getElementById('current-age').value) || null;
+
+  if (isNaN(nw)) nw = 0;
+  if (target <= 0) { alert('Please enter a valid target amount.'); return; }
+
+  const monthlyRate = annualReturn / 100 / 12;
+  const currentYear = new Date().getFullYear();
+
+  // Simulate month by month until target or 100 years
+  let balance = nw;
+  let targetMonth = null;
+  const yearData = [];
+
+  let totalContributed = nw;
+  let prevYearBalance = nw;
+
+  for (let month = 1; month <= 100 * 12; month++) {
+    balance = balance * (1 + monthlyRate) + monthly;
+    totalContributed += monthly;
+
+    if (targetMonth === null && balance >= target) {
+      targetMonth = month;
+    }
+
+    if (month % 12 === 0) {
+      const year = Math.floor(month / 12);
+      const gains = balance - totalContributed;
+      yearData.push({
+        year,
+        calYear: currentYear + year,
+        age: age ? age + year : null,
+        balance,
+        contributed: totalContributed - nw,
+        gains
+      });
+      if (year >= 60 && balance >= target * 5) break; // stop early if way past target
+      if (year >= 80) break;
+    }
+  }
+
+  // Display target year
+  const targetYr = targetMonth ? currentYear + Math.ceil(targetMonth / 12) : null;
+  const targetAge = targetMonth && age ? age + Math.ceil(targetMonth / 12) : null;
+  const yrs = targetMonth ? Math.ceil(targetMonth / 12) : null;
+
+  const targetLabel = target >= 1e6 ? '$' + (target/1e6).toFixed(0) + 'M' : '$' + target.toLocaleString();
+  document.getElementById('r-target-label').textContent = targetLabel;
+
+  if (targetYr) {
+    document.getElementById('r-year').textContent = targetYr;
+    let sub = `That's <strong>${yrs} year${yrs !== 1 ? 's' : ''}</strong> from now`;
+    if (targetAge) sub += ` — you'll be <strong>${targetAge}</strong>`;
+    document.getElementById('r-hero-sub').innerHTML = sub;
+  } else {
+    document.getElementById('r-year').textContent = '100+';
+    document.getElementById('r-hero-sub').innerHTML = 'At current savings rate, this target takes over 100 years. Increase savings or return rate.';
+  }
+
+  // Milestones: $100K, $250K, $500K, $1M, $2M, $5M, $10M
+  const milestones = [100000, 250000, 500000, 1000000, 2000000, 5000000, 10000000];
+  const milestoneGrid = document.getElementById('milestones-grid');
+  milestoneGrid.innerHTML = '';
+  milestones.forEach(ms => {
+    let msMonth = null;
+    let b2 = nw;
+    for (let m = 1; m <= 100 * 12; m++) {
+      b2 = b2 * (1 + monthlyRate) + monthly;
+      if (b2 >= ms) { msMonth = m; break; }
+    }
+    const reached = msMonth !== null;
+    const msYear = reached ? currentYear + Math.ceil(msMonth / 12) : null;
+    const msLabel = ms >= 1e6 ? '$' + (ms/1e6).toFixed(0) + 'M' : '$' + (ms/1000) + 'K';
+    const card = document.createElement('div');
+    card.className = 'milestone-card' + (reached ? ' reached' : '');
+    card.innerHTML = `<div class="milestone-amt">${msLabel}</div><div class="milestone-yr">${reached ? msYear : '100+ yrs'}</div>`;
+    milestoneGrid.appendChild(card);
+  });
+
+  // Table (show every year, max 50 rows or until well past target)
+  const tbody = document.getElementById('growth-tbody');
+  tbody.innerHTML = '';
+  const showRows = Math.min(yearData.length, 50);
+  for (let i = 0; i < showRows; i++) {
+    const d = yearData[i];
+    const isMilestone = milestones.some(ms => (i === 0 ? nw < ms : yearData[i-1].balance < ms) && d.balance >= ms);
+    const tr = document.createElement('tr');
+    if (isMilestone) tr.className = 'milestone-row';
+    tr.innerHTML = `<td>${d.calYear}</td><td>${d.age ? d.age : '—'}</td><td>${fmt(d.contributed)}</td><td>${fmt(d.gains)}</td><td>${fmt(d.balance)}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
