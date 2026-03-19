@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PTPTN Loan Calculator Malaysia — Monthly Repayment &amp; Payoff</title>
+  <meta name="description" content="Calculate your PTPTN monthly repayment, total interest, and payoff date. See how much you save by paying early.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/my/ptptn-calculator/">
+  <meta property="og:title" content="PTPTN Loan Calculator Malaysia — Monthly Repayment &amp; Payoff">
+  <meta property="og:description" content="Calculate your PTPTN monthly repayment, total interest, and payoff date. See how much you save by paying early.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/my/ptptn-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PTPTN Loan Calculator Malaysia — Monthly Repayment &amp; Payoff">
+  <meta name="twitter:description" content="Calculate your PTPTN monthly repayment, total interest, and payoff date.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --text: #e6edf3;
+      --yellow: #d29922;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .logo {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    header .logo span { color: var(--accent); }
+
+    .back-link {
+      color: var(--muted);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 12px 0 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .page-subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 520px) {
+      .fields-grid { grid-template-columns: 1fr; }
+      .page-title { font-size: 1.4rem; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    input[type="number"],
+    select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      padding: 9px 12px;
+      width: 100%;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(88,166,255,0.12);
+    }
+
+    .field-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .results-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .results-grid-3 { grid-template-columns: 1fr 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+
+    .result-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .result-card.primary {
+      border-color: var(--green);
+      box-shadow: 0 0 0 1px rgba(63,185,80,0.15);
+    }
+
+    .result-card.warn {
+      border-color: rgba(210, 153, 34, 0.4);
+    }
+
+    .result-card.accent {
+      border-color: rgba(88, 166, 255, 0.4);
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .result-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .result-card.primary .result-value {
+      font-size: 1.6rem;
+      color: var(--green);
+    }
+
+    .result-card.warn .result-value { color: var(--yellow); }
+    .result-card.accent .result-value { color: var(--accent); }
+
+    /* Tip box */
+    .tip-box {
+      background: rgba(63, 185, 80, 0.08);
+      border: 1px solid rgba(63, 185, 80, 0.25);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.65;
+    }
+
+    .tip-box strong { color: var(--green); }
+
+    .info-box {
+      background: rgba(88, 166, 255, 0.08);
+      border: 1px solid rgba(88, 166, 255, 0.2);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .info-box strong { color: var(--accent); }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    thead { background: var(--bg); position: sticky; top: 0; }
+
+    th {
+      padding: 10px 14px;
+      text-align: right;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th:first-child, th:nth-child(2) { text-align: center; }
+
+    td {
+      padding: 9px 14px;
+      text-align: right;
+      border-bottom: 1px solid rgba(48,54,61,0.5);
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    td:first-child, td:nth-child(2) { text-align: center; color: var(--muted); }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(88,166,255,0.04); }
+    td.interest-col { color: var(--yellow); }
+    td.balance-col { font-weight: 600; }
+
+    .explainer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.75;
+    }
+
+    .explainer h2 {
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .explainer h3 {
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin: 16px 0 6px;
+    }
+
+    .explainer p { margin-bottom: 10px; }
+
+    .explainer ul {
+      margin: 8px 0 10px 20px;
+    }
+
+    .explainer li { margin-bottom: 4px; }
+
+    .bmac-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+    }
+
+    .bmac-float a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFDD00;
+      color: #000;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 50px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .bmac-float a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    .bmac-float .bmac-icon { font-size: 1.1rem; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/profiterole-blog/" class="logo">Profiter<span>ole</span></a>
+  <span style="color:var(--border);">|</span>
+  <a href="/profiterole-blog/finance/my/" class="back-link">&#8592; 🇲🇾 Malaysian Finance Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;">
+    <a href="/profiterole-blog/finance/my/" class="back-link">&#8592; 🇲🇾 Malaysian Finance Calculators</a>
+  </p>
+
+  <h1 class="page-title">PTPTN Loan Calculator</h1>
+  <p class="page-subtitle">Calculate your monthly repayment, total interest charged, and payoff date. See the impact of paying extra.</p>
+
+  <div class="info-box">
+    <strong>PTPTN discounts:</strong> <strong>15% discount</strong> for full settlement in one payment. <strong>10% discount</strong> for consistent on-time repayments. Borrowers earning &lt; RM2,000/month are temporarily exempt from mandatory repayment. Repay via salary deduction, online banking, or i-Saraan.
+  </div>
+
+  <div class="card">
+    <div class="card-title">Your PTPTN Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="loanAmount">Total PTPTN Loan Amount (RM)</label>
+        <input type="number" id="loanAmount" value="30000" min="1000" step="500">
+        <span class="field-hint">Check your PTPTN statement or i-Akaun PTPTN</span>
+      </div>
+      <div class="field">
+        <label for="currentBalance">Current Outstanding Balance (RM)</label>
+        <input type="number" id="currentBalance" value="30000" min="0" step="500">
+        <span class="field-hint">If already repaying, enter remaining balance</span>
+      </div>
+      <div class="field">
+        <label for="profitRate">Ujrah / Interest Rate (% per year)</label>
+        <input type="number" id="profitRate" value="1" min="0" max="20" step="0.1">
+        <span class="field-hint">Standard PTPTN ujrah: 1% p.a.</span>
+      </div>
+      <div class="field">
+        <label for="loanTermYears">Loan Term (years)</label>
+        <input type="number" id="loanTermYears" value="15" min="1" max="30" step="1">
+        <span class="field-hint">Default: 15 years (180 months)</span>
+      </div>
+      <div class="field">
+        <label for="extraPayment">Extra Monthly Payment (RM)</label>
+        <input type="number" id="extraPayment" value="0" min="0" step="50">
+        <span class="field-hint">See how extra payments shorten your loan</span>
+      </div>
+      <div class="field">
+        <label for="startYear">Repayment Start Year</label>
+        <input type="number" id="startYear" value="2025" min="2020" max="2040" step="1">
+        <span class="field-hint">Used to calculate payoff date</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="results-grid-3">
+      <div class="result-card primary">
+        <div class="result-label">Monthly Payment</div>
+        <div class="result-value" id="res-monthly">—</div>
+      </div>
+      <div class="result-card warn">
+        <div class="result-label">Total Interest</div>
+        <div class="result-value" id="res-interest">—</div>
+      </div>
+      <div class="result-card accent">
+        <div class="result-label">Total Amount Payable</div>
+        <div class="result-value" id="res-total">—</div>
+      </div>
+    </div>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-label">Payoff Date</div>
+        <div class="result-value" id="res-payoff">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Full Settlement (−15%)</div>
+        <div class="result-value" id="res-settlement">—</div>
+      </div>
+    </div>
+
+    <!-- Early payoff tip -->
+    <div class="tip-box" id="tip-box" style="display:none;"></div>
+
+    <!-- Amortization table (yearly) -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div class="card-title" style="padding:16px 20px 0;">Year-by-Year Amortization</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Payoff Year</th>
+              <th>Annual Payment</th>
+              <th>Interest Paid</th>
+              <th>Principal Paid</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody id="amort-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Explainer -->
+  <div class="explainer">
+    <h2>About PTPTN Loans</h2>
+    <p>
+      PTPTN (Perbadanan Tabung Pendidikan Tinggi Nasional) provides education loans to Malaysians studying at public and private universities. Unlike conventional bank loans, PTPTN charges a very low <em>ujrah</em> (administrative fee) of 1% per year — one of the most affordable education financing options in the country.
+    </p>
+    <p>
+      Repayment typically begins one year after graduation. The standard repayment period is 15 years, with a minimum monthly repayment of RM150. Borrowers can check their outstanding balance, repayment schedule, and make payments through the <a href="https://www.ptptn.gov.my" target="_blank" rel="noopener">PTPTN website</a> or i-Akaun PTPTN.
+    </p>
+
+    <h3>Discounts You Shouldn't Miss</h3>
+    <ul>
+      <li><strong>15% discount for full settlement:</strong> If you can clear the entire outstanding balance in one payment, PTPTN gives you a 15% discount — a significant saving on larger balances.</li>
+      <li><strong>10% discount for consistent repayment:</strong> Borrowers who make full monthly payments on time consistently may be eligible for a 10% rebate on interest charged.</li>
+      <li><strong>Temporary exemption:</strong> Borrowers earning less than RM2,000/month are currently exempt from mandatory repayment (subject to income verification).</li>
+    </ul>
+
+    <h3>Salary Deduction Scheme</h3>
+    <p>
+      PTPTN can deduct repayments directly from your salary (similar to EPF and SOCSO). The deduction rate depends on your income bracket — it ensures you're always repaying without needing to remember monthly payments. This is also the most reliable way to qualify for the on-time-payment discount.
+    </p>
+
+    <h3>Should You Pay Off PTPTN Early?</h3>
+    <p>
+      At 1% per year, PTPTN is among the cheapest debt you'll ever have. If you have higher-interest debt (credit cards at 18%, personal loans at 6–12%), pay those off first. That said, if you have spare cash and the full-settlement discount is still available, clearing PTPTN can give you a guaranteed 15% return on that lump sum — hard to beat risk-free.
+    </p>
+  </div>
+</div>
+
+<div class="bmac-float">
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">
+    <span class="bmac-icon">&#9749;</span> Buy me a coffee
+  </a>
+</div>
+
+<script>
+  function fmtRM(n) {
+    if (isNaN(n) || !isFinite(n) || n < 0) return 'RM0.00';
+    return 'RM' + n.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function monthlyPayment(principal, annualRate, months) {
+    if (annualRate === 0) return principal / months;
+    const r = annualRate / 12;
+    return principal * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+  }
+
+  function calculate() {
+    const loanAmt = parseFloat(document.getElementById('loanAmount').value) || 0;
+    let balance = parseFloat(document.getElementById('currentBalance').value) || loanAmt;
+    const rate = (parseFloat(document.getElementById('profitRate').value) || 1) / 100;
+    const termYears = parseInt(document.getElementById('loanTermYears').value) || 15;
+    const extra = parseFloat(document.getElementById('extraPayment').value) || 0;
+    const startYear = parseInt(document.getElementById('startYear').value) || 2025;
+
+    if (balance <= 0 || termYears <= 0) {
+      document.getElementById('results').style.display = 'none';
+      return;
+    }
+
+    const termMonths = termYears * 12;
+    const basePayment = monthlyPayment(balance, rate, termMonths);
+    const totalPayment = Math.max(basePayment, 150) + extra; // min RM150/month
+
+    // Amortize monthly to get accurate payoff
+    const amortBody = document.getElementById('amort-body');
+    amortBody.innerHTML = '';
+
+    let rem = balance;
+    let totalInterest = 0;
+    let totalPaid = 0;
+    let monthCount = 0;
+    let payoffMonth = 0;
+    let payoffYear = 0;
+
+    // Yearly aggregation
+    const yearlyData = [];
+    let yearInterest = 0, yearPrincipal = 0, yearPayment = 0;
+    let currentYear = startYear;
+    let yearIdx = 0;
+
+    while (rem > 0.005 && monthCount < 600) {
+      const interestThisMonth = rem * (rate / 12);
+      let principalThisMonth = totalPayment - interestThisMonth;
+
+      if (principalThisMonth >= rem) {
+        // Final payment
+        principalThisMonth = rem;
+        const finalPayment = rem + interestThisMonth;
+        yearInterest += interestThisMonth;
+        yearPrincipal += principalThisMonth;
+        yearPayment += finalPayment;
+        totalInterest += interestThisMonth;
+        totalPaid += finalPayment;
+        rem = 0;
+        monthCount++;
+        payoffMonth = (monthCount - 1) % 12;
+        payoffYear = startYear + Math.floor((monthCount - 1) / 12);
+        yearIdx++;
+        yearData(yearlyData, currentYear, yearPayment, yearInterest, yearPrincipal, 0);
+        break;
+      }
+
+      yearInterest += interestThisMonth;
+      yearPrincipal += principalThisMonth;
+      yearPayment += totalPayment;
+      totalInterest += interestThisMonth;
+      totalPaid += totalPayment;
+      rem -= principalThisMonth;
+      monthCount++;
+
+      // End of year — push row
+      if (monthCount % 12 === 0) {
+        yearData(yearlyData, currentYear, yearPayment, yearInterest, yearPrincipal, rem);
+        currentYear++;
+        yearInterest = 0;
+        yearPrincipal = 0;
+        yearPayment = 0;
+      }
+    }
+
+    // Flush partial final year if not already pushed
+    if (yearInterest > 0 || yearPrincipal > 0) {
+      yearData(yearlyData, currentYear, yearPayment, yearInterest, yearPrincipal, 0);
+    }
+
+    // Render table
+    yearlyData.forEach(y => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>Year ${y.yearNum}</td>
+        <td>${y.calYear}</td>
+        <td>${fmtRM(y.payment)}</td>
+        <td class="interest-col">${fmtRM(y.interest)}</td>
+        <td>${fmtRM(y.principal)}</td>
+        <td class="balance-col">${fmtRM(y.balance)}</td>
+      `;
+      amortBody.appendChild(row);
+    });
+
+    // Payoff date
+    const payoffDateStr = payoffYear > 0
+      ? `${MONTHS[payoffMonth]} ${payoffYear}`
+      : `${MONTHS[(monthCount - 1) % 12]} ${startYear + Math.floor((monthCount - 1) / 12)}`;
+
+    // Early payoff tip (without extra)
+    const baseMonths = monthlyPayment(balance, rate, termMonths);
+    let extraTip = '';
+    if (extra > 0) {
+      const baseTotalInterest = calculateTotalInterest(balance, rate, termMonths);
+      const interestSaved = baseTotalInterest - totalInterest;
+      const monthsSaved = termMonths - monthCount;
+      const yearsSaved = Math.floor(monthsSaved / 12);
+      const remMonthsSaved = monthsSaved % 12;
+      let timeSavedStr = '';
+      if (yearsSaved > 0) timeSavedStr += `${yearsSaved} year${yearsSaved > 1 ? 's' : ''}`;
+      if (remMonthsSaved > 0) timeSavedStr += `${yearsSaved > 0 ? ' ' : ''}${remMonthsSaved} month${remMonthsSaved > 1 ? 's' : ''}`;
+      if (timeSavedStr) {
+        extraTip = `Paying an extra <strong>${fmtRM(extra)}/month</strong> cuts <strong>${timeSavedStr}</strong> off your loan and saves <strong>${fmtRM(interestSaved)}</strong> in interest.`;
+      }
+    } else {
+      // Suggest extra payment to save 3 years
+      const targetMonths = termMonths - 36;
+      if (targetMonths > 0) {
+        const extraNeeded = monthlyPayment(balance, rate, targetMonths) - baseMonths;
+        if (extraNeeded > 0) {
+          const interestSaved = calculateTotalInterest(balance, rate, termMonths) - calculateTotalInterest(balance, rate, targetMonths);
+          extraTip = `Pay <strong>${fmtRM(Math.ceil(extraNeeded))}/month extra</strong> to pay off 3 years early and save <strong>${fmtRM(interestSaved)}</strong> in interest.`;
+        }
+      }
+    }
+
+    document.getElementById('res-monthly').textContent = fmtRM(totalPayment);
+    document.getElementById('res-interest').textContent = fmtRM(totalInterest);
+    document.getElementById('res-total').textContent = fmtRM(totalPaid);
+    document.getElementById('res-payoff').textContent = payoffDateStr;
+    document.getElementById('res-settlement').textContent = fmtRM(balance * 0.85);
+
+    const tipBox = document.getElementById('tip-box');
+    if (extraTip) {
+      tipBox.innerHTML = extraTip;
+      tipBox.style.display = 'block';
+    } else {
+      tipBox.style.display = 'none';
+    }
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  function yearData(arr, calYear, payment, interest, principal, balance) {
+    arr.push({
+      yearNum: arr.length + 1,
+      calYear,
+      payment,
+      interest,
+      principal,
+      balance,
+    });
+  }
+
+  function calculateTotalInterest(principal, rate, months) {
+    if (rate === 0) return 0;
+    const pmt = monthlyPayment(principal, rate, months);
+    return pmt * months - principal;
+  }
+
+  document.querySelectorAll('input').forEach(el => {
+    el.addEventListener('input', calculate);
+  });
+
+  document.addEventListener('DOMContentLoaded', calculate);
+</script>
+
+</body>
+</html>

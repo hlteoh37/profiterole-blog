@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malaysian Income Tax Calculator 2025 — Resident Individual</title>
+  <meta name="description" content="Calculate your Malaysian income tax for YA2025. Includes all reliefs: EPF, medical, lifestyle, children. Accurate tax bracket breakdown.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/my/income-tax/">
+  <meta property="og:title" content="Malaysian Income Tax Calculator 2025 — Resident Individual">
+  <meta property="og:description" content="Calculate your Malaysian income tax for YA2025. Includes all reliefs: EPF, medical, lifestyle, children. Accurate tax bracket breakdown.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/my/income-tax/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Malaysian Income Tax Calculator 2025 — Resident Individual">
+  <meta name="twitter:description" content="Calculate your Malaysian income tax for YA2025. All reliefs included.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --text: #e6edf3;
+      --yellow: #d29922;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .logo {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    header .logo span { color: var(--accent); }
+
+    .back-link {
+      color: var(--muted);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 12px 0 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .page-subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .fields-grid.single { grid-template-columns: 1fr; }
+
+    @media (max-width: 520px) {
+      .fields-grid { grid-template-columns: 1fr; }
+      .page-title { font-size: 1.4rem; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    input[type="number"],
+    select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      padding: 9px 12px;
+      width: 100%;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(88,166,255,0.12);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+
+    .field-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .relief-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(48,54,61,0.4);
+    }
+
+    .relief-row:last-child { border-bottom: none; }
+
+    .relief-name {
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    .relief-cap {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .relief-input {
+      width: 140px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+      .relief-row { grid-template-columns: 1fr; }
+      .relief-input { width: 100%; }
+    }
+
+    /* Summary cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 380px) {
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+
+    .result-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .result-card.primary {
+      border-color: var(--green);
+      box-shadow: 0 0 0 1px rgba(63,185,80,0.15);
+    }
+
+    .result-card.warn {
+      border-color: rgba(210, 153, 34, 0.5);
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .result-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .result-card.primary .result-value {
+      font-size: 1.6rem;
+      color: var(--green);
+    }
+
+    .result-card.warn .result-value { color: var(--yellow); }
+
+    /* Tax bracket breakdown table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    thead { background: var(--bg); position: sticky; top: 0; }
+
+    th {
+      padding: 10px 14px;
+      text-align: right;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th:first-child { text-align: left; }
+
+    td {
+      padding: 9px 14px;
+      text-align: right;
+      border-bottom: 1px solid rgba(48,54,61,0.5);
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    td:first-child { text-align: left; color: var(--muted); }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(88,166,255,0.04); }
+    td.tax-col { color: var(--yellow); font-weight: 600; }
+    td.zero-col { color: var(--muted); }
+
+    /* Stacked summary lines */
+    .income-breakdown {
+      font-size: 0.88rem;
+    }
+
+    .income-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(48,54,61,0.4);
+    }
+
+    .income-line:last-child { border-bottom: none; }
+    .income-line .label { color: var(--muted); }
+    .income-line .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .income-line .val.deduct { color: var(--green); }
+    .income-line .val.total { color: var(--text); font-size: 1rem; }
+
+    .explainer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.75;
+    }
+
+    .explainer h2 {
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .explainer h3 {
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin: 16px 0 6px;
+    }
+
+    .explainer p { margin-bottom: 10px; }
+
+    .explainer ul {
+      margin: 8px 0 10px 20px;
+    }
+
+    .explainer li { margin-bottom: 4px; }
+
+    .info-box {
+      background: rgba(210, 153, 34, 0.08);
+      border: 1px solid rgba(210, 153, 34, 0.25);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .info-box strong { color: var(--yellow); }
+
+    .bmac-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+    }
+
+    .bmac-float a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFDD00;
+      color: #000;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 50px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .bmac-float a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    .bmac-float .bmac-icon { font-size: 1.1rem; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/profiterole-blog/" class="logo">Profiter<span>ole</span></a>
+  <span style="color:var(--border);">|</span>
+  <a href="/profiterole-blog/finance/my/" class="back-link">&#8592; 🇲🇾 Malaysian Finance Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;">
+    <a href="/profiterole-blog/finance/my/" class="back-link">&#8592; 🇲🇾 Malaysian Finance Calculators</a>
+  </p>
+
+  <h1 class="page-title">Malaysian Income Tax Calculator YA2025</h1>
+  <p class="page-subtitle">Resident individual tax estimate with full relief deductions. Results update as you type.</p>
+
+  <div class="info-box">
+    <strong>Filing deadline:</strong> April 30, 2026 for employment income (non-business). File via <strong>MyTax (ezHASiL)</strong> at mytax.hasil.gov.my. This calculator is for estimation only — consult LHDN or a tax advisor for official assessments.
+  </div>
+
+  <!-- Income Section -->
+  <div class="card">
+    <div class="card-title">Income</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="annualIncome">Annual Gross Income (RM)</label>
+        <input type="number" id="annualIncome" value="72000" min="0" step="1000">
+        <span class="field-hint">Total employment income before deductions</span>
+      </div>
+      <div class="field">
+        <label for="monthlySalary">Monthly Salary (RM) — optional</label>
+        <input type="number" id="monthlySalary" value="6000" min="0" step="100">
+        <span class="field-hint">Auto-fills EPF contribution below</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reliefs Section -->
+  <div class="card">
+    <div class="card-title">Tax Reliefs — YA2025</div>
+
+    <div class="relief-row">
+      <div>
+        <div class="relief-name">Self &amp; Dependent Relief</div>
+        <div class="relief-cap">Auto-applied: RM9,000 (mandatory)</div>
+      </div>
+      <div style="width:140px; text-align:right; font-weight:600; color:var(--green);">RM9,000</div>
+    </div>
+
+    <div class="relief-row">
+      <div>
+        <div class="relief-name">EPF Contributions</div>
+        <div class="relief-cap">Max deductible: RM4,000 (separate from life ins. cap)</div>
+      </div>
+      <div class="relief-input">
+        <input type="number" id="reliefEPF" value="7920" min="0" max="4000" step="100">
+      </div>
+    </div>
+
+    <div class="relief-row">
+      <div>
+        <div class="relief-name">Life Insurance Premiums</div>
+        <div class="relief-cap">Combined EPF + life insurance cap: RM7,000</div>
+      </div>
+      <div class="relief-input">
+        <input type="number" id="reliefLife" value="0" min="0" max="7000" step="100">
+      </div>
+    </div>
+
+    <div class="relief-row">
+      <div>
+        <div class="relief-name">Medical &amp; Education Insurance</div>
+        <div class="relief-cap">Cap: RM3,000 per year</div>
+      </div>
+      <div class="relief-input">
+        <input type="number" id="reliefMedIns" value="1200" min="0" max="3000" step="100">
+      </div>
+    </div>
+
+    <div class="relief-row">
+      <div>
+        <div class="relief-name">Number of Children (under 18)</div>
+        <div class="relief-cap">RM2,000 per qualifying child</div>
+      </div>
+      <div class="relief-input">
+        <select id="numChildren">
+          <option value="0" selected>0 children</option>
+          <option value="1">1 child</option>
+          <option value="2">2 children</option>
+          <option value="3">3 children</option>
+          <option value="4">4 children</option>
+          <option value="5">5 children</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="relief-row">
+      <div>
+        <div class="relief-name">Lifestyle Relief</div>
+        <div class="relief-cap">Books, electronics, sports, internet — cap: RM2,500</div>
+      </div>
+      <div class="relief-input">
+        <input type="number" id="reliefLifestyle" value="2500" min="0" max="2500" step="100">
+      </div>
+    </div>
+
+    <div class="relief-row">
+      <div>
+        <div class="relief-name">Medical Expenses (self/spouse/parents)</div>
+        <div class="relief-cap">Cap: RM8,000</div>
+      </div>
+      <div class="relief-input">
+        <input type="number" id="reliefMedical" value="0" min="0" max="8000" step="100">
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <!-- Income breakdown -->
+    <div class="card">
+      <div class="card-title">Income &amp; Relief Summary</div>
+      <div class="income-breakdown">
+        <div class="income-line">
+          <span class="label">Gross income</span>
+          <span class="val" id="sumGross">—</span>
+        </div>
+        <div class="income-line">
+          <span class="label">Total reliefs</span>
+          <span class="val deduct" id="sumReliefs">—</span>
+        </div>
+        <div class="income-line">
+          <span class="label">Chargeable income</span>
+          <span class="val total" id="sumChargeable">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key metrics -->
+    <div class="summary-grid">
+      <div class="result-card primary">
+        <div class="result-label">Total Tax Payable</div>
+        <div class="result-value" id="res-tax">—</div>
+      </div>
+      <div class="result-card warn">
+        <div class="result-label">Effective Rate</div>
+        <div class="result-value" id="res-rate">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Monthly Tax</div>
+        <div class="result-value" id="res-monthly">—</div>
+      </div>
+    </div>
+
+    <!-- Tax bracket breakdown -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div class="card-title" style="padding:16px 20px 0;">Tax Bracket Breakdown</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Chargeable Income Band (RM)</th>
+              <th>Rate</th>
+              <th>Taxable Amount</th>
+              <th>Tax in Band</th>
+            </tr>
+          </thead>
+          <tbody id="bracket-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Explainer -->
+  <div class="explainer">
+    <h2>Malaysian Income Tax — How It Works (YA2025)</h2>
+    <p>
+      Malaysia uses a progressive tax system for resident individuals. Only the portion of income that falls within each bracket is taxed at that rate — so earning more never makes you worse off (the higher rate only applies to the extra ringgit above the threshold, not your entire income).
+    </p>
+    <p>
+      The tax year runs from 1 January to 31 December. For employment income with no business income, the filing deadline is <strong>30 April 2026</strong> for YA2025. File online via <a href="https://mytax.hasil.gov.my" target="_blank" rel="noopener">mytax.hasil.gov.my</a>. Most salaried employees already have tax deducted monthly via the PCB (Potongan Cukai Berjadual) scheme.
+    </p>
+
+    <h3>Key Reliefs to Claim</h3>
+    <ul>
+      <li><strong>Self relief (RM9,000):</strong> Automatically given to every resident individual — no receipts needed.</li>
+      <li><strong>EPF + Life Insurance (RM7,000 combined):</strong> Your EPF contributions are deductible — check your EA form. Voluntary top-ups count too.</li>
+      <li><strong>Lifestyle (RM2,500):</strong> Books, computers, smartphones, sports equipment, gym memberships, internet subscription.</li>
+      <li><strong>Medical insurance (RM3,000):</strong> Premiums for medical/education insurance for self, spouse, or children.</li>
+      <li><strong>Medical expenses (RM8,000):</strong> Serious illness treatment, fertility, vaccination, and dental fees for self, spouse, and parents.</li>
+    </ul>
+
+    <h3>Monthly Tax Deduction (PCB)</h3>
+    <p>
+      If you're a salaried employee, your employer withholds PCB monthly based on your salary and declared reliefs. You can submit a TP1 form to your HR to update your relief claims mid-year. Any over-deduction is refunded when you file; any under-deduction is a balance payable.
+    </p>
+  </div>
+</div>
+
+<div class="bmac-float">
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">
+    <span class="bmac-icon">&#9749;</span> Buy me a coffee
+  </a>
+</div>
+
+<script>
+  // YA2025 tax brackets: [upperLimit, rate]
+  // Last bracket has Infinity as upper limit
+  const BRACKETS = [
+    { from: 0,       to: 5000,      rate: 0.00 },
+    { from: 5000,    to: 20000,     rate: 0.01 },
+    { from: 20000,   to: 35000,     rate: 0.03 },
+    { from: 35000,   to: 50000,     rate: 0.06 },
+    { from: 50000,   to: 70000,     rate: 0.11 },
+    { from: 70000,   to: 100000,    rate: 0.19 },
+    { from: 100000,  to: 400000,    rate: 0.25 },
+    { from: 400000,  to: 600000,    rate: 0.26 },
+    { from: 600000,  to: 2000000,   rate: 0.28 },
+    { from: 2000000, to: Infinity,  rate: 0.30 },
+  ];
+
+  const BRACKET_LABELS = [
+    '0 – 5,000',
+    '5,001 – 20,000',
+    '20,001 – 35,000',
+    '35,001 – 50,000',
+    '50,001 – 70,000',
+    '70,001 – 100,000',
+    '100,001 – 400,000',
+    '400,001 – 600,000',
+    '600,001 – 2,000,000',
+    'Above 2,000,000',
+  ];
+
+  function fmtRM(n) {
+    if (isNaN(n) || !isFinite(n)) return 'RM0.00';
+    const prefix = n < 0 ? '−RM' : 'RM';
+    return prefix + Math.abs(n).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function fmtPct(n) {
+    return n.toFixed(2) + '%';
+  }
+
+  function cap(val, max) { return Math.min(val, max); }
+
+  function calculate() {
+    const annual = parseFloat(document.getElementById('annualIncome').value) || 0;
+    const monthly = parseFloat(document.getElementById('monthlySalary').value) || 0;
+
+    // Auto-fill EPF relief if monthly salary provided
+    if (monthly > 0) {
+      const epfContrib = monthly * 0.11 * 12;
+      document.getElementById('reliefEPF').value = Math.round(Math.min(epfContrib, 4000));
+    }
+
+    const reliefSelf = 9000;
+    const reliefEPF = cap(parseFloat(document.getElementById('reliefEPF').value) || 0, 4000);
+    const reliefLife = parseFloat(document.getElementById('reliefLife').value) || 0;
+    // EPF + life insurance combined cap = RM7,000
+    const reliefEPFLife = cap(reliefEPF + reliefLife, 7000);
+    const reliefMedIns = cap(parseFloat(document.getElementById('reliefMedIns').value) || 0, 3000);
+    const numChildren = parseInt(document.getElementById('numChildren').value) || 0;
+    const reliefChildren = numChildren * 2000;
+    const reliefLifestyle = cap(parseFloat(document.getElementById('reliefLifestyle').value) || 0, 2500);
+    const reliefMedical = cap(parseFloat(document.getElementById('reliefMedical').value) || 0, 8000);
+
+    const totalReliefs = reliefSelf + reliefEPFLife + reliefMedIns + reliefChildren + reliefLifestyle + reliefMedical;
+    const chargeable = Math.max(annual - totalReliefs, 0);
+
+    // Tax calculation
+    let totalTax = 0;
+    const bracketBody = document.getElementById('bracket-body');
+    bracketBody.innerHTML = '';
+
+    BRACKETS.forEach((b, i) => {
+      if (chargeable <= b.from) return;
+      const taxable = Math.min(chargeable, b.to) - b.from;
+      const tax = taxable * b.rate;
+      totalTax += tax;
+
+      const row = document.createElement('tr');
+      const taxClass = tax > 0 ? 'tax-col' : 'zero-col';
+      const displayTo = b.to === Infinity ? '∞' : b.to.toLocaleString('en-MY');
+      row.innerHTML = `
+        <td>RM ${BRACKET_LABELS[i]}</td>
+        <td>${(b.rate * 100).toFixed(0)}%</td>
+        <td>${fmtRM(taxable)}</td>
+        <td class="${taxClass}">${fmtRM(tax)}</td>
+      `;
+      bracketBody.appendChild(row);
+    });
+
+    const effectiveRate = annual > 0 ? (totalTax / annual) * 100 : 0;
+    const monthlyTax = totalTax / 12;
+
+    document.getElementById('sumGross').textContent = fmtRM(annual);
+    document.getElementById('sumReliefs').textContent = '−' + fmtRM(totalReliefs);
+    document.getElementById('sumChargeable').textContent = fmtRM(chargeable);
+    document.getElementById('res-tax').textContent = fmtRM(totalTax);
+    document.getElementById('res-rate').textContent = fmtPct(effectiveRate);
+    document.getElementById('res-monthly').textContent = fmtRM(monthlyTax);
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', calculate);
+  });
+
+  document.addEventListener('DOMContentLoaded', calculate);
+</script>
+
+</body>
+</html>
