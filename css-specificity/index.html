@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Specificity Calculator — Free Online Tool</title>
+  <meta name="description" content="Free CSS specificity calculator. Instantly calculate the specificity of any CSS selector, compare two selectors, and understand which rules win. No signup needed.">
+  <meta name="keywords" content="css specificity calculator, css selector specificity, specificity calculator online, css cascade, css specificity explained, which css rule wins">
+  <meta property="og:title" content="CSS Specificity Calculator — Free Online Tool">
+  <meta property="og:description" content="Calculate CSS specificity instantly. Compare selectors, see which wins, and understand the breakdown. Free, no signup.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/css-specificity/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/css-specificity/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='60'>#</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 52px;
+    }
+    .nav-brand {
+      font-weight: 700; font-size: 1rem; color: #f0f6fc;
+      text-decoration: none; margin-right: 28px; letter-spacing: -0.01em;
+    }
+    .nav-brand:hover { color: #58a6ff; }
+    .nav-links { display: flex; gap: 4px; flex: 1; }
+    .nav-links a {
+      color: #8b949e; text-decoration: none; font-size: 0.88rem;
+      padding: 6px 12px; border-radius: 6px; transition: background 0.15s, color 0.15s;
+    }
+    .nav-links a:hover { background: #21262d; color: #e6edf3; }
+    .nav-coffee {
+      color: #f0f6fc; text-decoration: none; font-size: 0.82rem; font-weight: 600;
+      background: #21262d; border: 1px solid #30363d; border-radius: 6px;
+      padding: 5px 12px; transition: background 0.15s;
+    }
+    .nav-coffee:hover { background: #30363d; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 36px 20px 80px; }
+    .back-link {
+      display: inline-block; color: #58a6ff; text-decoration: none;
+      font-size: 0.85rem; margin-bottom: 20px;
+    }
+    .back-link:hover { text-decoration: underline; }
+    h1 { font-size: 2rem; font-weight: 700; color: #f0f6fc; margin-bottom: 6px; }
+    .tagline { color: #8b949e; margin-bottom: 32px; font-size: 1rem; }
+
+    .panel {
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 22px;
+      margin-bottom: 20px;
+    }
+    .panel-label {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #8b949e; font-weight: 600; margin-bottom: 14px;
+    }
+
+    .input-row {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    }
+    .selector-input {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 1rem; background: #0d1117; border: 1px solid #30363d;
+      border-radius: 8px; color: #e6edf3; padding: 10px 14px;
+      flex: 1; min-width: 200px; outline: none; transition: border-color 0.15s;
+    }
+    .selector-input:focus { border-color: #58a6ff; }
+    .selector-input.error { border-color: #f85149; }
+
+    .btn {
+      padding: 8px 18px; border-radius: 7px; border: 1px solid #30363d;
+      cursor: pointer; font-size: 0.85rem; font-weight: 600;
+      transition: background 0.15s, border-color 0.15s;
+      background: #21262d; color: #c9d1d9;
+    }
+    .btn:hover { background: #30363d; border-color: #8b949e; }
+    .btn-primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+    .btn-primary:hover { background: #388bfd; border-color: #388bfd; }
+
+    /* Specificity display */
+    .spec-display {
+      display: flex; align-items: center; gap: 6px; margin-top: 20px; flex-wrap: wrap;
+    }
+    .spec-box {
+      display: flex; flex-direction: column; align-items: center;
+      background: #0d1117; border: 2px solid #30363d; border-radius: 10px;
+      padding: 14px 20px; min-width: 76px; transition: border-color 0.2s;
+    }
+    .spec-box.has-value { border-color: #58a6ff; }
+    .spec-box .spec-value {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 2.2rem; font-weight: 700; color: #f0f6fc; line-height: 1;
+    }
+    .spec-box .spec-label {
+      font-size: 0.68rem; color: #8b949e; text-transform: uppercase;
+      letter-spacing: 0.07em; margin-top: 6px; text-align: center;
+    }
+    .spec-sep {
+      font-size: 1.8rem; color: #30363d; font-weight: 300; margin: 0 2px;
+      align-self: center;
+    }
+    .spec-total {
+      margin-left: 8px; font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 1rem; color: #8b949e; align-self: flex-end; padding-bottom: 14px;
+    }
+
+    /* Breakdown */
+    .breakdown {
+      margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .token {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82rem;
+      padding: 4px 10px; border-radius: 6px; border: 1px solid;
+    }
+    .token-id { background: rgba(255,160,60,0.12); border-color: rgba(255,160,60,0.4); color: #ffa03c; }
+    .token-class { background: rgba(88,166,255,0.12); border-color: rgba(88,166,255,0.4); color: #79c0ff; }
+    .token-element { background: rgba(94,207,177,0.12); border-color: rgba(94,207,177,0.4); color: #56d364; }
+    .token-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-id { background: #ffa03c; }
+    .dot-class { background: #79c0ff; }
+    .dot-element { background: #56d364; }
+    .no-result { color: #8b949e; font-size: 0.9rem; margin-top: 18px; }
+
+    /* Comparison */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: start;
+    }
+    @media (max-width: 680px) { .compare-grid { grid-template-columns: 1fr; } }
+    .vs-badge {
+      font-size: 0.9rem; font-weight: 700; color: #8b949e;
+      padding: 8px; text-align: center; margin-top: 36px;
+    }
+    .compare-winner {
+      margin-top: 16px; padding: 12px 16px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600; text-align: center;
+      grid-column: 1 / -1;
+    }
+    .winner-left { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: #79c0ff; }
+    .winner-right { background: rgba(255,160,60,0.1); border: 1px solid rgba(255,160,60,0.3); color: #ffa03c; }
+    .winner-tie { background: rgba(139,148,158,0.1); border: 1px solid #30363d; color: #8b949e; }
+
+    /* Examples */
+    .examples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+    .example-card {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+      padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .example-card:hover { border-color: #58a6ff; background: rgba(88,166,255,0.04); }
+    .example-selector {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem;
+      color: #e6edf3; margin-bottom: 4px;
+    }
+    .example-spec {
+      font-size: 0.75rem; color: #8b949e; font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* Legend */
+    .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 4px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #8b949e; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Info section */
+    .info-section { margin-top: 32px; }
+    .info-section h2 { font-size: 1.1rem; color: #f0f6fc; margin-bottom: 10px; }
+    .info-section p { color: #8b949e; font-size: 0.9rem; line-height: 1.7; margin-bottom: 10px; }
+    .info-section code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: #21262d; border: 1px solid #30363d; padding: 1px 6px;
+      border-radius: 4px; font-size: 0.85em; color: #79c0ff;
+    }
+    .info-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px; margin: 14px 0;
+    }
+    .info-card {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 14px;
+    }
+    .info-card .col-badge {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+      display: inline-block; margin-bottom: 8px;
+    }
+    .badge-a { background: rgba(240,80,80,0.15); color: #ff7b7b; border: 1px solid rgba(240,80,80,0.3); }
+    .badge-b { background: rgba(255,160,60,0.15); color: #ffa03c; border: 1px solid rgba(255,160,60,0.3); }
+    .badge-c { background: rgba(88,166,255,0.15); color: #79c0ff; border: 1px solid rgba(88,166,255,0.3); }
+    .badge-d { background: rgba(94,207,177,0.15); color: #56d364; border: 1px solid rgba(94,207,177,0.3); }
+    .info-card .col-title { font-size: 0.88rem; font-weight: 600; color: #c9d1d9; margin-bottom: 4px; }
+    .info-card .col-desc { font-size: 0.8rem; color: #8b949e; line-height: 1.5; }
+
+    .floating-coffee {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #ffdd00; color: #000; text-decoration: none;
+      font-weight: 700; font-size: 0.82rem; padding: 8px 16px;
+      border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.15s; z-index: 999;
+    }
+    .floating-coffee:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a>
+  <div class="nav-links">
+    <a href="https://hlteoh37.github.io/profiterole-blog/posts/">Blog</a>
+    <a href="https://hlteoh37.github.io/profiterole-blog/projects/">Projects</a>
+    <a href="https://hlteoh37.github.io/profiterole-blog/json/">JSON</a>
+    <a href="https://hlteoh37.github.io/profiterole-blog/jwt/">JWT</a>
+    <a href="https://hlteoh37.github.io/profiterole-blog/regex/">Regex</a>
+    <a href="https://hlteoh37.github.io/profiterole-blog/base64/">Base64</a>
+  </div>
+  <a class="nav-coffee" href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">Buy me a coffee</a>
+</nav>
+
+<div class="container">
+  <a class="back-link" href="https://hlteoh37.github.io/profiterole-blog/projects/">&larr; All tools</a>
+  <h1>CSS Specificity Calculator</h1>
+  <p class="tagline">Instantly calculate the specificity of any CSS selector. Compare two selectors to see which wins. Free, client-side, no signup.</p>
+
+  <!-- Single selector -->
+  <div class="panel">
+    <div class="panel-label">Calculate Specificity</div>
+    <div class="input-row">
+      <input type="text" class="selector-input" id="singleInput"
+        placeholder="e.g. #nav .menu > li:hover" spellcheck="false" autocomplete="off">
+      <button class="btn btn-primary" onclick="calculateSingle()">Calculate</button>
+      <button class="btn" onclick="clearSingle()">Clear</button>
+    </div>
+    <div id="singleResult">
+      <p class="no-result">Enter a CSS selector above to see its specificity.</p>
+    </div>
+  </div>
+
+  <!-- Compare two selectors -->
+  <div class="panel">
+    <div class="panel-label">Compare Two Selectors</div>
+    <div class="compare-grid">
+      <div>
+        <div style="font-size:0.8rem;color:#8b949e;margin-bottom:8px;">Selector A</div>
+        <input type="text" class="selector-input" id="compareA"
+          placeholder="e.g. #header nav a" spellcheck="false" autocomplete="off"
+          oninput="compareSelectors()">
+        <div id="resultA" style="margin-top:12px;"></div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div>
+        <div style="font-size:0.8rem;color:#8b949e;margin-bottom:8px;">Selector B</div>
+        <input type="text" class="selector-input" id="compareB"
+          placeholder="e.g. .nav .menu li a" spellcheck="false" autocomplete="off"
+          oninput="compareSelectors()">
+        <div id="resultB" style="margin-top:12px;"></div>
+      </div>
+      <div id="compareWinner" style="display:none;" class="compare-winner"></div>
+    </div>
+  </div>
+
+  <!-- Examples -->
+  <div class="panel">
+    <div class="panel-label">Click an example to calculate</div>
+    <div class="examples-grid" id="examplesGrid"></div>
+  </div>
+
+  <!-- Legend -->
+  <div class="panel">
+    <div class="panel-label">Specificity Columns Explained</div>
+    <div class="info-grid">
+      <div class="info-card">
+        <span class="col-badge badge-a">A</span>
+        <div class="col-title">Inline Styles</div>
+        <div class="col-desc">The <code>style=""</code> attribute on an element. Highest specificity weight.</div>
+      </div>
+      <div class="info-card">
+        <span class="col-badge badge-b">B</span>
+        <div class="col-title">ID Selectors</div>
+        <div class="col-desc"><code>#myId</code> — each ID adds 1 to column B. IDs must be unique per page.</div>
+      </div>
+      <div class="info-card">
+        <span class="col-badge badge-c">C</span>
+        <div class="col-title">Classes, Attributes, Pseudo-classes</div>
+        <div class="col-desc"><code>.class</code>, <code>[attr]</code>, <code>:hover</code>, <code>:nth-child()</code> — each adds 1 to column C.</div>
+      </div>
+      <div class="info-card">
+        <span class="col-badge badge-d">D</span>
+        <div class="col-title">Elements &amp; Pseudo-elements</div>
+        <div class="col-desc"><code>div</code>, <code>span</code>, <code>::before</code>, <code>::after</code> — each adds 1 to column D.</div>
+      </div>
+    </div>
+    <div class="info-section">
+      <p>Specificity is compared column by column from left (A) to right (D). A higher value in column A always beats any value in B, C, or D — there is no overflow. The universal selector <code>*</code> and combinators (<code>&gt;</code>, <code>+</code>, <code>~</code>) contribute zero specificity.</p>
+      <p><strong style="color:#f0f6fc;">Note:</strong> <code>!important</code> overrides all specificity but is not a selector — it's not counted here.</p>
+    </div>
+  </div>
+</div>
+
+<a class="floating-coffee" href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">Buy me a coffee</a>
+
+<script>
+// ── Specificity parser ──────────────────────────────────────────────────────
+
+const EXAMPLES = [
+  { selector: '*',                        desc: 'Universal selector' },
+  { selector: 'div',                      desc: 'Single element' },
+  { selector: 'ul li',                    desc: 'Descendant combinator' },
+  { selector: '.nav a',                   desc: 'Class + element' },
+  { selector: '#header',                  desc: 'ID selector' },
+  { selector: '#nav .menu > li',          desc: 'ID + class + element' },
+  { selector: 'a:hover',                  desc: 'Element + pseudo-class' },
+  { selector: 'input[type="text"]',       desc: 'Element + attribute' },
+  { selector: '.container p:first-child', desc: 'Class + element + pseudo-class' },
+  { selector: '#main .article h2::before', desc: 'ID + class + element + pseudo-element' },
+  { selector: ':not(.active)',            desc: ':not() pseudo-class' },
+  { selector: 'ul > li:nth-child(2n+1)',  desc: 'Structural pseudo-class' },
+];
+
+function parseSpecificity(selector) {
+  let a = 0, b = 0, c = 0, d = 0;
+  const tokens = [];
+
+  // Work on a copy we can mutate
+  let s = selector.trim();
+
+  // Strip inline style hint (a=1 if style="")
+  // Not applicable in selectors, but handle gracefully
+
+  // Replace contents of :not(), :is(), :where(), :has() — extract and process inner
+  // :where() contributes 0 specificity for its argument
+  // :is() and :not() take specificity of most specific argument
+  // For simplicity: process :not()/:is()/:has() args, ignore :where() args
+  s = s.replace(/:where\s*\([^)]*\)/g, '');
+
+  // Process :not(), :is(), :has() — unwrap and let their contents be parsed
+  s = s.replace(/:(not|is|has)\s*\(([^)]*)\)/g, (match, fn, inner) => {
+    // Just unwrap — inner selector tokens will be parsed normally
+    return ' ' + inner;
+  });
+
+  // Remove combinators (>, +, ~, space) — we only care about simple tokens
+  // Count IDs
+  const idMatches = s.match(/#[a-zA-Z_-][a-zA-Z0-9_-]*/g) || [];
+  b += idMatches.length;
+  idMatches.forEach(t => tokens.push({ text: t, type: 'id' }));
+  s = s.replace(/#[a-zA-Z_-][a-zA-Z0-9_-]*/g, '');
+
+  // Count attribute selectors [...]
+  const attrMatches = s.match(/\[[^\]]*\]/g) || [];
+  c += attrMatches.length;
+  attrMatches.forEach(t => tokens.push({ text: t, type: 'class' }));
+  s = s.replace(/\[[^\]]*\]/g, '');
+
+  // Count pseudo-elements ::before, ::after, ::placeholder, etc.
+  const peMatches = s.match(/::[\w-]+/g) || [];
+  d += peMatches.length;
+  peMatches.forEach(t => tokens.push({ text: t, type: 'element' }));
+  s = s.replace(/::[\w-]+/g, '');
+
+  // Count pseudo-classes :hover, :nth-child(), etc. (but not :: handled above)
+  // Exclude :not/:is/:has/:where already handled
+  const pcMatches = s.match(/:[\w-]+(?:\([^)]*\))?/g) || [];
+  c += pcMatches.length;
+  pcMatches.forEach(t => tokens.push({ text: t, type: 'class' }));
+  s = s.replace(/:[\w-]+(?:\([^)]*\))?/g, '');
+
+  // Count classes .foo
+  const classMatches = s.match(/\.[a-zA-Z_-][a-zA-Z0-9_-]*/g) || [];
+  c += classMatches.length;
+  classMatches.forEach(t => tokens.push({ text: t, type: 'class' }));
+  s = s.replace(/\.[a-zA-Z_-][a-zA-Z0-9_-]*/g, '');
+
+  // What's left: elements and combinators
+  // Strip combinators and universal
+  s = s.replace(/[>+~*\s,]/g, ' ');
+  const elementMatches = s.match(/[a-zA-Z][a-zA-Z0-9-]*/g) || [];
+  d += elementMatches.length;
+  elementMatches.forEach(t => tokens.push({ text: t, type: 'element' }));
+
+  return { a, b, c, d, tokens };
+}
+
+function specToString(spec) {
+  return `(${spec.a},${spec.b},${spec.c},${spec.d})`;
+}
+
+function compareSpec(sa, sb) {
+  if (sa.a !== sb.a) return sa.a > sb.a ? 'A' : 'B';
+  if (sa.b !== sb.b) return sa.b > sb.b ? 'A' : 'B';
+  if (sa.c !== sb.c) return sa.c > sb.c ? 'A' : 'B';
+  if (sa.d !== sb.d) return sa.d > sb.d ? 'A' : 'B';
+  return 'TIE';
+}
+
+function renderSpecDisplay(spec) {
+  const { a, b, c, d } = spec;
+  const boxes = [
+    { val: a, label: 'Inline (A)', cls: 'badge-a' },
+    { val: b, label: 'ID (B)', cls: 'badge-b' },
+    { val: c, label: 'Class (C)', cls: 'badge-c' },
+    { val: d, label: 'Element (D)', cls: 'badge-d' },
+  ];
+  let html = '<div class="spec-display">';
+  boxes.forEach((box, i) => {
+    if (i > 0) html += '<span class="spec-sep">,</span>';
+    html += `<div class="spec-box ${box.val > 0 ? 'has-value' : ''}">
+      <span class="spec-value">${box.val}</span>
+      <span class="spec-label">${box.label}</span>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderTokens(tokens) {
+  if (!tokens.length) return '<p style="color:#8b949e;font-size:0.85rem;margin-top:12px;">No contributing tokens.</p>';
+  let html = '<div class="breakdown">';
+  tokens.forEach(t => {
+    html += `<span class="token token-${t.type}">
+      <span class="token-dot dot-${t.type}"></span>${escHtml(t.text)}
+    </span>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── UI ──────────────────────────────────────────────────────────────────────
+
+function calculateSingle() {
+  const input = document.getElementById('singleInput');
+  const val = input.value.trim();
+  const container = document.getElementById('singleResult');
+  if (!val) {
+    container.innerHTML = '<p class="no-result">Enter a CSS selector above to see its specificity.</p>';
+    return;
+  }
+  const spec = parseSpecificity(val);
+  container.innerHTML = renderSpecDisplay(spec) + renderTokens(spec.tokens);
+}
+
+function clearSingle() {
+  document.getElementById('singleInput').value = '';
+  document.getElementById('singleResult').innerHTML = '<p class="no-result">Enter a CSS selector above to see its specificity.</p>';
+}
+
+function renderCompactSpec(spec) {
+  const { a, b, c, d } = spec;
+  return `<div class="spec-display" style="flex-wrap:nowrap;gap:4px;">
+    <div class="spec-box ${a>0?'has-value':''}" style="padding:10px 14px;min-width:54px;">
+      <span class="spec-value" style="font-size:1.6rem;">${a}</span>
+      <span class="spec-label">A</span>
+    </div>
+    <span class="spec-sep" style="font-size:1.3rem;">,</span>
+    <div class="spec-box ${b>0?'has-value':''}" style="padding:10px 14px;min-width:54px;">
+      <span class="spec-value" style="font-size:1.6rem;">${b}</span>
+      <span class="spec-label">B</span>
+    </div>
+    <span class="spec-sep" style="font-size:1.3rem;">,</span>
+    <div class="spec-box ${c>0?'has-value':''}" style="padding:10px 14px;min-width:54px;">
+      <span class="spec-value" style="font-size:1.6rem;">${c}</span>
+      <span class="spec-label">C</span>
+    </div>
+    <span class="spec-sep" style="font-size:1.3rem;">,</span>
+    <div class="spec-box ${d>0?'has-value':''}" style="padding:10px 14px;min-width:54px;">
+      <span class="spec-value" style="font-size:1.6rem;">${d}</span>
+      <span class="spec-label">D</span>
+    </div>
+  </div>`;
+}
+
+function compareSelectors() {
+  const aVal = document.getElementById('compareA').value.trim();
+  const bVal = document.getElementById('compareB').value.trim();
+  const rA = document.getElementById('resultA');
+  const rB = document.getElementById('resultB');
+  const winner = document.getElementById('compareWinner');
+
+  if (aVal) {
+    const spec = parseSpecificity(aVal);
+    rA.innerHTML = renderCompactSpec(spec) + renderTokens(spec.tokens);
+  } else { rA.innerHTML = ''; }
+
+  if (bVal) {
+    const spec = parseSpecificity(bVal);
+    rB.innerHTML = renderCompactSpec(spec) + renderTokens(spec.tokens);
+  } else { rB.innerHTML = ''; }
+
+  if (aVal && bVal) {
+    const sa = parseSpecificity(aVal), sb = parseSpecificity(bVal);
+    const result = compareSpec(sa, sb);
+    winner.style.display = 'block';
+    if (result === 'TIE') {
+      winner.className = 'compare-winner winner-tie';
+      winner.textContent = 'TIE — Both selectors have equal specificity. Source order decides.';
+    } else if (result === 'A') {
+      winner.className = 'compare-winner winner-left';
+      winner.textContent = `Selector A wins ${specToString(sa)} > ${specToString(sb)}`;
+    } else {
+      winner.className = 'compare-winner winner-right';
+      winner.textContent = `Selector B wins ${specToString(sb)} > ${specToString(sa)}`;
+    }
+  } else {
+    winner.style.display = 'none';
+  }
+}
+
+// ── Examples ────────────────────────────────────────────────────────────────
+
+function loadExample(sel) {
+  document.getElementById('singleInput').value = sel;
+  calculateSingle();
+  document.getElementById('singleInput').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderExamples() {
+  const grid = document.getElementById('examplesGrid');
+  grid.innerHTML = EXAMPLES.map(ex => {
+    const spec = parseSpecificity(ex.selector);
+    return `<div class="example-card" onclick="loadExample(${JSON.stringify(ex.selector)})">
+      <div class="example-selector">${escHtml(ex.selector)}</div>
+      <div class="example-spec">${specToString(spec)} — ${escHtml(ex.desc)}</div>
+    </div>`;
+  }).join('');
+}
+
+// Enter key support
+document.getElementById('singleInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculateSingle();
+});
+
+// Init
+renderExamples();
+</script>
+</body>
+</html>
