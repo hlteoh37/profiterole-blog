@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paycheck Calculator 2024 — Take-Home Pay After Taxes (Federal + FICA)</title>
+  <meta name="description" content="Free paycheck calculator. See your take-home pay after federal income tax, Social Security, and Medicare. 2024 tax brackets. No login required.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/paycheck-calculator/">
+  <meta property="og:title" content="Paycheck Calculator 2024 — Take-Home Pay After Federal Tax + FICA">
+  <meta property="og:description" content="Calculate your exact take-home pay after federal income tax, Social Security, and Medicare. Free, instant, 2024 rates.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/paycheck-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Paycheck Calculator 2024 — Take-Home Pay After Taxes">
+  <meta name="twitter:description" content="See exactly how much of your salary you actually keep. Federal tax + FICA calculated instantly.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --red: #f85149; --yellow: #d29922; --text: #e6edf3;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 820px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+    input, select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-size: 0.95rem; padding: 9px 12px; width: 100%;
+      font-family: var(--font); transition: border-color 0.15s;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--accent); }
+    .input-prefix { position: relative; }
+    .input-prefix span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.95rem; pointer-events: none; }
+    .input-prefix input { padding-left: 24px; }
+    .btn { background: var(--accent); color: #0d1117; border: none; border-radius: 6px; padding: 11px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px; font-family: var(--font); transition: opacity 0.15s; }
+    .btn:hover { opacity: 0.85; }
+    .results { display: none; }
+    .results.visible { display: block; }
+    .highlight-row { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .highlight-label { font-size: 0.9rem; color: var(--muted); }
+    .highlight-value { font-size: 1.6rem; font-weight: 700; color: var(--green); }
+    .breakdown-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .breakdown-table th { text-align: left; padding: 8px 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 1px solid var(--border); }
+    .breakdown-table td { padding: 10px 12px; border-bottom: 1px solid rgba(48,54,61,0.5); }
+    .breakdown-table tr:last-child td { border-bottom: none; font-weight: 600; }
+    .breakdown-table .deduction { color: var(--red); }
+    .breakdown-table .net { color: var(--green); }
+    .bar-container { height: 12px; background: var(--bg); border-radius: 99px; overflow: hidden; margin: 12px 0 4px; display: flex; }
+    .bar-take-home { background: var(--green); height: 100%; border-radius: 99px 0 0 99px; transition: width 0.4s; }
+    .bar-federal { background: var(--red); height: 100%; transition: width 0.4s; }
+    .bar-fica { background: var(--yellow); height: 100%; border-radius: 0 99px 99px 0; transition: width 0.4s; }
+    .bar-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.78rem; color: var(--muted); }
+    .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 16px; padding: 12px; background: rgba(88,166,255,0.05); border-radius: 6px; border: 1px solid rgba(88,166,255,0.15); line-height: 1.5; }
+    .coffee-footer { margin-top: 40px; text-align: center; padding: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.88rem; }
+    .coffee-footer a { color: var(--accent); }
+    .period-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .period-tab { flex: 1; text-align: center; padding: 8px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--muted); transition: all 0.15s; }
+    .period-tab.active { background: rgba(88,166,255,0.15); border-color: var(--accent); color: var(--accent); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  <div class="logo"><span>Profiterole</span> Finance</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Paycheck Calculator 2024</h1>
+  <p class="page-subtitle">See your take-home pay after federal income tax + FICA. Enter your salary below.</p>
+
+  <div class="card">
+    <div class="card-title">Your Details</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="salary">Annual Gross Salary</label>
+        <div class="input-prefix"><span>$</span><input type="number" id="salary" value="75000" min="0" step="1000"></div>
+      </div>
+      <div class="form-group">
+        <label for="filing">Filing Status</label>
+        <select id="filing">
+          <option value="single">Single</option>
+          <option value="mfj">Married Filing Jointly</option>
+          <option value="mfs">Married Filing Separately</option>
+          <option value="hoh">Head of Household</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="frequency">Pay Frequency</label>
+        <select id="frequency">
+          <option value="52">Weekly (52x/year)</option>
+          <option value="26">Bi-weekly (26x/year)</option>
+          <option value="24">Semi-monthly (24x/year)</option>
+          <option value="12" selected>Monthly (12x/year)</option>
+          <option value="1">Annual</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="pretax">Pre-Tax Deductions/year (401k, HSA…)</label>
+        <div class="input-prefix"><span>$</span><input type="number" id="pretax" value="0" min="0" step="100" placeholder="0"></div>
+      </div>
+    </div>
+    <button class="btn" onclick="calculate()">Calculate Take-Home Pay</button>
+  </div>
+
+  <div class="card results" id="results">
+    <div class="card-title">Per Paycheck Breakdown</div>
+
+    <div class="period-tabs" id="periodTabs">
+      <div class="period-tab active" onclick="showPeriod('paycheck')">Per Paycheck</div>
+      <div class="period-tab" onclick="showPeriod('monthly')">Monthly</div>
+      <div class="period-tab" onclick="showPeriod('annual')">Annual</div>
+    </div>
+
+    <div id="highlightSection">
+      <div class="highlight-row">
+        <span class="highlight-label" id="highlightLabel">Take-Home (per paycheck)</span>
+        <span class="highlight-value" id="highlightValue">$0</span>
+      </div>
+    </div>
+
+    <div class="bar-container">
+      <div class="bar-take-home" id="barTakeHome"></div>
+      <div class="bar-federal" id="barFederal"></div>
+      <div class="bar-fica" id="barFica"></div>
+    </div>
+    <div class="bar-legend">
+      <span><span class="legend-dot" style="background:#3fb950"></span>Take-Home</span>
+      <span><span class="legend-dot" style="background:#f85149"></span>Federal Tax</span>
+      <span><span class="legend-dot" style="background:#d29922"></span>FICA (SS + Medicare)</span>
+    </div>
+
+    <br>
+    <table class="breakdown-table">
+      <thead>
+        <tr><th>Item</th><th style="text-align:right">Amount</th><th style="text-align:right">Rate</th></tr>
+      </thead>
+      <tbody id="breakdownBody"></tbody>
+    </table>
+
+    <p class="note" id="taxNote"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">About This Calculator</div>
+    <p style="font-size:0.88rem; color:var(--muted); line-height:1.7;">
+      Uses <strong style="color:var(--text)">2024 IRS federal income tax brackets</strong> and <strong style="color:var(--text)">FICA rates</strong>. Standard deduction is automatically applied ($14,600 single / $29,200 MFJ / $21,900 HOH for 2024). Social Security tax is 6.2% on wages up to $168,600. Medicare is 1.45% with no income limit (additional 0.9% applies above $200K for single filers, not modeled here). <strong style="color:var(--text)">State income tax is not included</strong> — add your state rate separately. Pre-tax deductions (401k, HSA, FSA) reduce your taxable income.
+    </p>
+  </div>
+
+  <div class="coffee-footer">
+    Free forever. No ads (yet). If this saved you time, <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">buy me a coffee</a>. ☕
+  </div>
+</div>
+
+<script>
+  // 2024 Tax Brackets
+  const BRACKETS = {
+    single: [
+      { min: 0, max: 11600, rate: 0.10 },
+      { min: 11600, max: 47150, rate: 0.12 },
+      { min: 47150, max: 100525, rate: 0.22 },
+      { min: 100525, max: 191950, rate: 0.24 },
+      { min: 191950, max: 243725, rate: 0.32 },
+      { min: 243725, max: 609350, rate: 0.35 },
+      { min: 609350, max: Infinity, rate: 0.37 }
+    ],
+    mfj: [
+      { min: 0, max: 23200, rate: 0.10 },
+      { min: 23200, max: 94300, rate: 0.12 },
+      { min: 94300, max: 201050, rate: 0.22 },
+      { min: 201050, max: 383900, rate: 0.24 },
+      { min: 383900, max: 487450, rate: 0.32 },
+      { min: 487450, max: 731200, rate: 0.35 },
+      { min: 731200, max: Infinity, rate: 0.37 }
+    ],
+    mfs: [
+      { min: 0, max: 11600, rate: 0.10 },
+      { min: 11600, max: 47150, rate: 0.12 },
+      { min: 47150, max: 100525, rate: 0.22 },
+      { min: 100525, max: 191950, rate: 0.24 },
+      { min: 191950, max: 243725, rate: 0.32 },
+      { min: 243725, max: 365600, rate: 0.35 },
+      { min: 365600, max: Infinity, rate: 0.37 }
+    ],
+    hoh: [
+      { min: 0, max: 16550, rate: 0.10 },
+      { min: 16550, max: 63100, rate: 0.12 },
+      { min: 63100, max: 100500, rate: 0.22 },
+      { min: 100500, max: 191950, rate: 0.24 },
+      { min: 191950, max: 243700, rate: 0.32 },
+      { min: 243700, max: 609350, rate: 0.35 },
+      { min: 609350, max: Infinity, rate: 0.37 }
+    ]
+  };
+
+  const STD_DEDUCTION = { single: 14600, mfj: 29200, mfs: 14600, hoh: 21900 };
+  const SS_WAGE_BASE = 168600;
+  const SS_RATE = 0.062;
+  const MEDICARE_RATE = 0.0145;
+
+  let annualResults = {};
+  let currentPeriod = 'paycheck';
+  let paycheckPeriods = 12;
+
+  function calcFederalTax(taxable, filing) {
+    const brackets = BRACKETS[filing];
+    let tax = 0;
+    for (const b of brackets) {
+      if (taxable <= b.min) break;
+      tax += (Math.min(taxable, b.max) - b.min) * b.rate;
+    }
+    return tax;
+  }
+
+  function getMarginalRate(taxable, filing) {
+    for (const b of [...BRACKETS[filing]].reverse()) {
+      if (taxable > b.min) return b.rate;
+    }
+    return BRACKETS[filing][0].rate;
+  }
+
+  function fmt(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function calculate() {
+    const gross = parseFloat(document.getElementById('salary').value) || 0;
+    const filing = document.getElementById('filing').value;
+    const freq = parseInt(document.getElementById('frequency').value);
+    const pretax = parseFloat(document.getElementById('pretax').value) || 0;
+    paycheckPeriods = freq;
+
+    const agi = Math.max(0, gross - pretax);
+    const stdDed = STD_DEDUCTION[filing];
+    const taxableIncome = Math.max(0, agi - stdDed);
+
+    const federalTax = calcFederalTax(taxableIncome, filing);
+    const ssTax = Math.min(gross, SS_WAGE_BASE) * SS_RATE;
+    const medicareTax = gross * MEDICARE_RATE;
+    const ficaTax = ssTax + medicareTax;
+    const totalDeductions = federalTax + ficaTax;
+    const takeHome = gross - totalDeductions - pretax;
+
+    annualResults = { gross, pretax, agi, taxableIncome, federalTax, ssTax, medicareTax, ficaTax, totalDeductions, takeHome, stdDed, filing, freq };
+
+    document.getElementById('results').classList.add('visible');
+    showPeriod('paycheck');
+  }
+
+  function showPeriod(period) {
+    currentPeriod = period;
+    document.querySelectorAll('.period-tab').forEach((t, i) => {
+      t.classList.toggle('active', ['paycheck','monthly','annual'][i] === period);
+    });
+
+    const r = annualResults;
+    if (!r.gross) return;
+
+    let divisor = period === 'paycheck' ? r.freq : period === 'monthly' ? 12 : 1;
+    let label = period === 'paycheck' ? `Take-Home (per paycheck)` : period === 'monthly' ? 'Monthly Take-Home' : 'Annual Take-Home';
+
+    document.getElementById('highlightLabel').textContent = label;
+    document.getElementById('highlightValue').textContent = fmt(r.takeHome / divisor);
+
+    const totalPct = r.gross > 0 ? r.gross : 1;
+    document.getElementById('barTakeHome').style.width = ((r.takeHome / totalPct) * 100) + '%';
+    document.getElementById('barFederal').style.width = ((r.federalTax / totalPct) * 100) + '%';
+    document.getElementById('barFica').style.width = ((r.ficaTax / totalPct) * 100) + '%';
+
+    const rows = [
+      { label: 'Gross Pay', val: r.gross / divisor, cls: '', extra: '' },
+      { label: 'Pre-Tax Deductions (401k/HSA)', val: -r.pretax / divisor, cls: 'deduction', extra: r.pretax > 0 ? '-' + ((r.pretax/r.gross)*100).toFixed(1) + '%' : '—' },
+      { label: 'Standard Deduction (auto-applied)', val: null, cls: '', extra: fmt(r.stdDed / divisor) + ' / period' },
+      { label: 'Federal Income Tax', val: -r.federalTax / divisor, cls: 'deduction', extra: ((r.federalTax/r.gross)*100).toFixed(1) + '%' },
+      { label: 'Social Security (6.2%)', val: -r.ssTax / divisor, cls: 'deduction', extra: '6.2%' },
+      { label: 'Medicare (1.45%)', val: -r.medicareTax / divisor, cls: 'deduction', extra: '1.45%' },
+      { label: 'Net Take-Home Pay', val: r.takeHome / divisor, cls: 'net', extra: ((r.takeHome/r.gross)*100).toFixed(1) + '%' },
+    ];
+
+    const marginalRate = getMarginalRate(r.taxableIncome, r.filing);
+    const effectiveRate = r.gross > 0 ? ((r.federalTax / r.gross) * 100).toFixed(1) : 0;
+
+    document.getElementById('breakdownBody').innerHTML = rows.map(row => `
+      <tr>
+        <td>${row.label}</td>
+        <td style="text-align:right" class="${row.cls}">${row.val !== null ? fmt(row.val) : '—'}</td>
+        <td style="text-align:right;color:var(--muted);font-size:0.8rem">${row.extra}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('taxNote').textContent = `Effective federal tax rate: ${effectiveRate}% | Marginal rate: ${(marginalRate*100).toFixed(0)}% | Taxable income: ${fmt(r.taxableIncome)}. State tax not included.`;
+  }
+
+  // Auto-calculate on load
+  calculate();
+</script>
+</body>
+</html>
