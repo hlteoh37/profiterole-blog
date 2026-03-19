@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bond Yield to Maturity Calculator — YTM & Current Yield</title>
+  <meta name="description" content="Calculate bond yield to maturity (YTM), current yield, and total return. Enter face value, coupon rate, price, and years to maturity. Free, no login.">
+  <meta name="keywords" content="bond yield to maturity calculator, YTM calculator, bond calculator, current yield calculator, bond price calculator, yield to maturity formula, bond return calculator, fixed income calculator">
+  <meta property="og:title" content="Bond Yield to Maturity Calculator — Free YTM Tool">
+  <meta property="og:description" content="Calculate bond YTM, current yield, total interest earned, and effective annual return. Supports premium and discount bonds.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/bond-yield/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/bond-yield/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>📜</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117; color: #e6edf3;
+      min-height: 100vh; padding: 40px 20px 100px;
+    }
+    .container { max-width: 760px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #58a6ff; text-decoration: none; font-size: 0.85rem; margin-bottom: 32px;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .hero { margin-bottom: 32px; }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #f0f6fc; margin-bottom: 8px; line-height: 1.25; }
+    .hero p { color: #8b949e; font-size: 1rem; line-height: 1.6; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+    .card-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8b949e; font-weight: 600; margin-bottom: 20px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.85rem; font-weight: 500; color: #c9d1d9; }
+    .field .hint { font-size: 0.75rem; color: #8b949e; }
+    .field input[type="number"], .field select {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+      color: #e6edf3; font-size: 1rem; padding: 10px 14px; width: 100%;
+      outline: none; transition: border-color 0.15s;
+    }
+    .field input:focus, .field select:focus { border-color: #58a6ff; }
+    .calc-btn {
+      margin-top: 24px; width: 100%;
+      background: #238636; border: 1px solid #2ea043; border-radius: 8px;
+      color: #fff; font-size: 1rem; font-weight: 600; padding: 13px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .calc-btn:hover { background: #2ea043; }
+    .results { display: none; }
+    .results.show { display: block; }
+    .results-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8b949e; font-weight: 600; margin-bottom: 16px; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .metric { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px; }
+    .metric.highlight { border-color: #58a6ff; background: rgba(88,166,255,0.06); }
+    .metric .label { font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+    .metric .value { font-size: 1.4rem; font-weight: 700; color: #f0f6fc; }
+    .metric .sub { font-size: 0.78rem; color: #8b949e; margin-top: 4px; }
+    .bond-type { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; margin-bottom: 16px; }
+    .bond-premium { background: rgba(248,81,73,0.12); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+    .bond-par { background: rgba(88,166,255,0.12); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+    .bond-discount { background: rgba(63,185,80,0.12); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+    .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .schedule-table th { text-align: right; padding: 8px 10px; border-bottom: 1px solid #30363d; color: #8b949e; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; }
+    .schedule-table th:first-child { text-align: center; }
+    .schedule-table td { padding: 9px 10px; border-bottom: 1px solid #21262d; text-align: right; }
+    .schedule-table td:first-child { text-align: center; color: #8b949e; }
+    .schedule-table tr:last-child td { border-bottom: none; font-weight: 700; color: #f0f6fc; }
+    .schedule-overflow { max-height: 300px; overflow-y: auto; border: 1px solid #30363d; border-radius: 8px; }
+    .info-card { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; margin-top: 12px; font-size: 0.85rem; line-height: 1.7; color: #8b949e; }
+    .info-card h3 { color: #f0f6fc; font-size: 0.9rem; margin-bottom: 8px; }
+    .info-card ul { padding-left: 1.2rem; }
+    .info-card li { margin-bottom: 4px; }
+    .coffee-btn {
+      position: fixed; bottom: 24px; right: 24px; z-index: 100;
+      background: #ffdd00; color: #000; font-size: 0.8rem; font-weight: 700;
+      padding: 10px 16px; border-radius: 24px; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .coffee-btn:hover { opacity: 0.9; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/profiterole-blog/finance/" class="back-link">← All Finance Calculators</a>
+
+    <div class="hero">
+      <h1>Bond Yield to Maturity Calculator</h1>
+      <p>Calculate YTM, current yield, and total return for any bond. Supports premium, par, and discount bonds.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bond Details</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Face Value (Par Value)</label>
+          <input type="number" id="faceValue" value="1000" min="1" step="100">
+          <span class="hint">Typically $1,000 per bond</span>
+        </div>
+        <div class="field">
+          <label>Annual Coupon Rate (%)</label>
+          <input type="number" id="couponRate" value="5" min="0" max="30" step="0.01">
+          <span class="hint">Annual interest rate stated on bond</span>
+        </div>
+        <div class="field">
+          <label>Current Market Price ($)</label>
+          <input type="number" id="marketPrice" value="950" min="1" step="any">
+          <span class="hint">What you pay today for the bond</span>
+        </div>
+        <div class="field">
+          <label>Years to Maturity</label>
+          <input type="number" id="years" value="10" min="0.5" max="100" step="0.5">
+          <span class="hint">Time until face value is returned</span>
+        </div>
+        <div class="field">
+          <label>Coupon Frequency</label>
+          <select id="frequency">
+            <option value="2" selected>Semi-annual (standard US)</option>
+            <option value="1">Annual</option>
+            <option value="4">Quarterly</option>
+            <option value="12">Monthly</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Accrued Interest ($)</label>
+          <input type="number" id="accruedInterest" value="0" min="0" step="0.01">
+          <span class="hint">Optional: dirty price adjustment</span>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate YTM</button>
+    </div>
+
+    <div class="card results" id="results">
+      <div id="bondTypeLabel"></div>
+      <div class="results-title">Key Metrics</div>
+      <div class="metrics-grid" id="metricsGrid"></div>
+
+      <div class="results-title">Payment Schedule</div>
+      <div class="schedule-overflow">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th>Coupon Payment</th>
+              <th>Principal</th>
+              <th>Total Cash Flow</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>What is Yield to Maturity (YTM)?</h3>
+      <ul>
+        <li><strong>YTM</strong> is the total annualized return if you buy the bond today and hold it until maturity, assuming all coupon payments are reinvested at the same rate.</li>
+        <li><strong>Current yield</strong> = annual coupon / current price. Simpler but ignores capital gain/loss at maturity.</li>
+        <li><strong>Premium bond:</strong> Price > Face value. This happens when the coupon rate > market rates. YTM &lt; coupon rate.</li>
+        <li><strong>Discount bond:</strong> Price &lt; Face value. Coupon rate &lt; market rates. YTM > coupon rate.</li>
+        <li><strong>Par bond:</strong> Price = Face value. YTM = coupon rate.</li>
+      </ul>
+    </div>
+
+    <div class="info-card" style="margin-top:12px;">
+      <h3>Example: US Treasury 10-Year Note</h3>
+      <ul>
+        <li>Face value: $1,000 | Coupon rate: 4.5% | Years: 10 | Semi-annual coupons</li>
+        <li>If trading at $950 (discount) → YTM ≈ 5.08% (higher than coupon because you gain $50 at maturity)</li>
+        <li>If trading at $1,050 (premium) → YTM ≈ 3.96% (lower than coupon because you lose $50 at maturity)</li>
+        <li>Corporate bonds add a credit spread on top of the equivalent Treasury YTM</li>
+      </ul>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-btn" target="_blank" rel="noopener">
+    ☕ Buy Me a Coffee
+  </a>
+
+  <script>
+    function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+    function fmtPct(n) { return n.toFixed(3) + '%'; }
+
+    // Newton-Raphson YTM solver
+    function solveYTM(fv, coupon, price, n) {
+      // coupon and price per period, n = total periods
+      let ytm = coupon / price; // initial guess: current yield per period
+      for (let i = 0; i < 200; i++) {
+        const r = ytm;
+        let pv = 0;
+        let dpv = 0;
+        for (let t = 1; t <= n; t++) {
+          const disc = Math.pow(1 + r, t);
+          pv += coupon / disc;
+          dpv += -t * coupon / Math.pow(1 + r, t + 1);
+        }
+        pv += fv / Math.pow(1 + r, n);
+        dpv += -n * fv / Math.pow(1 + r, n + 1);
+        const diff = pv - price;
+        if (Math.abs(diff) < 0.0001) break;
+        ytm = ytm - diff / dpv;
+        if (ytm < -0.9999) ytm = 0.0001;
+      }
+      return ytm;
+    }
+
+    function calculate() {
+      const fv = parseFloat(document.getElementById('faceValue').value) || 1000;
+      const couponRate = parseFloat(document.getElementById('couponRate').value) / 100 || 0;
+      const price = parseFloat(document.getElementById('marketPrice').value) || 1000;
+      const years = parseFloat(document.getElementById('years').value) || 10;
+      const freq = parseInt(document.getElementById('frequency').value) || 2;
+      const accrued = parseFloat(document.getElementById('accruedInterest').value) || 0;
+
+      const n = Math.round(years * freq); // total periods
+      const couponPerPeriod = (couponRate * fv) / freq;
+      const annualCoupon = couponRate * fv;
+      const dirtyPrice = price + accrued;
+
+      // YTM per period
+      const ytmPerPeriod = solveYTM(fv, couponPerPeriod, dirtyPrice, n);
+      const ytmAnnual = ytmPerPeriod * freq;
+      const ytmEffective = Math.pow(1 + ytmPerPeriod, freq) - 1; // EAY
+      const currentYield = annualCoupon / price;
+      const totalCoupons = couponPerPeriod * n;
+      const capitalGainLoss = fv - price;
+      const totalReturn = totalCoupons + capitalGainLoss;
+      const totalReturnPct = (totalReturn / price) * 100;
+
+      // Bond type
+      let bondType, bondClass;
+      if (price > fv * 1.001) { bondType = 'Premium Bond (Price > Face Value)'; bondClass = 'bond-premium'; }
+      else if (price < fv * 0.999) { bondType = 'Discount Bond (Price < Face Value)'; bondClass = 'bond-discount'; }
+      else { bondType = 'Par Bond (Price ≈ Face Value)'; bondClass = 'bond-par'; }
+
+      document.getElementById('bondTypeLabel').innerHTML = `<span class="bond-type ${bondClass}">${bondType}</span>`;
+
+      document.getElementById('metricsGrid').innerHTML = `
+        <div class="metric highlight">
+          <div class="label">Yield to Maturity</div>
+          <div class="value">${fmtPct(ytmAnnual * 100)}</div>
+          <div class="sub">Annualized return</div>
+        </div>
+        <div class="metric">
+          <div class="label">Effective Annual Yield</div>
+          <div class="value">${fmtPct(ytmEffective * 100)}</div>
+          <div class="sub">With compounding</div>
+        </div>
+        <div class="metric">
+          <div class="label">Current Yield</div>
+          <div class="value">${fmtPct(currentYield * 100)}</div>
+          <div class="sub">Coupon ÷ Price</div>
+        </div>
+        <div class="metric">
+          <div class="label">Annual Coupon</div>
+          <div class="value">${fmt(annualCoupon)}</div>
+          <div class="sub">${freq}× per year</div>
+        </div>
+        <div class="metric">
+          <div class="label">Total Coupons</div>
+          <div class="value">${fmt(totalCoupons)}</div>
+          <div class="sub">Over ${years} years</div>
+        </div>
+        <div class="metric">
+          <div class="label">Capital Gain/Loss</div>
+          <div class="value" style="color:${capitalGainLoss >= 0 ? '#3fb950' : '#f85149'}">${capitalGainLoss >= 0 ? '+' : ''}${fmt(capitalGainLoss)}</div>
+          <div class="sub">At maturity</div>
+        </div>
+        <div class="metric">
+          <div class="label">Total Return</div>
+          <div class="value">${fmt(totalReturn)}</div>
+          <div class="sub">${totalReturnPct.toFixed(1)}% of price</div>
+        </div>
+        <div class="metric">
+          <div class="label">Duration (approx)</div>
+          <div class="value">${calcDuration(fv, couponPerPeriod, dirtyPrice, n, ytmPerPeriod, freq).toFixed(2)}</div>
+          <div class="sub">Macaulay, years</div>
+        </div>
+      `;
+
+      // Schedule
+      let rows = '';
+      let cumCoupon = 0;
+      for (let t = 1; t <= n; t++) {
+        const isLast = t === n;
+        const principal = isLast ? fv : 0;
+        const total = couponPerPeriod + principal;
+        cumCoupon += couponPerPeriod;
+        rows += `<tr>
+          <td>${t}</td>
+          <td style="color:#58a6ff;">${fmt(couponPerPeriod)}</td>
+          <td style="color:${principal > 0 ? '#3fb950' : '#6e7681'};">${principal > 0 ? fmt(principal) : '—'}</td>
+          <td style="color:#f0f6fc;">${fmt(total)}</td>
+        </tr>`;
+      }
+      rows += `<tr style="background:#161b22;">
+        <td>Total</td>
+        <td>${fmt(totalCoupons)}</td>
+        <td>${fmt(fv)}</td>
+        <td>${fmt(totalCoupons + fv)}</td>
+      </tr>`;
+      document.getElementById('scheduleBody').innerHTML = rows;
+
+      document.getElementById('results').classList.add('show');
+    }
+
+    function calcDuration(fv, coupon, price, n, ytmPer, freq) {
+      let num = 0, den = 0;
+      for (let t = 1; t <= n; t++) {
+        const pv = coupon / Math.pow(1 + ytmPer, t);
+        num += (t / freq) * pv;
+        den += pv;
+      }
+      const pvFace = fv / Math.pow(1 + ytmPer, n);
+      num += (n / freq) * pvFace;
+      den += pvFace;
+      return den > 0 ? num / den : 0;
+    }
+
+    calculate();
+  </script>
+</body>
+</html>
