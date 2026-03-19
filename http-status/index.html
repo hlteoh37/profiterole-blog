@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP Status Codes Reference — Complete Guide</title>
+  <meta name="description" content="Complete HTTP status codes reference. All 1xx, 2xx, 3xx, 4xx, and 5xx codes explained with examples. Searchable, free, no signup required.">
+  <meta name="keywords" content="http status codes, http status code list, 404 not found, 200 ok, 500 internal server error, 301 redirect, 403 forbidden, http response codes, rest api status codes">
+  <meta property="og:title" content="HTTP Status Codes Reference — Complete Guide">
+  <meta property="og:description" content="All HTTP status codes explained. 1xx informational, 2xx success, 3xx redirection, 4xx client errors, 5xx server errors. With examples and use cases.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/http-status/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/http-status/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='50'>HTTP</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+    }
+    .container { max-width: 940px; margin: 0 auto; }
+    .back-link { display: inline-block; color: #58a6ff; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+    .back-link:hover { text-decoration: underline; }
+    h1 { font-size: 2rem; font-weight: 700; color: #f0f6fc; margin-bottom: 6px; }
+    .tagline { color: #8b949e; margin-bottom: 28px; font-size: 1rem; }
+
+    .search-bar {
+      background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+      padding: 14px 18px; font-size: 1rem; color: #e6edf3; width: 100%;
+      margin-bottom: 28px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-bar:focus { border-color: #58a6ff; }
+    .search-bar::placeholder { color: #484f58; }
+
+    .section { margin-bottom: 36px; }
+    .section-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; border-radius: 10px 10px 0 0;
+      border: 1px solid #30363d; border-bottom: none;
+      cursor: pointer; user-select: none;
+    }
+    .section-header:hover { opacity: 0.9; }
+    .section-badge {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem; font-weight: 700; padding: 4px 10px;
+      border-radius: 6px; min-width: 50px; text-align: center;
+    }
+    .section-title { font-size: 1.05rem; font-weight: 600; flex: 1; }
+    .section-count { font-size: 0.8rem; color: #8b949e; font-family: monospace; }
+    .section-toggle { color: #8b949e; font-size: 0.8rem; transition: transform 0.2s; }
+    .section-toggle.open { transform: rotate(180deg); }
+
+    .s1xx .section-header { background: rgba(88, 166, 255, 0.08); }
+    .s1xx .section-badge { background: rgba(88, 166, 255, 0.15); color: #58a6ff; border: 1px solid rgba(88, 166, 255, 0.3); }
+    .s2xx .section-header { background: rgba(63, 185, 80, 0.08); }
+    .s2xx .section-badge { background: rgba(63, 185, 80, 0.15); color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.3); }
+    .s3xx .section-header { background: rgba(210, 153, 34, 0.08); }
+    .s3xx .section-badge { background: rgba(210, 153, 34, 0.15); color: #d29922; border: 1px solid rgba(210, 153, 34, 0.3); }
+    .s4xx .section-header { background: rgba(248, 81, 73, 0.08); }
+    .s4xx .section-badge { background: rgba(248, 81, 73, 0.15); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+    .s5xx .section-header { background: rgba(188, 140, 238, 0.08); }
+    .s5xx .section-badge { background: rgba(188, 140, 238, 0.15); color: #bc8cee; border: 1px solid rgba(188, 140, 238, 0.3); }
+
+    .codes-grid {
+      border: 1px solid #30363d; border-radius: 0 0 10px 10px;
+      overflow: hidden;
+    }
+    .codes-grid.collapsed { display: none; }
+
+    .code-row {
+      display: grid; grid-template-columns: 90px 1fr;
+      border-bottom: 1px solid #21262d;
+      transition: background 0.1s;
+    }
+    .code-row:last-child { border-bottom: none; }
+    .code-row:hover { background: #1c2128; }
+    .code-row.hidden { display: none; }
+
+    .code-num {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 1rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 14px 10px; border-right: 1px solid #21262d;
+    }
+    .s1xx .code-num { color: #58a6ff; }
+    .s2xx .code-num { color: #3fb950; }
+    .s3xx .code-num { color: #d29922; }
+    .s4xx .code-num { color: #f85149; }
+    .s5xx .code-num { color: #bc8cee; }
+
+    .code-info { padding: 14px 16px; }
+    .code-name { font-weight: 600; color: #f0f6fc; margin-bottom: 4px; font-size: 0.95rem; }
+    .code-desc { color: #8b949e; font-size: 0.85rem; line-height: 1.5; }
+    .code-tip {
+      margin-top: 6px; font-size: 0.78rem; color: #58a6ff;
+      background: rgba(88, 166, 255, 0.07); border-left: 2px solid rgba(88, 166, 255, 0.4);
+      padding: 5px 8px; border-radius: 0 4px 4px 0;
+    }
+    .s3xx .code-tip { color: #d29922; background: rgba(210, 153, 34, 0.07); border-left-color: rgba(210, 153, 34, 0.4); }
+    .s4xx .code-tip { color: #f85149; background: rgba(248, 81, 73, 0.07); border-left-color: rgba(248, 81, 73, 0.4); }
+    .s5xx .code-tip { color: #bc8cee; background: rgba(188, 140, 238, 0.07); border-left-color: rgba(188, 140, 238, 0.4); }
+    .s2xx .code-tip { color: #3fb950; background: rgba(63, 185, 80, 0.07); border-left-color: rgba(63, 185, 80, 0.4); }
+
+    .no-results { text-align: center; padding: 40px; color: #484f58; font-size: 0.9rem; display: none; }
+
+    .tools-footer {
+      margin-top: 50px; padding-top: 30px; border-top: 1px solid #21262d;
+      text-align: center;
+    }
+    .tools-footer p { color: #8b949e; font-size: 0.85rem; margin-bottom: 14px; }
+    .tool-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .tool-chip {
+      background: #161b22; border: 1px solid #30363d; border-radius: 20px;
+      padding: 6px 14px; font-size: 0.8rem; color: #8b949e; text-decoration: none;
+      transition: all 0.15s;
+    }
+    .tool-chip:hover { border-color: #58a6ff; color: #58a6ff; text-decoration: none; }
+    .coffee-float {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #ffdd00; color: #000; font-weight: 700; font-size: 0.85rem;
+      padding: 10px 16px; border-radius: 50px; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4); z-index: 999;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .coffee-float:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a href="/profiterole-blog/" class="back-link">&larr; Profiterole Tools</a>
+  <h1>HTTP Status Codes</h1>
+  <p class="tagline">All HTTP response codes explained — searchable, no signup, works offline.</p>
+
+  <input type="text" class="search-bar" id="search" placeholder="Search by code or name (e.g. 404, redirect, unauthorized)..." autocomplete="off">
+
+  <div id="no-results" class="no-results">No matching status codes found.</div>
+
+  <!-- 1xx -->
+  <div class="section s1xx">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-badge">1xx</span>
+      <span class="section-title">Informational</span>
+      <span class="section-count">4 codes</span>
+      <span class="section-toggle open">&#9660;</span>
+    </div>
+    <div class="codes-grid">
+      <div class="code-row" data-search="100 continue informational">
+        <div class="code-num">100</div>
+        <div class="code-info">
+          <div class="code-name">Continue</div>
+          <div class="code-desc">The server has received the request headers and the client should proceed to send the body. Used with large uploads when the client sends <code>Expect: 100-continue</code> first.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="101 switching protocols websocket upgrade">
+        <div class="code-num">101</div>
+        <div class="code-info">
+          <div class="code-name">Switching Protocols</div>
+          <div class="code-desc">The server is switching protocols as requested by the client. Used when upgrading from HTTP to WebSocket connections.</div>
+          <div class="code-tip">Common in WebSocket handshakes — browser sends <code>Upgrade: websocket</code>, server replies 101.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="102 processing webdav">
+        <div class="code-num">102</div>
+        <div class="code-info">
+          <div class="code-name">Processing</div>
+          <div class="code-desc">A WebDAV extension. The server has received the request and is processing it, but no response is available yet. Prevents client timeout on long operations.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="103 early hints preload link">
+        <div class="code-num">103</div>
+        <div class="code-info">
+          <div class="code-name">Early Hints</div>
+          <div class="code-desc">Sent before the final response to allow the client to start preloading resources (CSS, JS, fonts) while the server prepares the full response. Improves page load performance.</div>
+          <div class="code-tip">Supported by major CDNs. Use <code>Link: &lt;/style.css&gt;; rel=preload</code> headers in the 103 response.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2xx -->
+  <div class="section s2xx">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-badge">2xx</span>
+      <span class="section-title">Success</span>
+      <span class="section-count">9 codes</span>
+      <span class="section-toggle open">&#9660;</span>
+    </div>
+    <div class="codes-grid">
+      <div class="code-row" data-search="200 ok success get post">
+        <div class="code-num">200</div>
+        <div class="code-info">
+          <div class="code-name">OK</div>
+          <div class="code-desc">The most common success code. The request succeeded. The response body contains the requested resource (GET) or confirmation of the action (POST, PUT, etc.).</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="201 created resource post put">
+        <div class="code-num">201</div>
+        <div class="code-info">
+          <div class="code-name">Created</div>
+          <div class="code-desc">A new resource was successfully created. The response usually includes a <code>Location</code> header pointing to the new resource.</div>
+          <div class="code-tip">REST APIs return 201 after POST requests that create a new record. Include the new resource's URL in <code>Location</code>.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="202 accepted async background job processing">
+        <div class="code-num">202</div>
+        <div class="code-info">
+          <div class="code-name">Accepted</div>
+          <div class="code-desc">The request has been accepted for processing, but processing has not been completed (or may not have started). Used for async / background jobs.</div>
+          <div class="code-tip">Useful for slow operations: return 202 immediately, then poll a job status endpoint.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="203 non-authoritative proxy modified">
+        <div class="code-num">203</div>
+        <div class="code-info">
+          <div class="code-name">Non-Authoritative Information</div>
+          <div class="code-desc">The response was returned successfully, but the metadata came from a local or third-party copy rather than the origin server (e.g. modified by a proxy).</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="204 no content delete update empty body">
+        <div class="code-num">204</div>
+        <div class="code-info">
+          <div class="code-name">No Content</div>
+          <div class="code-desc">The request succeeded but there's nothing to return. The response has no body. Common after DELETE requests or after updates where no data needs to be returned.</div>
+          <div class="code-tip">CORS preflight OPTIONS requests typically get a 204. Also common for save/update endpoints where you don't need to return the updated resource.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="205 reset content form clear">
+        <div class="code-num">205</div>
+        <div class="code-info">
+          <div class="code-name">Reset Content</div>
+          <div class="code-desc">The server processed the request successfully. The client should reset the document view (e.g. clear a form after submission).</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="206 partial content range request download resume">
+        <div class="code-num">206</div>
+        <div class="code-info">
+          <div class="code-name">Partial Content</div>
+          <div class="code-desc">The server is returning only part of the requested resource. Used when the client sends a <code>Range</code> header (e.g. resumable downloads, video streaming).</div>
+          <div class="code-tip">Video players use 206 to stream chunks. Download managers use it to resume interrupted downloads.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="207 multi-status webdav multiple">
+        <div class="code-num">207</div>
+        <div class="code-info">
+          <div class="code-name">Multi-Status</div>
+          <div class="code-desc">A WebDAV extension. The response body contains multiple separate response codes for multiple sub-requests in a single XML body.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="226 im used delta">
+        <div class="code-num">226</div>
+        <div class="code-info">
+          <div class="code-name">IM Used</div>
+          <div class="code-desc">Used in HTTP delta encoding. The server has fulfilled a GET request and the response is a representation of the instance manipulation applied to the current instance.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3xx -->
+  <div class="section s3xx">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-badge">3xx</span>
+      <span class="section-title">Redirection</span>
+      <span class="section-count">8 codes</span>
+      <span class="section-toggle open">&#9660;</span>
+    </div>
+    <div class="codes-grid">
+      <div class="code-row" data-search="300 multiple choices content negotiation">
+        <div class="code-num">300</div>
+        <div class="code-info">
+          <div class="code-name">Multiple Choices</div>
+          <div class="code-desc">The request has more than one possible response. The client or user should choose one. Rarely used in practice.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="301 moved permanently seo redirect">
+        <div class="code-num">301</div>
+        <div class="code-info">
+          <div class="code-name">Moved Permanently</div>
+          <div class="code-desc">The requested URL has permanently moved to a new URL (in the <code>Location</code> header). Search engines update their index. Clients should use the new URL for future requests.</div>
+          <div class="code-tip">Use 301 for permanent URL changes (domain migration, removing www). Search engines pass link equity. Browsers cache this redirect indefinitely.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="302 found temporary redirect">
+        <div class="code-num">302</div>
+        <div class="code-info">
+          <div class="code-name">Found (Temporary Redirect)</div>
+          <div class="code-desc">The resource temporarily lives at a different URL. Clients should continue using the original URL for future requests. Search engines don't update their index.</div>
+          <div class="code-tip">Browsers often change POST to GET on 302 redirect. Use 307 to preserve the HTTP method.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="303 see other post redirect get">
+        <div class="code-num">303</div>
+        <div class="code-info">
+          <div class="code-name">See Other</div>
+          <div class="code-desc">The response to the request is found at another URL using GET. Used to redirect after a POST so refreshing doesn't resubmit the form (the Post/Redirect/Get pattern).</div>
+          <div class="code-tip">The classic fix for "are you sure you want to resubmit this form?" browser warnings. After POST, redirect with 303 to a GET confirmation page.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="304 not modified cache etag if-none-match">
+        <div class="code-num">304</div>
+        <div class="code-info">
+          <div class="code-name">Not Modified</div>
+          <div class="code-desc">The resource hasn't changed since the client's cached version. No body is returned. The client should use its cached copy. Reduces bandwidth.</div>
+          <div class="code-tip">The server compares the client's <code>If-None-Match</code> (ETag) or <code>If-Modified-Since</code> header. A 304 means "your cache is still good."</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="307 temporary redirect method preserve post">
+        <div class="code-num">307</div>
+        <div class="code-info">
+          <div class="code-name">Temporary Redirect</div>
+          <div class="code-desc">Like 302, but the HTTP method must not be changed. A POST request is redirected as a POST, not silently downgraded to GET.</div>
+          <div class="code-tip">Prefer 307 over 302 for API redirects to ensure POST/PUT/PATCH methods are preserved.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="308 permanent redirect method preserve seo">
+        <div class="code-num">308</div>
+        <div class="code-info">
+          <div class="code-name">Permanent Redirect</div>
+          <div class="code-desc">Like 301, but the HTTP method must not be changed. A POST is redirected as a POST. The new URL should be used permanently.</div>
+          <div class="code-tip">Use 308 instead of 301 when permanently moving API endpoints that receive POST/PUT/PATCH requests.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4xx -->
+  <div class="section s4xx">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-badge">4xx</span>
+      <span class="section-title">Client Errors</span>
+      <span class="section-count">18 codes</span>
+      <span class="section-toggle open">&#9660;</span>
+    </div>
+    <div class="codes-grid">
+      <div class="code-row" data-search="400 bad request invalid input malformed">
+        <div class="code-num">400</div>
+        <div class="code-info">
+          <div class="code-name">Bad Request</div>
+          <div class="code-desc">The server couldn't understand the request due to invalid syntax, missing required fields, or malformed data. The client should not repeat the request without modification.</div>
+          <div class="code-tip">Return 400 with a clear error body explaining what's wrong: <code>{"error": "email field is required"}</code></div>
+        </div>
+      </div>
+      <div class="code-row" data-search="401 unauthorized authentication login token bearer">
+        <div class="code-num">401</div>
+        <div class="code-info">
+          <div class="code-name">Unauthorized</div>
+          <div class="code-desc">Authentication is required and has failed or not been provided. Despite the name, this is an authentication error (not authorization). The client should authenticate and retry.</div>
+          <div class="code-tip">401 = "Who are you?" (not logged in). 403 = "I know who you are, but no." Always include <code>WWW-Authenticate</code> header.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="402 payment required stripe billing">
+        <div class="code-num">402</div>
+        <div class="code-info">
+          <div class="code-name">Payment Required</div>
+          <div class="code-desc">Reserved for future use. Originally intended for digital payment systems. Some APIs use it informally to indicate a paywall or usage limit reached.</div>
+          <div class="code-tip">Not officially standardized, but used by some APIs (e.g. "you've hit your free tier limit") and some developers use it for rate limiting paid tiers.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="403 forbidden authorization permissions denied">
+        <div class="code-num">403</div>
+        <div class="code-info">
+          <div class="code-name">Forbidden</div>
+          <div class="code-desc">The client is authenticated but does not have permission to access the resource. Unlike 401, authenticating won't help — the user simply doesn't have access.</div>
+          <div class="code-tip">401 = not logged in. 403 = logged in but not allowed. Some APIs return 404 instead to hide the existence of the resource.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="404 not found missing page url">
+        <div class="code-num">404</div>
+        <div class="code-info">
+          <div class="code-name">Not Found</div>
+          <div class="code-desc">The server can't find the requested resource. The URL may be wrong, the resource may have been deleted, or it may never have existed.</div>
+          <div class="code-tip">APIs sometimes deliberately return 404 instead of 403 to avoid revealing that a resource exists but is private. A 404 is cacheable.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="405 method not allowed get post put delete">
+        <div class="code-num">405</div>
+        <div class="code-info">
+          <div class="code-name">Method Not Allowed</div>
+          <div class="code-desc">The HTTP method used (GET, POST, PUT, DELETE, etc.) is not allowed for this endpoint. The response must include an <code>Allow</code> header listing valid methods.</div>
+          <div class="code-tip">Common mistake: sending a POST to a GET-only endpoint. Check your API docs for which methods each endpoint supports.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="406 not acceptable content type accept header">
+        <div class="code-num">406</div>
+        <div class="code-info">
+          <div class="code-name">Not Acceptable</div>
+          <div class="code-desc">The server can't produce a response matching the client's <code>Accept</code> headers (content type, language, encoding). The server can't satisfy the request format.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="408 request timeout slow connection">
+        <div class="code-num">408</div>
+        <div class="code-info">
+          <div class="code-name">Request Timeout</div>
+          <div class="code-desc">The server timed out waiting for the request. The client took too long to send the complete request. The client may retry the request.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="409 conflict duplicate resource state version">
+        <div class="code-num">409</div>
+        <div class="code-info">
+          <div class="code-name">Conflict</div>
+          <div class="code-desc">The request conflicts with the current state of the resource. Common causes: trying to create a resource that already exists, version conflicts, or concurrent modification.</div>
+          <div class="code-tip">Return 409 when trying to register with an email that's already taken, or when optimistic locking detects a version conflict.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="410 gone deleted removed permanently">
+        <div class="code-num">410</div>
+        <div class="code-info">
+          <div class="code-name">Gone</div>
+          <div class="code-desc">The resource previously existed but has been permanently deleted and won't be coming back. Unlike 404, this explicitly signals permanent deletion. Search engines de-index the URL.</div>
+          <div class="code-tip">Use 410 for intentionally removed pages to tell search engines to stop indexing them. More explicit than 404.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="411 length required content-length">
+        <div class="code-num">411</div>
+        <div class="code-info">
+          <div class="code-name">Length Required</div>
+          <div class="code-desc">The server requires a <code>Content-Length</code> header in the request but none was provided.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="413 payload too large file upload size limit">
+        <div class="code-num">413</div>
+        <div class="code-info">
+          <div class="code-name">Payload Too Large</div>
+          <div class="code-desc">The request body exceeds the server's size limits. Common when uploading files that exceed the max upload size configured on the server.</div>
+          <div class="code-tip">Nginx default is 1MB. Increase with <code>client_max_body_size 10m;</code> in your config. S3 multipart upload avoids this for large files.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="414 uri too long url query string">
+        <div class="code-num">414</div>
+        <div class="code-info">
+          <div class="code-name">URI Too Long</div>
+          <div class="code-desc">The URL is longer than the server can process. Usually caused by a client converting POST data to a GET request with a very long query string.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="415 unsupported media type content-type json xml">
+        <div class="code-num">415</div>
+        <div class="code-info">
+          <div class="code-name">Unsupported Media Type</div>
+          <div class="code-desc">The request's <code>Content-Type</code> is not supported by the server for this endpoint. The payload format isn't what the server expects.</div>
+          <div class="code-tip">Sending form data when the endpoint expects JSON? You'll get 415. Add <code>Content-Type: application/json</code> header.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="422 unprocessable entity validation semantic json">
+        <div class="code-num">422</div>
+        <div class="code-info">
+          <div class="code-name">Unprocessable Entity</div>
+          <div class="code-desc">The request is syntactically correct (valid JSON/XML) but semantically invalid. Validation failed. The body can be parsed but contains logical errors.</div>
+          <div class="code-tip">Rails returns 422 for failed model validations. Many REST APIs prefer 422 over 400 for validation errors since the format was valid but the data wasn't.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="429 too many requests rate limit throttle api">
+        <div class="code-num">429</div>
+        <div class="code-info">
+          <div class="code-name">Too Many Requests</div>
+          <div class="code-desc">The client has sent too many requests in a given time window (rate limiting). The response should include <code>Retry-After</code> to tell the client when to try again.</div>
+          <div class="code-tip">Include <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, and <code>Retry-After</code> headers. Exponential backoff is the correct client behavior.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="451 unavailable legal censorship dmca">
+        <div class="code-num">451</div>
+        <div class="code-info">
+          <div class="code-name">Unavailable For Legal Reasons</div>
+          <div class="code-desc">The resource is not available for legal reasons — censorship, DMCA takedown, court order, etc. Named after Ray Bradbury's <em>Fahrenheit 451</em>.</div>
+          <div class="code-tip">A rare but meaningful code. More honest than returning 403 when content is blocked by legal requirement.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5xx -->
+  <div class="section s5xx">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-badge">5xx</span>
+      <span class="section-title">Server Errors</span>
+      <span class="section-count">10 codes</span>
+      <span class="section-toggle open">&#9660;</span>
+    </div>
+    <div class="codes-grid">
+      <div class="code-row" data-search="500 internal server error crash exception bug">
+        <div class="code-num">500</div>
+        <div class="code-info">
+          <div class="code-name">Internal Server Error</div>
+          <div class="code-desc">The server encountered an unexpected condition that prevented it from fulfilling the request. The generic catch-all for server-side exceptions. Something crashed.</div>
+          <div class="code-tip">Check your server logs. This is a bug in your code. Never leak stack traces to the client — log them server-side.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="501 not implemented method server feature">
+        <div class="code-num">501</div>
+        <div class="code-info">
+          <div class="code-name">Not Implemented</div>
+          <div class="code-desc">The server doesn't support the functionality needed to fulfill the request. Often means the HTTP method used is not supported by the server at all.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="502 bad gateway proxy upstream nginx">
+        <div class="code-num">502</div>
+        <div class="code-info">
+          <div class="code-name">Bad Gateway</div>
+          <div class="code-desc">The server, acting as a gateway or proxy, received an invalid response from an upstream server. Your application server is down or returning garbage.</div>
+          <div class="code-tip">Nginx returning 502? Your app server (Node, Gunicorn, etc.) is probably crashed, not running, or not reachable. Check <code>systemctl status</code> on your app.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="503 service unavailable maintenance down overload">
+        <div class="code-num">503</div>
+        <div class="code-info">
+          <div class="code-name">Service Unavailable</div>
+          <div class="code-desc">The server is temporarily unable to handle requests — overloaded, under maintenance, or restarting. The client should retry after some time. Include <code>Retry-After</code> if possible.</div>
+          <div class="code-tip">Best practice: return 503 with a <code>Retry-After</code> header during planned maintenance. Load balancers remove servers returning 503 from rotation.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="504 gateway timeout upstream slow proxy">
+        <div class="code-num">504</div>
+        <div class="code-info">
+          <div class="code-name">Gateway Timeout</div>
+          <div class="code-desc">The server, acting as a gateway, didn't receive a timely response from an upstream server. Like 502, but the problem is a timeout rather than an invalid response.</div>
+          <div class="code-tip">Nginx returning 504? Your app is responding too slowly. Increase <code>proxy_read_timeout</code> or optimize the slow operation. Consider async processing for long jobs.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="505 http version not supported protocol">
+        <div class="code-num">505</div>
+        <div class="code-info">
+          <div class="code-name">HTTP Version Not Supported</div>
+          <div class="code-desc">The server doesn't support the HTTP protocol version used in the request. Rare in modern deployments.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="507 insufficient storage webdav disk full">
+        <div class="code-num">507</div>
+        <div class="code-info">
+          <div class="code-name">Insufficient Storage</div>
+          <div class="code-desc">A WebDAV extension. The server cannot store the representation needed to complete the request — typically a full disk or storage quota exceeded.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="508 loop detected webdav infinite redirect">
+        <div class="code-num">508</div>
+        <div class="code-info">
+          <div class="code-name">Loop Detected</div>
+          <div class="code-desc">A WebDAV extension. The server detected an infinite loop while processing the request. A resource binds to itself recursively.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="511 network authentication required captive portal wifi">
+        <div class="code-num">511</div>
+        <div class="code-info">
+          <div class="code-name">Network Authentication Required</div>
+          <div class="code-desc">The client needs to authenticate to gain network access. Used by captive portals (hotel Wi-Fi, airport Wi-Fi) that intercept requests before granting access.</div>
+          <div class="code-tip">That hotel Wi-Fi login page that hijacks all your HTTP traffic? That's how 511 is supposed to work — though most portals just redirect instead.</div>
+        </div>
+      </div>
+      <div class="code-row" data-search="cloudflare 520 521 522 523 524 525 526 527 530">
+        <div class="code-num">5xx+</div>
+        <div class="code-info">
+          <div class="code-name">Cloudflare / CDN Error Codes</div>
+          <div class="code-desc">Cloudflare uses non-standard 5xx codes: <strong>520</strong> (unknown error from origin), <strong>521</strong> (origin refused connection), <strong>522</strong> (connection timed out), <strong>523</strong> (origin unreachable), <strong>524</strong> (timeout), <strong>525</strong> (SSL handshake failed), <strong>526</strong> (invalid SSL cert).</div>
+          <div class="code-tip">These only appear when Cloudflare is in front of your server. They're Cloudflare's diagnostic codes, not standard HTTP.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tools-footer">
+    <p>More free developer tools from Profiterole:</p>
+    <div class="tool-chips">
+      <a href="/profiterole-blog/cron/" class="tool-chip">Cron Explainer</a>
+      <a href="/profiterole-blog/timestamp/" class="tool-chip">Timestamp Converter</a>
+      <a href="/profiterole-blog/regex/" class="tool-chip">Regex Tester</a>
+      <a href="/profiterole-blog/base64/" class="tool-chip">Base64 Encoder</a>
+      <a href="/profiterole-blog/json/" class="tool-chip">JSON Formatter</a>
+      <a href="/profiterole-blog/jwt/" class="tool-chip">JWT Decoder</a>
+      <a href="/profiterole-blog/url/" class="tool-chip">URL Encoder</a>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-float" target="_blank" rel="noopener">Buy me a coffee</a>
+
+<script>
+const searchInput = document.getElementById('search');
+const noResults = document.getElementById('no-results');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  const rows = document.querySelectorAll('.code-row');
+  const sections = document.querySelectorAll('.section');
+  let totalVisible = 0;
+
+  rows.forEach(row => {
+    const text = row.getAttribute('data-search') || '';
+    const nameEl = row.querySelector('.code-name');
+    const descEl = row.querySelector('.code-desc');
+    const numEl = row.querySelector('.code-num');
+    const combined = [text, nameEl?.textContent || '', descEl?.textContent || '', numEl?.textContent || ''].join(' ').toLowerCase();
+    if (!q || combined.includes(q)) {
+      row.classList.remove('hidden');
+      totalVisible++;
+    } else {
+      row.classList.add('hidden');
+    }
+  });
+
+  sections.forEach(section => {
+    if (q) {
+      const visible = section.querySelectorAll('.code-row:not(.hidden)').length;
+      const grid = section.querySelector('.codes-grid');
+      if (visible === 0) {
+        section.style.display = 'none';
+      } else {
+        section.style.display = '';
+        if (grid) grid.classList.remove('collapsed');
+      }
+    } else {
+      section.style.display = '';
+    }
+  });
+
+  noResults.style.display = totalVisible === 0 && q ? 'block' : 'none';
+});
+
+function toggleSection(header) {
+  const grid = header.nextElementSibling;
+  const toggle = header.querySelector('.section-toggle');
+  grid.classList.toggle('collapsed');
+  toggle.classList.toggle('open');
+}
+</script>
+</body>
+</html>
