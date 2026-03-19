@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>401k Calculator — Retirement Savings Growth & Employer Match</title>
+  <meta name="description" content="Calculate your 401k balance at retirement. See employer match impact, contribution limits, and year-by-year growth. Free 401k calculator — no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/401k-calculator/">
+  <meta property="og:title" content="401k Calculator — Retirement Savings Growth & Employer Match">
+  <meta property="og:description" content="Calculate your 401k balance at retirement with employer match. See year-by-year projections. Free, no login.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/401k-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="401k Calculator — Retirement Savings Growth & Employer Match">
+  <meta name="twitter:description" content="Calculate your 401k balance at retirement with employer match. Free 401k calculator.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --orange: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --text: #e6edf3;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 820px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .input-wrap { position: relative; }
+    .input-prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.95rem; pointer-events: none; }
+    .input-suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; pointer-events: none; }
+    input[type="number"], select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text); font-size: 1rem; font-family: var(--font); outline: none; transition: border-color 0.15s; }
+    select { cursor: pointer; }
+    input[type="number"]:focus, select:focus { border-color: var(--accent); }
+    .has-prefix input[type="number"] { padding-left: 28px; }
+    .has-suffix input[type="number"] { padding-right: 36px; }
+    .calc-btn { margin-top: 20px; width: 100%; padding: 13px; background: var(--accent); color: #0d1117; font-size: 1rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s; }
+    .calc-btn:hover { opacity: 0.88; }
+    .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 700px) { .results-grid { grid-template-columns: repeat(2, 1fr); } }
+    .result-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-num { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+    .result-label { font-size: 0.76rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .result-num.green { color: var(--green); }
+    .result-num.red { color: var(--red); }
+    .result-num.orange { color: var(--orange); }
+    .result-num.blue { color: var(--accent); }
+    .result-num.purple { color: var(--purple); }
+    #results { display: none; }
+    .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .breakdown-grid { grid-template-columns: 1fr; } }
+    .breakdown-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .breakdown-num { font-size: 1.3rem; font-weight: 700; }
+    .breakdown-label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 7px 12px; border-bottom: 1px solid rgba(48,54,61,0.6); }
+    tr:last-child td { border-bottom: none; }
+    .info-section { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+    .info-section h2 { font-size: 1.1rem; color: var(--text); font-weight: 700; margin: 0 0 10px; }
+    .info-section h3 { font-size: 0.95rem; color: var(--text); font-weight: 600; margin: 16px 0 6px; }
+    .info-section p { margin-bottom: 10px; }
+    .info-section ul { margin: 8px 0 12px 20px; }
+    .info-section li { margin-bottom: 4px; }
+    .highlight-box { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.3); border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .highlight-box strong { color: var(--accent); }
+    .warning-box { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.3); border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .warning-box strong { color: var(--red); }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; z-index: 100; }
+    .coffee-float a { background: var(--accent); color: #0d1117; padding: 10px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(88,166,255,0.3); display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
+    .coffee-float a:hover { opacity: 0.9; text-decoration: none; }
+    .field-note { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiter<span>ole</span></div>
+  <nav style="margin-left:auto;display:flex;gap:20px;font-size:0.88rem;">
+    <a href="/profiterole-blog/">Home</a>
+    <a href="/profiterole-blog/finance/">Finance</a>
+  </nav>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link">← All calculators</a>
+
+  <h1 class="page-title">401k Calculator</h1>
+  <p class="page-subtitle">Project your 401k balance at retirement — with employer match and investment growth</p>
+
+  <div class="card">
+    <div class="card-title">Your 401k Details</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Current Age</label>
+        <div class="input-wrap">
+          <input type="number" id="currentAge" value="30" min="18" max="70">
+        </div>
+      </div>
+      <div class="field">
+        <label>Retirement Age</label>
+        <div class="input-wrap">
+          <input type="number" id="retirementAge" value="65" min="50" max="80">
+        </div>
+      </div>
+      <div class="field">
+        <label>Current Annual Salary</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix">$</span>
+          <input type="number" id="salary" value="75000" min="0">
+        </div>
+      </div>
+      <div class="field">
+        <label>Your Contribution Rate</label>
+        <div class="input-wrap has-suffix">
+          <input type="number" id="contribRate" value="10" min="0" max="23" step="0.5">
+          <span class="input-suffix">%</span>
+        </div>
+        <div class="field-note">2024 limit: $23,000/year (under 50) | $30,500 (50+)</div>
+      </div>
+      <div class="field">
+        <label>Employer Match</label>
+        <div class="input-wrap has-suffix">
+          <input type="number" id="employerMatch" value="100" min="0" max="200" step="10">
+          <span class="input-suffix">%</span>
+        </div>
+        <div class="field-note">e.g. "100% match" = employer doubles your contribution</div>
+      </div>
+      <div class="field">
+        <label>Match Up To (% of salary)</label>
+        <div class="input-wrap has-suffix">
+          <input type="number" id="matchCap" value="5" min="0" max="20" step="0.5">
+          <span class="input-suffix">%</span>
+        </div>
+        <div class="field-note">e.g. "match up to 5% of salary"</div>
+      </div>
+      <div class="field">
+        <label>Current 401k Balance</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix">$</span>
+          <input type="number" id="currentBalance" value="25000" min="0">
+        </div>
+      </div>
+      <div class="field">
+        <label>Expected Annual Return</label>
+        <div class="input-wrap has-suffix">
+          <input type="number" id="returnRate" value="7" min="0" max="20" step="0.5">
+          <span class="input-suffix">%</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Annual Salary Increase</label>
+        <div class="input-wrap has-suffix">
+          <input type="number" id="salaryIncrease" value="2" min="0" max="10" step="0.5">
+          <span class="input-suffix">%</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Federal Tax Bracket (now)</label>
+        <select id="taxBracket">
+          <option value="0.12">12%</option>
+          <option value="0.22" selected>22%</option>
+          <option value="0.24">24%</option>
+          <option value="0.32">32%</option>
+          <option value="0.35">35%</option>
+        </select>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate My 401k</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Retirement Balance Breakdown</div>
+      <div class="breakdown-grid">
+        <div class="breakdown-box">
+          <div class="breakdown-num green" id="yourContribs">$0</div>
+          <div class="breakdown-label">Your Total Contributions</div>
+        </div>
+        <div class="breakdown-box">
+          <div class="breakdown-num blue" id="employerContribs">$0</div>
+          <div class="breakdown-label">Employer Match Total</div>
+        </div>
+        <div class="breakdown-box">
+          <div class="breakdown-num orange" id="investmentGrowth">$0</div>
+          <div class="breakdown-label">Investment Growth</div>
+        </div>
+      </div>
+      <div class="results-grid">
+        <div class="result-box">
+          <div class="result-num green" id="finalBalance">$0</div>
+          <div class="result-label">Total at Retirement</div>
+        </div>
+        <div class="result-box">
+          <div class="result-num blue" id="annualIncome">$0</div>
+          <div class="result-label">Annual Income (4% rule)</div>
+        </div>
+        <div class="result-box">
+          <div class="result-num orange" id="annualTaxSaved">$0</div>
+          <div class="result-label">Annual Tax Deduction</div>
+        </div>
+        <div class="result-box">
+          <div class="result-num purple" id="freeMoneyTotal">$0</div>
+          <div class="result-label">Total "Free Money" (Match)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Year-by-Year Projection</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Age</th>
+              <th>Annual Contrib (You)</th>
+              <th>Employer Match</th>
+              <th>Investment Growth</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody id="projectionTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card info-section">
+      <h2>How to Maximize Your 401k</h2>
+
+      <div class="highlight-box">
+        <strong>Rule #1: Always get the full employer match.</strong> It's an instant 50-100% return on your contribution. If your employer matches 100% up to 5%, and you earn $75,000 — that's $3,750/year in free money. Never leave it on the table.
+      </div>
+
+      <h3>2024 Contribution Limits</h3>
+      <ul>
+        <li>Under age 50: $23,000/year</li>
+        <li>Age 50 and older: $30,500/year (catch-up contribution)</li>
+        <li>Total including employer match: $69,000/year</li>
+      </ul>
+
+      <h3>Traditional vs. Roth 401k</h3>
+      <p><strong>Traditional 401k:</strong> Contributions are pre-tax (reduces your taxable income now). You pay taxes when you withdraw in retirement.</p>
+      <p><strong>Roth 401k:</strong> Contributions are after-tax (no immediate deduction). Withdrawals in retirement are completely tax-free — including all the growth.</p>
+
+      <div class="warning-box">
+        <strong>Early withdrawal penalty:</strong> Withdrawing before age 59½ triggers a 10% penalty plus ordinary income tax. Leave the money alone until retirement.
+      </div>
+
+      <h3>The Rule of 72 — How Long to Double Your Money</h3>
+      <p>Divide 72 by your expected return rate to find years to double. At 7% return: 72 ÷ 7 = ~10 years. A 30-year-old with $25,000 today could have $200,000 by retirement from that amount alone (25K doubles every 10 years: $50K → $100K → $200K).</p>
+
+      <h3>Investment Allocation by Age</h3>
+      <p>A common rule: subtract your age from 110 to get your stock allocation. At 30: 80% stocks, 20% bonds. At 60: 50/50. As you approach retirement, reduce risk by shifting to bonds and stable assets.</p>
+    </div>
+  </div>
+</div>
+
+<div class="coffee-float">
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">Buy me a coffee</a>
+</div>
+
+<script>
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function calculate() {
+  const currentAge = parseInt(document.getElementById('currentAge').value) || 30;
+  const retirementAge = parseInt(document.getElementById('retirementAge').value) || 65;
+  const salary = parseFloat(document.getElementById('salary').value) || 0;
+  const contribRate = parseFloat(document.getElementById('contribRate').value) / 100 || 0;
+  const employerMatchPct = parseFloat(document.getElementById('employerMatch').value) / 100 || 0;
+  const matchCap = parseFloat(document.getElementById('matchCap').value) / 100 || 0;
+  const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
+  const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 || 0;
+  const salaryIncrease = parseFloat(document.getElementById('salaryIncrease').value) / 100 || 0;
+  const taxRate = parseFloat(document.getElementById('taxBracket').value) || 0;
+
+  const years = retirementAge - currentAge;
+  const CONTRIB_LIMIT_UNDER50 = 23000;
+  const CONTRIB_LIMIT_OVER50 = 30500;
+
+  let balance = currentBalance;
+  let totalYourContribs = 0;
+  let totalEmployerContribs = 0;
+  let currentSalary = salary;
+  const tableRows = [];
+
+  for (let y = 0; y < years; y++) {
+    const age = currentAge + y;
+    const limit = age >= 50 ? CONTRIB_LIMIT_OVER50 : CONTRIB_LIMIT_UNDER50;
+    const yourContrib = Math.min(currentSalary * contribRate, limit);
+    const matchableContrib = Math.min(currentSalary * contribRate, currentSalary * matchCap);
+    const employerContrib = matchableContrib * employerMatchPct;
+    const totalContrib = yourContrib + employerContrib;
+    const growth = balance * returnRate;
+
+    balance = balance + totalContrib + growth;
+    totalYourContribs += yourContrib;
+    totalEmployerContribs += employerContrib;
+    tableRows.push({ age: age + 1, yourContrib, employerContrib, growth, balance });
+    currentSalary *= (1 + salaryIncrease);
+  }
+
+  const totalGrowth = balance - totalYourContribs - totalEmployerContribs - currentBalance;
+  const annualIncome = balance * 0.04;
+  const annualTaxSaved = Math.min(salary * contribRate, years > 0 ? CONTRIB_LIMIT_UNDER50 : 0) * taxRate;
+
+  document.getElementById('yourContribs').textContent = fmt(totalYourContribs);
+  document.getElementById('employerContribs').textContent = fmt(totalEmployerContribs);
+  document.getElementById('investmentGrowth').textContent = fmt(totalGrowth);
+  document.getElementById('finalBalance').textContent = fmt(balance);
+  document.getElementById('annualIncome').textContent = fmt(annualIncome);
+  document.getElementById('annualTaxSaved').textContent = fmt(annualTaxSaved);
+  document.getElementById('freeMoneyTotal').textContent = fmt(totalEmployerContribs);
+
+  // Table
+  const tbody = document.getElementById('projectionTable');
+  tbody.innerHTML = '';
+  const showAll = years <= 15;
+  let ellipsisAdded = false;
+
+  tableRows.forEach((row, i) => {
+    const showRow = showAll || row.age - currentAge <= 5 || row.age - currentAge >= years - 1 || row.age === currentAge + Math.floor(years / 2);
+    if (!showAll && !ellipsisAdded && row.age - currentAge === 6) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="5" style="text-align:center;color:var(--muted);font-style:italic;padding:10px;">...</td>';
+      tbody.appendChild(tr);
+      ellipsisAdded = true;
+    }
+    if (showRow || showAll) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.age}</td>
+        <td style="color:var(--green)">${fmt(row.yourContrib)}</td>
+        <td style="color:var(--accent)">${fmt(row.employerContrib)}</td>
+        <td style="color:var(--orange)">${fmt(row.growth)}</td>
+        <td style="font-weight:600">${fmt(row.balance)}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+calculate();
+</script>
+</body>
+</html>

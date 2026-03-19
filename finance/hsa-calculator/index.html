@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HSA Calculator — Health Savings Account Growth & Tax Savings</title>
+  <meta name="description" content="Calculate your HSA tax savings and long-term growth. See how much a Health Savings Account saves you in taxes and grows over time. Free, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/hsa-calculator/">
+  <meta property="og:title" content="HSA Calculator — Health Savings Account Growth & Tax Savings">
+  <meta property="og:description" content="Calculate your HSA tax savings and how much your account grows over time. Free HSA calculator.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/hsa-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="HSA Calculator — Health Savings Account Growth & Tax Savings">
+  <meta name="twitter:description" content="Calculate your HSA tax savings and long-term growth. Free, no login required.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --orange: #d29922;
+      --red: #f85149;
+      --text: #e6edf3;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 820px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .input-wrap { position: relative; }
+    .input-prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.95rem; pointer-events: none; }
+    .input-suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; pointer-events: none; }
+    input[type="number"], select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text); font-size: 1rem; font-family: var(--font); outline: none; transition: border-color 0.15s; }
+    select { cursor: pointer; }
+    input[type="number"]:focus, select:focus { border-color: var(--accent); }
+    .has-prefix input[type="number"] { padding-left: 28px; }
+    .has-suffix input[type="number"] { padding-right: 36px; }
+    .calc-btn { margin-top: 20px; width: 100%; padding: 13px; background: var(--accent); color: #0d1117; font-size: 1rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s; }
+    .calc-btn:hover { opacity: 0.88; }
+    .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 700px) { .results-grid { grid-template-columns: repeat(2, 1fr); } }
+    .result-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-num { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+    .result-label { font-size: 0.76rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .result-num.green { color: var(--green); }
+    .result-num.red { color: var(--red); }
+    .result-num.orange { color: var(--orange); }
+    .result-num.blue { color: var(--accent); }
+    #results { display: none; }
+    .triple-savings { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .triple-savings { grid-template-columns: 1fr; } }
+    .saving-box { background: var(--bg); border: 1px solid var(--green); border-radius: 8px; padding: 16px; text-align: center; }
+    .saving-num { font-size: 1.4rem; font-weight: 700; color: var(--green); }
+    .saving-label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 7px 12px; border-bottom: 1px solid rgba(48,54,61,0.6); }
+    tr:last-child td { border-bottom: none; }
+    .info-section { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+    .info-section h2 { font-size: 1.1rem; color: var(--text); font-weight: 700; margin: 0 0 10px; }
+    .info-section h3 { font-size: 0.95rem; color: var(--text); font-weight: 600; margin: 16px 0 6px; }
+    .info-section p { margin-bottom: 10px; }
+    .info-section ul { margin: 8px 0 12px 20px; }
+    .info-section li { margin-bottom: 4px; }
+    .highlight-box { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.3); border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .highlight-box strong { color: var(--accent); }
+    .coffee-float { position: fixed; bottom: 24px; right: 24px; z-index: 100; }
+    .coffee-float a { background: var(--accent); color: #0d1117; padding: 10px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(88,166,255,0.3); display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
+    .coffee-float a:hover { opacity: 0.9; text-decoration: none; }
+    .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .limit-note { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiter<span>ole</span></div>
+  <nav style="margin-left:auto;display:flex;gap:20px;font-size:0.88rem;">
+    <a href="/profiterole-blog/">Home</a>
+    <a href="/profiterole-blog/finance/">Finance</a>
+  </nav>
+</header>
+
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link">← All calculators</a>
+
+  <h1 class="page-title">HSA Calculator</h1>
+  <p class="page-subtitle">Calculate your Health Savings Account tax savings and long-term growth potential</p>
+
+  <div class="card">
+    <div class="card-title">Your HSA Details</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Annual HSA Contribution</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix">$</span>
+          <input type="number" id="contribution" value="3850" min="0" max="9000">
+        </div>
+        <div class="limit-note" id="limitNote">2024 individual limit: $4,150 | family: $8,300</div>
+      </div>
+      <div class="field">
+        <label>Coverage Type</label>
+        <select id="coverageType" onchange="updateLimits()">
+          <option value="individual">Individual (HDHP)</option>
+          <option value="family">Family (HDHP)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Federal Tax Bracket</label>
+        <select id="taxBracket">
+          <option value="0.10">10%</option>
+          <option value="0.12">12%</option>
+          <option value="0.22" selected>22%</option>
+          <option value="0.24">24%</option>
+          <option value="0.32">32%</option>
+          <option value="0.35">35%</option>
+          <option value="0.37">37%</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>State Tax Rate</label>
+        <div class="input-wrap has-suffix">
+          <input type="number" id="stateTax" value="5" min="0" max="15" step="0.5">
+          <span class="input-suffix">%</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Expected Investment Return</label>
+        <div class="input-wrap has-suffix">
+          <input type="number" id="investReturn" value="7" min="0" max="20" step="0.5">
+          <span class="input-suffix">%</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Years Until Retirement</label>
+        <div class="input-wrap">
+          <input type="number" id="years" value="25" min="1" max="50">
+        </div>
+      </div>
+      <div class="field">
+        <label>Current HSA Balance</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix">$</span>
+          <input type="number" id="currentBalance" value="0" min="0">
+        </div>
+      </div>
+      <div class="field">
+        <label>Annual Medical Expenses (withdrawn)</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix">$</span>
+          <input type="number" id="annualExpenses" value="500" min="0">
+        </div>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate HSA Growth & Tax Savings</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Triple Tax Advantage — Annual Savings</div>
+      <div class="triple-savings">
+        <div class="saving-box">
+          <div class="saving-num" id="federalSaving">$0</div>
+          <div class="saving-label">Federal Tax Saved</div>
+        </div>
+        <div class="saving-box">
+          <div class="saving-num" id="stateSaving">$0</div>
+          <div class="saving-label">State Tax Saved</div>
+        </div>
+        <div class="saving-box">
+          <div class="saving-num" id="ficaSaving">$0</div>
+          <div class="saving-label">FICA Tax Saved</div>
+        </div>
+      </div>
+      <div class="results-grid">
+        <div class="result-box">
+          <div class="result-num green" id="totalAnnualSaving">$0</div>
+          <div class="result-label">Total Annual Tax Saved</div>
+        </div>
+        <div class="result-box">
+          <div class="result-num blue" id="effectiveCost">$0</div>
+          <div class="result-label">Your Effective Cost</div>
+        </div>
+        <div class="result-box">
+          <div class="result-num orange" id="projectedBalance">$0</div>
+          <div class="result-label">Projected Balance at Retirement</div>
+        </div>
+        <div class="result-box">
+          <div class="result-num green" id="totalTaxSavings">$0</div>
+          <div class="result-label">Total Tax Saved Over <span id="yearsLabel">25</span> Years</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Year-by-Year Growth</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Annual Contribution</th>
+              <th>Medical Withdrawals</th>
+              <th>Investment Growth</th>
+              <th>Balance</th>
+              <th>Cumulative Tax Saved</th>
+            </tr>
+          </thead>
+          <tbody id="growthTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card info-section">
+      <h2>How the HSA Triple Tax Advantage Works</h2>
+      <p>The HSA is considered the most tax-efficient account available in the US — it offers tax benefits that even a 401k or Roth IRA can't match.</p>
+      <div class="highlight-box">
+        <strong>Triple tax-free:</strong>
+        <ul style="margin-top:8px;">
+          <li>Contributions are <strong>pre-tax</strong> (reduce taxable income)</li>
+          <li>Growth is <strong>tax-free</strong> (invest contributions, gains never taxed)</li>
+          <li>Withdrawals for medical expenses are <strong>tax-free</strong></li>
+        </ul>
+      </div>
+      <h3>2024 Contribution Limits</h3>
+      <ul>
+        <li>Individual coverage: $4,150/year</li>
+        <li>Family coverage: $8,300/year</li>
+        <li>Age 55+ catch-up: additional $1,000/year</li>
+      </ul>
+      <h3>HDHP Requirements</h3>
+      <p>To contribute to an HSA, you must be enrolled in a High-Deductible Health Plan (HDHP). For 2024, that means a deductible of at least $1,600 (individual) or $3,200 (family).</p>
+      <h3>After Age 65</h3>
+      <p>At 65, you can withdraw HSA funds for non-medical expenses (like a 401k), paying only regular income tax — no penalty. For medical expenses, withdrawals remain completely tax-free forever.</p>
+      <h3>Investment Strategy</h3>
+      <p>Many financial advisors recommend paying current medical expenses out-of-pocket (if you can afford it), letting your HSA investments grow tax-free for decades. Keep receipts — you can reimburse yourself for old medical expenses at any future date with no time limit.</p>
+    </div>
+  </div>
+</div>
+
+<div class="coffee-float">
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">Buy me a coffee</a>
+</div>
+
+<script>
+function updateLimits() {
+  const type = document.getElementById('coverageType').value;
+  const note = document.getElementById('limitNote');
+  if (type === 'family') {
+    note.textContent = '2024 family limit: $8,300 | individual: $4,150';
+  } else {
+    note.textContent = '2024 individual limit: $4,150 | family: $8,300';
+  }
+}
+
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function calculate() {
+  const contribution = parseFloat(document.getElementById('contribution').value) || 0;
+  const fedRate = parseFloat(document.getElementById('taxBracket').value) || 0;
+  const stateRate = parseFloat(document.getElementById('stateTax').value) / 100 || 0;
+  const ficaRate = 0.0765; // 7.65% employee share
+  const investRate = parseFloat(document.getElementById('investReturn').value) / 100 || 0;
+  const years = parseInt(document.getElementById('years').value) || 1;
+  const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
+  const annualExpenses = parseFloat(document.getElementById('annualExpenses').value) || 0;
+
+  // Annual tax savings
+  const federalSaving = contribution * fedRate;
+  const stateSaving = contribution * stateRate;
+  const ficaSaving = contribution * ficaRate;
+  const totalAnnualSaving = federalSaving + stateSaving + ficaSaving;
+  const effectiveCost = contribution - totalAnnualSaving;
+
+  // Projection
+  let balance = currentBalance;
+  let totalTaxSaved = 0;
+  const tableRows = [];
+
+  for (let y = 1; y <= years; y++) {
+    const annualContrib = contribution;
+    const withdrawn = Math.min(annualExpenses, balance + annualContrib);
+    balance = (balance + annualContrib - withdrawn) * (1 + investRate);
+    totalTaxSaved += totalAnnualSaving;
+    tableRows.push({ year: y, contrib: annualContrib, withdrawn, growth: balance * investRate / (1 + investRate), balance, totalTaxSaved });
+  }
+
+  // Display
+  document.getElementById('federalSaving').textContent = fmt(federalSaving);
+  document.getElementById('stateSaving').textContent = fmt(stateSaving);
+  document.getElementById('ficaSaving').textContent = fmt(ficaSaving);
+  document.getElementById('totalAnnualSaving').textContent = fmt(totalAnnualSaving);
+  document.getElementById('effectiveCost').textContent = fmt(effectiveCost);
+  document.getElementById('projectedBalance').textContent = fmt(balance);
+  document.getElementById('totalTaxSavings').textContent = fmt(totalTaxSaved);
+  document.getElementById('yearsLabel').textContent = years;
+
+  // Table
+  const tbody = document.getElementById('growthTable');
+  tbody.innerHTML = '';
+  const showAll = years <= 15;
+  tableRows.forEach((row, i) => {
+    const show = showAll || row.year <= 5 || row.year === Math.floor(years / 2) || row.year === years;
+    if (!showAll && row.year === 6) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="6" style="text-align:center;color:var(--muted);font-style:italic;padding:10px;">...</td>';
+      tbody.appendChild(tr);
+    }
+    if (show || showAll) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.year}</td>
+        <td style="color:var(--green)">${fmt(row.contrib)}</td>
+        <td style="color:var(--red)">${fmt(row.withdrawn)}</td>
+        <td style="color:var(--accent)">${fmt(row.growth)}</td>
+        <td style="font-weight:600">${fmt(row.balance)}</td>
+        <td style="color:var(--green)">${fmt(row.totalTaxSaved)}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Auto-calculate on load
+calculate();
+</script>
+</body>
+</html>
