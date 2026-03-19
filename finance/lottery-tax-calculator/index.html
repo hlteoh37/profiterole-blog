@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lottery Tax Calculator — What You Actually Take Home</title>
+  <meta name="description" content="Calculate your lottery winnings after federal and state taxes. Lump sum vs annuity payout comparison. See what you actually keep after the IRS takes its cut.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/lottery-tax-calculator/">
+  <meta property="og:title" content="Lottery Tax Calculator — What You Actually Take Home">
+  <meta property="og:description" content="See your real lottery payout after federal and state taxes. Lump sum vs annuity comparison.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/lottery-tax-calculator/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.danger { border-color:var(--red); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.4rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { color:var(--green); }
+    .result-card.danger .result-value { color:var(--red); }
+    .compare-table { width:100%;border-collapse:collapse;font-size:0.9rem;margin-top:4px; }
+    .compare-table th { text-align:left;color:var(--muted);font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;padding:8px 12px;border-bottom:1px solid var(--border); }
+    .compare-table td { padding:10px 12px;border-bottom:1px solid var(--border); }
+    .compare-table tr:last-child td { border-bottom:none; }
+    .good { color:var(--green);font-weight:600; }
+    .bad { color:var(--red); }
+    .info-box { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px;font-size:0.85rem;color:var(--muted); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Lottery Tax Calculator</h1>
+    <p class="page-subtitle">See what you actually take home after federal and state taxes. Lump sum vs annuity comparison.</p>
+
+    <div class="card">
+      <div class="card-title">Lottery Details</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Jackpot Amount ($)</label>
+          <input type="number" id="jackpot" value="100000000" min="0" step="1000000">
+        </div>
+        <div class="field">
+          <label>Payout Type</label>
+          <select id="payoutType">
+            <option value="lump">Lump Sum (cash value ~60%)</option>
+            <option value="annuity">Annuity (full jackpot over 30 years)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>State</label>
+          <select id="state">
+            <option value="0">No state tax (FL, TX, WA, etc.)</option>
+            <option value="2.9">North Dakota (2.9%)</option>
+            <option value="3">Indiana (3%)</option>
+            <option value="3.07">Pennsylvania (3.07%)</option>
+            <option value="3.75">Colorado (3.75%)</option>
+            <option value="4">Illinois (4%)</option>
+            <option value="4.25">Michigan (4.25%)</option>
+            <option value="4.55">Arizona (4.55%)</option>
+            <option value="4.95">Kentucky / Wisconsin (4.95%)</option>
+            <option value="5">Massachusetts / Georgia (5%)</option>
+            <option value="5.49">Ohio (5.49%)</option>
+            <option value="5.75">Virginia (5.75%)</option>
+            <option value="6">Connecticut (6%)</option>
+            <option value="6.5">Montana (6.5%)</option>
+            <option value="6.99">Idaho (6.99%)</option>
+            <option value="7">Minnesota / South Carolina (7%)</option>
+            <option value="7.15">Maine (7.15%)</option>
+            <option value="7.25">Vermont (7.25%)</option>
+            <option value="8.82">New York (10.9%)</option>
+            <option value="10.9">New York City (extra local)</option>
+            <option value="custom">Custom rate</option>
+          </select>
+        </div>
+        <div class="field" id="customStateField" style="display:none">
+          <label>Custom State Rate (%)</label>
+          <input type="number" id="customState" value="5" min="0" max="15" step="0.1">
+        </div>
+        <div class="field">
+          <label>Filing Status</label>
+          <select id="filing">
+            <option value="single">Single</option>
+            <option value="married">Married Filing Jointly</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate My Payout</button>
+    </div>
+
+    <div id="results">
+      <div class="card">
+        <div class="card-title">Your Payout Breakdown</div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Gross Payout</div>
+            <div class="result-value" id="grossPayout">—</div>
+          </div>
+          <div class="result-card danger">
+            <div class="result-label">Total Taxes</div>
+            <div class="result-value" id="totalTaxes">—</div>
+          </div>
+          <div class="result-card primary">
+            <div class="result-label">You Keep</div>
+            <div class="result-value" id="youKeep">—</div>
+          </div>
+        </div>
+
+        <table class="compare-table">
+          <thead><tr><th>Item</th><th>Amount</th><th>Rate</th></tr></thead>
+          <tbody>
+            <tr><td>Federal Withholding (immediate)</td><td id="fedWithhold">—</td><td>24%</td></tr>
+            <tr><td>Federal Top Marginal Tax</td><td id="fedExtra">—</td><td id="fedRate">—</td></tr>
+            <tr><td>State Tax</td><td id="stateTax">—</td><td id="stateRate">—</td></tr>
+            <tr><td><strong>Take-Home</strong></td><td id="takeHome" class="good">—</td><td id="effectiveRate">—</td></tr>
+          </tbody>
+        </table>
+
+        <div class="info-box" id="infoBox"></div>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:0.85rem;color:var(--muted);">
+      <div class="card-title">How Lottery Taxes Work</div>
+      <p style="margin-bottom:10px">Lottery winnings are ordinary income — taxed at your marginal rate. The IRS immediately withholds <strong style="color:var(--text)">24%</strong>, but winnings over ~$578K (single) or ~$693K (married) get taxed at the <strong style="color:var(--text)">37% top rate</strong>.</p>
+      <p style="margin-bottom:10px">Lump sum jackpots are typically <strong style="color:var(--text)">~60% of the advertised amount</strong> before tax. So a $100M jackpot = $60M lump sum = ~$38-42M after federal + state taxes.</p>
+      <p>Annuity pays the full amount over 30 years but you lose the time value of money — and future tax rates are unknown.</p>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    document.getElementById('state').addEventListener('change', function() {
+      document.getElementById('customStateField').style.display = this.value === 'custom' ? '' : 'none';
+    });
+
+    function fmt(n) {
+      if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+      if (n >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
+      return '$' + n.toFixed(0);
+    }
+    function fmtFull(n) {
+      return '$' + Math.round(n).toLocaleString();
+    }
+    function pct(n) { return n.toFixed(1) + '%'; }
+
+    function federalTax(income, filing) {
+      // 2024 brackets
+      const brackets = filing === 'married'
+        ? [[23200,0.10],[94300,0.12],[201050,0.22],[383900,0.24],[487450,0.32],[731200,0.35],[Infinity,0.37]]
+        : [[11600,0.10],[47150,0.12],[100525,0.22],[191950,0.24],[243725,0.32],[609350,0.35],[Infinity,0.37]];
+      let tax = 0, prev = 0;
+      for (const [limit, rate] of brackets) {
+        if (income <= prev) break;
+        tax += Math.min(income, limit) * rate - prev * rate;
+        prev = limit;
+      }
+      return tax;
+    }
+
+    function calculate() {
+      const jackpot = parseFloat(document.getElementById('jackpot').value) || 0;
+      const isLump = document.getElementById('payoutType').value === 'lump';
+      const stateVal = document.getElementById('state').value;
+      const statePct = stateVal === 'custom'
+        ? (parseFloat(document.getElementById('customState').value) || 0) / 100
+        : parseFloat(stateVal) / 100;
+      const filing = document.getElementById('filing').value;
+
+      const gross = isLump ? jackpot * 0.60 : jackpot;
+      const fedTax = federalTax(gross, filing);
+      const stTax = gross * statePct;
+      const totalTax = fedTax + stTax;
+      const net = gross - totalTax;
+      const effectiveRate = gross > 0 ? totalTax / gross * 100 : 0;
+
+      // Immediate 24% withholding
+      const withheld = gross * 0.24;
+      const topBracketTax = fedTax - withheld; // approximate extra owed at filing
+
+      document.getElementById('grossPayout').textContent = fmtFull(gross);
+      document.getElementById('totalTaxes').textContent = fmtFull(totalTax);
+      document.getElementById('youKeep').textContent = fmtFull(net);
+      document.getElementById('fedWithhold').textContent = fmtFull(withheld);
+      document.getElementById('fedExtra').textContent = topBracketTax > 0 ? fmtFull(topBracketTax) : '$0';
+      document.getElementById('fedRate').textContent = '37% top';
+      document.getElementById('stateTax').textContent = fmtFull(stTax);
+      document.getElementById('stateRate').textContent = pct(statePct * 100);
+      document.getElementById('takeHome').textContent = fmtFull(net);
+      document.getElementById('effectiveRate').textContent = pct(effectiveRate) + ' effective';
+
+      const keepPct = net / jackpot * 100;
+      document.getElementById('infoBox').innerHTML =
+        `You keep <strong style="color:var(--green)">${pct(keepPct)}</strong> of the advertised ${fmt(jackpot)} jackpot. ` +
+        (isLump ? `The lump sum cash value is ~60% of the advertised prize before any taxes.` :
+          `Annuity pays out over 30 years (~${fmt(jackpot/30)}/year before tax).`);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

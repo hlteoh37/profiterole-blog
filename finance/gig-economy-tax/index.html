@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gig Economy Tax Calculator — Quarterly Estimated Taxes for Uber, DoorDash & Freelancers</title>
+  <meta name="description" content="Calculate quarterly estimated taxes for gig workers. Uber, DoorDash, Instacart, Fiverr, Upwork. See self-employment tax + income tax. Avoid IRS penalties. Free.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/gig-economy-tax/">
+  <meta property="og:title" content="Gig Economy Tax Calculator — Quarterly Taxes for Gig Workers">
+  <meta property="og:description" content="Calculate quarterly estimated taxes for Uber, DoorDash, freelancers, and gig workers. Avoid underpayment penalties.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/gig-economy-tax/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px; }
+    .results-grid-3 { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px; }
+    @media (max-width:520px) { .results-grid-3 { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.warn { border-color:var(--yellow); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { color:var(--green); }
+    .result-card.warn .result-value { color:var(--yellow); }
+    .quarterly-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px; }
+    @media (max-width:520px) { .quarterly-grid { grid-template-columns:1fr 1fr; } }
+    .q-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center; }
+    .q-label { font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;margin-bottom:4px; }
+    .q-date { font-size:0.7rem;color:var(--muted);margin-bottom:6px; }
+    .q-amount { font-size:1.2rem;font-weight:700;color:var(--accent); }
+    .breakdown-row { display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.9rem; }
+    .breakdown-row:last-child { border-bottom:none; }
+    .breakdown-row .label { color:var(--muted); }
+    .breakdown-row .val { font-weight:600; }
+    .info-box { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:16px;font-size:0.85rem;color:var(--muted); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Gig Economy Tax Calculator</h1>
+    <p class="page-subtitle">Calculate your quarterly estimated taxes as a gig worker. Avoid the IRS underpayment penalty — know exactly what to send each quarter.</p>
+
+    <div class="card">
+      <div class="card-title">Your Gig Income</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Annual Gig Income ($)</label>
+          <input type="number" id="gigIncome" value="40000" min="0" step="500">
+          <span style="font-size:0.8rem;color:var(--muted)">Uber, DoorDash, freelance, etc.</span>
+        </div>
+        <div class="field">
+          <label>Other W-2 Income ($)</label>
+          <input type="number" id="w2Income" value="0" min="0" step="500">
+          <span style="font-size:0.8rem;color:var(--muted)">Day job wages (if any)</span>
+        </div>
+        <div class="field">
+          <label>Business Expenses ($)</label>
+          <input type="number" id="expenses" value="5000" min="0" step="500">
+          <span style="font-size:0.8rem;color:var(--muted)">Gas, phone, equipment, etc.</span>
+        </div>
+        <div class="field">
+          <label>Filing Status</label>
+          <select id="filing">
+            <option value="single">Single</option>
+            <option value="married">Married Filing Jointly</option>
+            <option value="hoh">Head of Household</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>State</label>
+          <select id="state">
+            <option value="0">No income tax state</option>
+            <option value="3.07">Pennsylvania (3.07%)</option>
+            <option value="4">Illinois / Michigan area (4%)</option>
+            <option value="4.95">Wisconsin / Kentucky (4.95%)</option>
+            <option value="5">Massachusetts / Georgia (5%)</option>
+            <option value="5.75">Virginia (5.75%)</option>
+            <option value="7">Minnesota (7%)</option>
+            <option value="9.3">California (9.3% mid)</option>
+            <option value="custom">Custom rate</option>
+          </select>
+        </div>
+        <div class="field" id="customStateField" style="display:none">
+          <label>Custom State Rate (%)</label>
+          <input type="number" id="customState" value="5" min="0" max="15" step="0.1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate My Quarterly Taxes</button>
+    </div>
+
+    <div id="results">
+      <div class="card">
+        <div class="card-title">Annual Tax Summary</div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Self-Employment Tax</div>
+            <div class="result-value" id="seTax">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Income Tax</div>
+            <div class="result-value" id="incomeTax">—</div>
+          </div>
+          <div class="result-card warn">
+            <div class="result-label">State Tax</div>
+            <div class="result-value" id="stateTax">—</div>
+          </div>
+          <div class="result-card primary">
+            <div class="result-label">Total Tax Owed</div>
+            <div class="result-value" id="totalTax">—</div>
+          </div>
+        </div>
+
+        <div class="card-title" style="margin-top:4px">How It's Calculated</div>
+        <div class="breakdown-row"><span class="label">Gross gig income</span><span class="val" id="bGross">—</span></div>
+        <div class="breakdown-row"><span class="label">Business expenses</span><span class="val" id="bExp" style="color:var(--muted)">—</span></div>
+        <div class="breakdown-row"><span class="label">Net self-employment income</span><span class="val" id="bNet">—</span></div>
+        <div class="breakdown-row"><span class="label">SE tax (15.3% × 92.35%)</span><span class="val" id="bSE">—</span></div>
+        <div class="breakdown-row"><span class="label">Deductible half of SE tax</span><span class="val" id="bSEDeduct" style="color:var(--muted)">—</span></div>
+        <div class="breakdown-row"><span class="label">Standard deduction</span><span class="val" id="bStdDed" style="color:var(--muted)">—</span></div>
+        <div class="breakdown-row"><span class="label">Taxable income</span><span class="val" id="bTaxable">—</span></div>
+        <div class="breakdown-row" style="font-weight:700"><span class="label">Total annual tax</span><span class="val" style="color:var(--green)" id="bTotal">—</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Quarterly Payment Schedule (2025)</div>
+        <div class="quarterly-grid">
+          <div class="q-card">
+            <div class="q-label">Q1</div>
+            <div class="q-date">Due Apr 15</div>
+            <div class="q-amount" id="q1">—</div>
+          </div>
+          <div class="q-card">
+            <div class="q-label">Q2</div>
+            <div class="q-date">Due Jun 17</div>
+            <div class="q-amount" id="q2">—</div>
+          </div>
+          <div class="q-card">
+            <div class="q-label">Q3</div>
+            <div class="q-date">Due Sep 16</div>
+            <div class="q-amount" id="q3">—</div>
+          </div>
+          <div class="q-card">
+            <div class="q-label">Q4</div>
+            <div class="q-date">Due Jan 15</div>
+            <div class="q-amount" id="q4">—</div>
+          </div>
+        </div>
+        <div class="info-box" id="infoBox"></div>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:0.85rem;color:var(--muted);">
+      <div class="card-title">Gig Worker Tax Essentials</div>
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Self-Employment Tax (15.3%):</strong> Covers Social Security (12.4%) + Medicare (2.9%). This applies to 92.35% of your net earnings. Employees only pay half — you pay both halves.</p>
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Quarterly payments:</strong> If you'll owe $1,000+ at year-end, the IRS requires quarterly estimated payments. Missing them triggers penalties (~7% annualized).</p>
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Deductible expenses:</strong> Mileage (67 cents/mile for 2024), phone (business %) , equipment, platform fees, and home office can all reduce your tax bill.</p>
+      <p><strong style="color:var(--text)">Rule of thumb:</strong> Set aside 25–30% of every gig payment for taxes. More if you're in a high-income-tax state.</p>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    document.getElementById('state').addEventListener('change', function() {
+      document.getElementById('customStateField').style.display = this.value === 'custom' ? '' : 'none';
+    });
+
+    function fmtD(n) { return '$' + Math.round(n).toLocaleString(); }
+    function fmtPct(n) { return n.toFixed(1) + '%'; }
+
+    function federalTax(taxable, filing) {
+      const brackets = filing === 'married'
+        ? [[23200,0.10],[94300,0.12],[201050,0.22],[383900,0.24],[487450,0.32],[731200,0.35],[Infinity,0.37]]
+        : [[11600,0.10],[47150,0.12],[100525,0.22],[191950,0.24],[243725,0.32],[609350,0.35],[Infinity,0.37]];
+      let tax = 0, prev = 0;
+      for (const [limit, rate] of brackets) {
+        if (taxable <= prev) break;
+        tax += (Math.min(taxable, limit) - prev) * rate;
+        prev = limit;
+      }
+      return tax;
+    }
+
+    function calculate() {
+      const gigIncome = parseFloat(document.getElementById('gigIncome').value) || 0;
+      const w2Income = parseFloat(document.getElementById('w2Income').value) || 0;
+      const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+      const filing = document.getElementById('filing').value;
+      const stateVal = document.getElementById('state').value;
+      const statePct = stateVal === 'custom'
+        ? (parseFloat(document.getElementById('customState').value) || 0) / 100
+        : parseFloat(stateVal) / 100;
+
+      const stdDed = { single: 14600, married: 29200, hoh: 21900 };
+
+      const netSE = Math.max(0, gigIncome - expenses);
+      const seTaxBase = netSE * 0.9235;
+      const seTax = seTaxBase * 0.153;
+      const seDeduct = seTax / 2;
+
+      const agi = w2Income + netSE - seDeduct;
+      const taxable = Math.max(0, agi - stdDed[filing]);
+      const fedTax = federalTax(taxable, filing);
+      const stateTax = agi * statePct;
+      const totalFederal = seTax + fedTax;
+      const totalTax = totalFederal + stateTax;
+
+      const quarterly = totalTax / 4;
+
+      document.getElementById('seTax').textContent = fmtD(seTax);
+      document.getElementById('incomeTax').textContent = fmtD(fedTax);
+      document.getElementById('stateTax').textContent = fmtD(stateTax);
+      document.getElementById('totalTax').textContent = fmtD(totalTax);
+
+      document.getElementById('bGross').textContent = fmtD(gigIncome);
+      document.getElementById('bExp').textContent = '−' + fmtD(expenses);
+      document.getElementById('bNet').textContent = fmtD(netSE);
+      document.getElementById('bSE').textContent = fmtD(seTax);
+      document.getElementById('bSEDeduct').textContent = '−' + fmtD(seDeduct);
+      document.getElementById('bStdDed').textContent = '−' + fmtD(stdDed[filing]);
+      document.getElementById('bTaxable').textContent = fmtD(taxable);
+      document.getElementById('bTotal').textContent = fmtD(totalTax);
+
+      document.getElementById('q1').textContent = fmtD(quarterly);
+      document.getElementById('q2').textContent = fmtD(quarterly);
+      document.getElementById('q3').textContent = fmtD(quarterly);
+      document.getElementById('q4').textContent = fmtD(quarterly);
+
+      const savingsPct = Math.round(totalTax / gigIncome * 100);
+      document.getElementById('infoBox').innerHTML =
+        `Set aside <strong style="color:var(--text)">${savingsPct}%</strong> of every gig payment for taxes. ` +
+        `Pay ${fmtD(quarterly)} to the IRS each quarter via IRS Direct Pay or EFTPS.` +
+        (statePct > 0 ? ` Also pay ${fmtD(stateTax/4)}/quarter to your state.` : '');
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

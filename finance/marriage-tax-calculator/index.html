@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marriage Tax Penalty or Bonus Calculator 2024</title>
+  <meta name="description" content="Calculate your marriage tax penalty or bonus. See if getting married increases or decreases your taxes. Compare filing single vs married jointly. Free, 2024 tax brackets.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/marriage-tax-calculator/">
+  <meta property="og:title" content="Marriage Tax Penalty or Bonus Calculator 2024">
+  <meta property="og:description" content="Does marriage increase or decrease your taxes? See your exact marriage tax penalty or bonus.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/marriage-tax-calculator/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .verdict-box { border-radius:10px;padding:20px;text-align:center;margin-bottom:20px; }
+    .verdict-box.penalty { background:rgba(248,81,73,0.1);border:1px solid var(--red); }
+    .verdict-box.bonus { background:rgba(63,185,80,0.1);border:1px solid var(--green); }
+    .verdict-box.neutral { background:var(--bg);border:1px solid var(--border); }
+    .verdict-label { font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:6px; }
+    .verdict-amount { font-size:2.2rem;font-weight:700;letter-spacing:-1px;margin:4px 0; }
+    .verdict-box.penalty .verdict-label { color:var(--red); }
+    .verdict-box.penalty .verdict-amount { color:var(--red); }
+    .verdict-box.bonus .verdict-label { color:var(--green); }
+    .verdict-box.bonus .verdict-amount { color:var(--green); }
+    .compare-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px; }
+    @media (max-width:520px) { .compare-grid { grid-template-columns:1fr 1fr; } }
+    .compare-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center; }
+    .compare-card-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:6px; }
+    .compare-card-val { font-size:1.3rem;font-weight:700; }
+    .breakdown-row { display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.9rem; }
+    .breakdown-row:last-child { border-bottom:none; }
+    .breakdown-row .label { color:var(--muted); }
+    .breakdown-row .val { font-weight:600; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Marriage Tax Penalty Calculator</h1>
+    <p class="page-subtitle">See if getting married increases or decreases your tax bill. Compare filing single vs married jointly using 2024 tax brackets.</p>
+
+    <div class="card">
+      <div class="card-title">Both Incomes</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Your Annual Income ($)</label>
+          <input type="number" id="income1" value="85000" min="0" step="1000">
+        </div>
+        <div class="field">
+          <label>Partner's Annual Income ($)</label>
+          <input type="number" id="income2" value="65000" min="0" step="1000">
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Deduction Type</label>
+          <select id="deductType">
+            <option value="standard" selected>Standard Deduction</option>
+            <option value="itemized">Itemized (enter amount below)</option>
+          </select>
+        </div>
+        <div class="field" id="itemizedField" style="display:none">
+          <label>Combined Itemized Deductions ($)</label>
+          <input type="number" id="itemized" value="30000" min="0" step="1000">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate Marriage Tax Impact</button>
+    </div>
+
+    <div id="results">
+      <div class="verdict-box" id="verdictBox">
+        <div class="verdict-label" id="verdictLabel">—</div>
+        <div class="verdict-amount" id="verdictAmount">—</div>
+        <div style="font-size:0.9rem;color:var(--muted);margin-top:4px" id="verdictSub">—</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tax Comparison</div>
+        <div class="compare-grid">
+          <div class="compare-card">
+            <div class="compare-card-label">Filing Single</div>
+            <div class="compare-card-val" id="singleTotal" style="color:var(--text)">—</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px">combined</div>
+          </div>
+          <div class="compare-card">
+            <div class="compare-card-label">Filing Jointly</div>
+            <div class="compare-card-val" id="marriedTotal">—</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px">as couple</div>
+          </div>
+          <div class="compare-card">
+            <div class="compare-card-label">Difference</div>
+            <div class="compare-card-val" id="difference">—</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px">per year</div>
+          </div>
+        </div>
+
+        <div class="breakdown-row"><span class="label">Your income</span><span class="val" id="bIncome1">—</span></div>
+        <div class="breakdown-row"><span class="label">Partner's income</span><span class="val" id="bIncome2">—</span></div>
+        <div class="breakdown-row"><span class="label">Combined income</span><span class="val" id="bCombined">—</span></div>
+        <div class="breakdown-row"><span class="label">Standard deduction (single × 2)</span><span class="val" id="bSingleDed">—</span></div>
+        <div class="breakdown-row"><span class="label">Standard deduction (married)</span><span class="val" id="bMarriedDed">—</span></div>
+        <div class="breakdown-row"><span class="label">Tax when filing single</span><span class="val" id="bSingleTax">—</span></div>
+        <div class="breakdown-row"><span class="label">Tax when filing jointly</span><span class="val" id="bMarriedTax">—</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:0.85rem;color:var(--muted);">
+      <div class="card-title">When Does a Marriage Penalty Occur?</div>
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Penalty:</strong> When two similar incomes are combined. The 22%–37% tax brackets for married couples are NOT simply double the single brackets — creating a "marriage penalty" for dual-income couples.</p>
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Bonus:</strong> When one spouse earns significantly more than the other. The higher earner benefits from being bumped into lower brackets on their partner's income portion.</p>
+      <p><strong style="color:var(--text)">SALT deduction:</strong> Married couples share a $10,000 SALT cap, vs. $10,000 each if filing single. This can magnify the penalty for high-tax-state couples.</p>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    document.getElementById('deductType').addEventListener('change', function() {
+      document.getElementById('itemizedField').style.display = this.value === 'itemized' ? '' : 'none';
+    });
+
+    function fmtD(n) { return '$' + Math.round(Math.abs(n)).toLocaleString(); }
+
+    function calcTax(income, filing, deduction) {
+      const std2024 = { single: 14600, married: 29200 };
+      const ded = deduction || std2024[filing];
+      const taxable = Math.max(0, income - ded);
+
+      const brackets = filing === 'married'
+        ? [[23200,0.10],[94300,0.12],[201050,0.22],[383900,0.24],[487450,0.32],[731200,0.35],[Infinity,0.37]]
+        : [[11600,0.10],[47150,0.12],[100525,0.22],[191950,0.24],[243725,0.32],[609350,0.35],[Infinity,0.37]];
+
+      let tax = 0, prev = 0;
+      for (const [limit, rate] of brackets) {
+        if (taxable <= prev) break;
+        tax += (Math.min(taxable, limit) - prev) * rate;
+        prev = limit;
+      }
+      return tax;
+    }
+
+    function calculate() {
+      const i1 = parseFloat(document.getElementById('income1').value) || 0;
+      const i2 = parseFloat(document.getElementById('income2').value) || 0;
+      const deductType = document.getElementById('deductType').value;
+      const itemized = parseFloat(document.getElementById('itemized').value) || 0;
+
+      const std2024Single = 14600;
+      const std2024Married = 29200;
+
+      let singleTax1, singleTax2, marriedTax;
+      if (deductType === 'standard') {
+        singleTax1 = calcTax(i1, 'single', null);
+        singleTax2 = calcTax(i2, 'single', null);
+        marriedTax = calcTax(i1 + i2, 'married', null);
+      } else {
+        // Itemized: allocate proportionally when single; full amount when married
+        const half = itemized / 2;
+        singleTax1 = calcTax(i1, 'single', Math.max(half, std2024Single));
+        singleTax2 = calcTax(i2, 'single', Math.max(half, std2024Single));
+        marriedTax = calcTax(i1 + i2, 'married', Math.max(itemized, std2024Married));
+      }
+
+      const singleTotal = singleTax1 + singleTax2;
+      const diff = marriedTax - singleTotal; // positive = penalty, negative = bonus
+
+      const isPenalty = diff > 0;
+      const isNeutral = Math.abs(diff) < 50;
+
+      const vBox = document.getElementById('verdictBox');
+      vBox.className = 'verdict-box ' + (isNeutral ? 'neutral' : isPenalty ? 'penalty' : 'bonus');
+      document.getElementById('verdictLabel').textContent = isNeutral ? 'NO SIGNIFICANT IMPACT' : isPenalty ? 'MARRIAGE PENALTY' : 'MARRIAGE BONUS';
+      document.getElementById('verdictAmount').textContent = isNeutral ? '≈ $0' : (isPenalty ? '+' : '−') + fmtD(diff);
+      document.getElementById('verdictSub').textContent = isNeutral
+        ? 'Marriage has minimal tax impact for your incomes.'
+        : isPenalty
+          ? `You pay ${fmtD(diff)} MORE per year by filing jointly.`
+          : `You save ${fmtD(Math.abs(diff))} per year by filing jointly.`;
+
+      document.getElementById('singleTotal').textContent = fmtD(singleTotal);
+      document.getElementById('marriedTotal').style.color = isPenalty ? 'var(--red)' : 'var(--green)';
+      document.getElementById('marriedTotal').textContent = fmtD(marriedTax);
+      document.getElementById('difference').style.color = isPenalty ? 'var(--red)' : 'var(--green)';
+      document.getElementById('difference').textContent = (isPenalty ? '+' : '−') + fmtD(Math.abs(diff));
+
+      document.getElementById('bIncome1').textContent = fmtD(i1);
+      document.getElementById('bIncome2').textContent = fmtD(i2);
+      document.getElementById('bCombined').textContent = fmtD(i1 + i2);
+      document.getElementById('bSingleDed').textContent = fmtD(std2024Single * 2);
+      document.getElementById('bMarriedDed').textContent = fmtD(std2024Married);
+      document.getElementById('bSingleTax').textContent = fmtD(singleTotal);
+      document.getElementById('bMarriedTax').textContent = fmtD(marriedTax);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

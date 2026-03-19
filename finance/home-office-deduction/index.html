@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Office Deduction Calculator 2024 — Simplified vs Regular Method</title>
+  <meta name="description" content="Calculate your home office tax deduction. Compare the IRS simplified method ($5/sq ft) vs regular method. See your actual tax savings. Free, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/home-office-deduction/">
+  <meta property="og:title" content="Home Office Deduction Calculator 2024">
+  <meta property="og:description" content="Calculate your home office tax deduction. Simplified vs regular method comparison. See actual tax savings.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/home-office-deduction/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .compare-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px; }
+    @media (max-width:480px) { .compare-grid { grid-template-columns:1fr; } }
+    .method-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center; }
+    .method-card.winner { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.2); }
+    .method-label { font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px; }
+    .method-deduction { font-size:1.8rem;font-weight:700;margin:8px 0 4px; }
+    .method-savings { font-size:0.9rem; }
+    .method-card.winner .method-deduction { color:var(--green); }
+    .winner-badge { background:var(--green);color:#0d1117;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:8px; }
+    .breakdown-row { display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.9rem; }
+    .breakdown-row:last-child { border-bottom:none; }
+    .breakdown-row .label { color:var(--muted); }
+    .breakdown-row .val { font-weight:600; }
+    .info-box { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:16px;font-size:0.85rem;color:var(--muted); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Home Office Deduction Calculator</h1>
+    <p class="page-subtitle">Compare the simplified method vs regular method. See which gives you a bigger deduction — and your actual tax savings.</p>
+
+    <div class="card">
+      <div class="card-title">Your Home Office</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Home Office Size (sq ft)</label>
+          <input type="number" id="officeSqft" value="200" min="0" max="300" step="1">
+        </div>
+        <div class="field">
+          <label>Total Home Size (sq ft)</label>
+          <input type="number" id="homeSqft" value="2000" min="100" step="1">
+        </div>
+        <div class="field">
+          <label>Annual Rent / Mortgage Interest ($)</label>
+          <input type="number" id="rent" value="18000" min="0" step="100">
+        </div>
+        <div class="field">
+          <label>Utilities (electricity, internet, etc.) ($)</label>
+          <input type="number" id="utilities" value="3600" min="0" step="100">
+        </div>
+        <div class="field">
+          <label>Insurance + Repairs ($)</label>
+          <input type="number" id="other" value="1200" min="0" step="100">
+        </div>
+        <div class="field">
+          <label>Your Tax Bracket</label>
+          <select id="bracket">
+            <option value="0.10">10%</option>
+            <option value="0.12">12%</option>
+            <option value="0.22" selected>22%</option>
+            <option value="0.24">24%</option>
+            <option value="0.32">32%</option>
+            <option value="0.35">35%</option>
+            <option value="0.37">37%</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Work Type</label>
+          <select id="workType">
+            <option value="self">Self-employed / freelancer (Schedule C)</option>
+            <option value="employee">W-2 employee (no deduction since 2018)</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate Deduction</button>
+    </div>
+
+    <div id="results">
+      <div class="card">
+        <div class="card-title">Method Comparison</div>
+        <div class="compare-grid">
+          <div class="method-card" id="simplifiedCard">
+            <div class="method-label">Simplified Method</div>
+            <div class="method-deduction" id="simplifiedDeduction">—</div>
+            <div class="method-savings" id="simplifiedSavings">—</div>
+            <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">$5 × office sq ft<br>(max 300 sq ft)</div>
+          </div>
+          <div class="method-card" id="regularCard">
+            <div class="method-label">Regular Method</div>
+            <div class="method-deduction" id="regularDeduction">—</div>
+            <div class="method-savings" id="regularSavings">—</div>
+            <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">% of home × actual<br>home expenses</div>
+          </div>
+        </div>
+
+        <div id="regularBreakdown">
+          <div class="card-title" style="margin-top:8px">Regular Method Breakdown</div>
+          <div class="breakdown-row"><span class="label">Business Use Percentage</span><span class="val" id="busUsePct">—</span></div>
+          <div class="breakdown-row"><span class="label">Rent / Mortgage portion</span><span class="val" id="rentPortion">—</span></div>
+          <div class="breakdown-row"><span class="label">Utilities portion</span><span class="val" id="utilPortion">—</span></div>
+          <div class="breakdown-row"><span class="label">Other expenses portion</span><span class="val" id="otherPortion">—</span></div>
+          <div class="breakdown-row" style="font-weight:700"><span class="label">Total Deduction</span><span class="val" style="color:var(--green)" id="regularTotal">—</span></div>
+        </div>
+
+        <div class="info-box" id="recommendation"></div>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:0.85rem;color:var(--muted);">
+      <div class="card-title">Eligibility Rules</div>
+      <p style="margin-bottom:10px">The home office deduction applies to <strong style="color:var(--text)">self-employed workers, freelancers, and business owners</strong> (Schedule C). Since 2018, W-2 employees cannot claim this deduction even if they work from home.</p>
+      <p style="margin-bottom:10px">Your office must be used <strong style="color:var(--text)">regularly and exclusively</strong> for business — no doubling as a guest room or hobby space.</p>
+      <p>The regular method requires more recordkeeping but typically yields a larger deduction for those with high rent or mortgage costs.</p>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    function fmtD(n) { return '$' + Math.round(n).toLocaleString(); }
+    function pct(n) { return n.toFixed(1) + '%'; }
+
+    function calculate() {
+      const workType = document.getElementById('workType').value;
+      if (workType === 'employee') {
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('simplifiedCard').innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding:12px">W-2 employees cannot claim the home office deduction (post-2018 tax law). Only self-employed workers qualify.</div>';
+        document.getElementById('regularCard').innerHTML = '';
+        document.getElementById('regularBreakdown').style.display = 'none';
+        document.getElementById('recommendation').innerHTML = 'If you work remotely as a W-2 employee, talk to your employer about an accountable plan to reimburse home office expenses tax-free.';
+        return;
+      }
+
+      const officeSqft = Math.min(parseFloat(document.getElementById('officeSqft').value) || 0, 300);
+      const homeSqft = parseFloat(document.getElementById('homeSqft').value) || 1;
+      const rent = parseFloat(document.getElementById('rent').value) || 0;
+      const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+      const other = parseFloat(document.getElementById('other').value) || 0;
+      const bracket = parseFloat(document.getElementById('bracket').value);
+
+      const simplified = officeSqft * 5;
+      const busUsePct = officeSqft / homeSqft;
+      const regularRent = rent * busUsePct;
+      const regularUtil = utilities * busUsePct;
+      const regularOther = other * busUsePct;
+      const regular = regularRent + regularUtil + regularOther;
+
+      const simplifiedSavings = simplified * bracket;
+      const regularSavings = regular * bracket;
+
+      const isSimplifiedBetter = simplified > regular;
+
+      document.getElementById('simplifiedDeduction').textContent = fmtD(simplified);
+      document.getElementById('simplifiedSavings').textContent = 'Saves ~' + fmtD(simplifiedSavings) + '/year';
+      document.getElementById('regularDeduction').textContent = fmtD(regular);
+      document.getElementById('regularSavings').textContent = 'Saves ~' + fmtD(regularSavings) + '/year';
+
+      const sCard = document.getElementById('simplifiedCard');
+      const rCard = document.getElementById('regularCard');
+      sCard.classList.toggle('winner', isSimplifiedBetter);
+      rCard.classList.toggle('winner', !isSimplifiedBetter);
+
+      const badge = '<div class="winner-badge">BETTER CHOICE</div>';
+      if (isSimplifiedBetter) {
+        sCard.insertAdjacentHTML('afterbegin', badge);
+      } else {
+        rCard.insertAdjacentHTML('afterbegin', badge);
+      }
+
+      document.getElementById('busUsePct').textContent = pct(busUsePct * 100);
+      document.getElementById('rentPortion').textContent = fmtD(regularRent);
+      document.getElementById('utilPortion').textContent = fmtD(regularUtil);
+      document.getElementById('otherPortion').textContent = fmtD(regularOther);
+      document.getElementById('regularTotal').textContent = fmtD(regular);
+
+      const winner = isSimplifiedBetter ? 'Simplified' : 'Regular';
+      const winnerSavings = Math.max(simplifiedSavings, regularSavings);
+      const extra = Math.abs(regularSavings - simplifiedSavings);
+      document.getElementById('recommendation').innerHTML =
+        `<strong style="color:var(--text)">Use the ${winner} Method</strong> — saves you ${fmtD(winnerSavings)}/year in taxes. ` +
+        `The ${winner.toLowerCase()} method saves you an extra ${fmtD(extra)} vs the alternative.`;
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>
