@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Ratio Calculator — True Cost of Mutual Fund Fees</title>
+  <meta name="description" content="See how much mutual fund and ETF expense ratios cost you over time. Compare high-fee vs low-fee funds. The fee drag is shocking. Free, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/expense-ratio/">
+  <meta property="og:title" content="Expense Ratio Calculator — True Cost of Mutual Fund Fees">
+  <meta property="og:description" content="See how much fund fees cost you over decades. Compare high-fee vs low-fee funds.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/expense-ratio/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    .field-hint { font-size:0.75rem;color:var(--muted);opacity:0.7; }
+    input[type="number"] { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .compare-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px; }
+    .compare-card { background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px; }
+    .compare-card.low-fee { border-color:rgba(63,185,80,0.5); }
+    .compare-card.high-fee { border-color:rgba(248,81,73,0.3); }
+    .compare-header { font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px; }
+    .compare-header.green { color:var(--green); }
+    .compare-header.red { color:var(--red); }
+    .compare-value { font-size:1.6rem;font-weight:700;margin-bottom:4px; }
+    .compare-sub { font-size:0.8rem;color:var(--muted); }
+    .drag-highlight { background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.3);border-radius:10px;padding:20px;text-align:center;margin-bottom:24px; }
+    .drag-amount { font-size:2rem;font-weight:800;color:var(--red);letter-spacing:-1px; }
+    .drag-label { font-size:0.9rem;color:var(--muted);margin-top:4px; }
+    .table-wrapper { overflow-x:auto;border-radius:8px;border:1px solid var(--border); }
+    table { width:100%;border-collapse:collapse;font-size:0.88rem; }
+    thead { background:var(--bg); }
+    th { padding:10px 14px;text-align:right;color:var(--muted);font-weight:600;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border); }
+    th:first-child { text-align:left; }
+    td { padding:9px 14px;text-align:right;border-bottom:1px solid rgba(48,54,61,0.5); }
+    td:first-child { text-align:left;color:var(--muted); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:rgba(88,166,255,0.04); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Expense Ratio Calculator</h1>
+    <p class="page-subtitle">See how fund fees silently erode your wealth. A 1% difference in fees costs you more than you think.</p>
+
+    <div class="card">
+      <div class="card-title">Your Investment</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Initial Investment ($)</label>
+          <input type="number" id="principal" value="50000" min="0" step="1000">
+        </div>
+        <div class="field">
+          <label>Monthly Contribution ($)</label>
+          <input type="number" id="monthly" value="500" min="0" step="50">
+        </div>
+        <div class="field">
+          <label>Annual Return Before Fees (%)</label>
+          <input type="number" id="grossReturn" value="8" min="0" max="30" step="0.1">
+        </div>
+        <div class="field">
+          <label>Investment Period (years)</label>
+          <input type="number" id="years" value="30" min="1" max="50" step="1">
+        </div>
+        <div class="field">
+          <label>Low-Fee Fund Expense Ratio (%)</label>
+          <span class="field-hint">e.g. Vanguard VOO = 0.03%</span>
+          <input type="number" id="lowFee" value="0.03" min="0" max="5" step="0.01">
+        </div>
+        <div class="field">
+          <label>High-Fee Fund Expense Ratio (%)</label>
+          <span class="field-hint">e.g. Actively managed = 1%</span>
+          <input type="number" id="highFee" value="1.00" min="0" max="5" step="0.01">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate Fee Impact</button>
+    </div>
+
+    <div id="results">
+      <div class="drag-highlight">
+        <div class="drag-amount" id="feeDrag">—</div>
+        <div class="drag-label">Lost to fees (fee drag over <span id="yearLabel">30</span> years)</div>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card low-fee">
+          <div class="compare-header green">Low-Fee Fund</div>
+          <div class="compare-value" style="color:var(--green)" id="lowFeeValue">—</div>
+          <div class="compare-sub" id="lowFeeRate">—</div>
+        </div>
+        <div class="compare-card high-fee">
+          <div class="compare-header red">High-Fee Fund</div>
+          <div class="compare-value" style="color:var(--red)" id="highFeeValue">—</div>
+          <div class="compare-sub" id="highFeeRate">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Year-by-Year Comparison</div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Year</th><th>Low-Fee Balance</th><th>High-Fee Balance</th><th>Fee Drag</th></tr></thead>
+            <tbody id="comparisonTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+    function calcBalance(principal, monthly, grossReturn, feeRate, years) {
+      const netReturn = (grossReturn - feeRate) / 100 / 12;
+      let balance = principal;
+      for (let m = 0; m < years * 12; m++) {
+        balance = balance * (1 + netReturn) + monthly;
+      }
+      return balance;
+    }
+
+    function calculate() {
+      const principal = parseFloat(document.getElementById('principal').value) || 50000;
+      const monthly = parseFloat(document.getElementById('monthly').value) || 500;
+      const grossReturn = parseFloat(document.getElementById('grossReturn').value) || 8;
+      const years = parseInt(document.getElementById('years').value) || 30;
+      const lowFee = parseFloat(document.getElementById('lowFee').value) || 0.03;
+      const highFee = parseFloat(document.getElementById('highFee').value) || 1.00;
+
+      const lowVal = calcBalance(principal, monthly, grossReturn, lowFee, years);
+      const highVal = calcBalance(principal, monthly, grossReturn, highFee, years);
+      const drag = lowVal - highVal;
+
+      document.getElementById('feeDrag').textContent = fmt(drag);
+      document.getElementById('yearLabel').textContent = years;
+      document.getElementById('lowFeeValue').textContent = fmt(lowVal);
+      document.getElementById('lowFeeRate').textContent = lowFee + '% expense ratio';
+      document.getElementById('highFeeValue').textContent = fmt(highVal);
+      document.getElementById('highFeeRate').textContent = highFee + '% expense ratio';
+
+      const milestones = [1, 5, 10, 15, 20, 25, 30, 35, 40].filter(y => y <= years);
+      if (!milestones.includes(years)) milestones.push(years);
+      const tbody = document.getElementById('comparisonTable');
+      tbody.innerHTML = milestones.map(y => {
+        const l = calcBalance(principal, monthly, grossReturn, lowFee, y);
+        const h = calcBalance(principal, monthly, grossReturn, highFee, y);
+        return `<tr><td>Year ${y}</td><td style="color:var(--green)">${fmt(l)}</td><td style="color:var(--red)">${fmt(h)}</td><td style="color:var(--muted)">${fmt(l-h)}</td></tr>`;
+      }).join('');
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

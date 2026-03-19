@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50/30/20 Budget Calculator — Free Budget Planner</title>
+  <meta name="description" content="Apply the 50/30/20 budgeting rule to your income. See exactly how much to spend on needs, wants, and savings. Free, instant, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/budget-calculator/">
+  <meta property="og:title" content="50/30/20 Budget Calculator — Free Budget Planner">
+  <meta property="og:description" content="Apply the 50/30/20 rule to your income. See your ideal budget breakdown instantly.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/budget-calculator/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--text:#e6edf3;--yellow:#d29922;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer; }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .budget-block { border-radius:10px;padding:20px;margin-bottom:16px; }
+    .budget-block.needs { background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.3); }
+    .budget-block.wants { background:rgba(88,166,255,0.08);border:1px solid rgba(88,166,255,0.3); }
+    .budget-block.savings { background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.3); }
+    .budget-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
+    .budget-label { font-weight:700;font-size:1rem; }
+    .budget-label.needs { color:var(--green); }
+    .budget-label.wants { color:var(--accent); }
+    .budget-label.savings { color:var(--yellow); }
+    .budget-amount { font-size:1.5rem;font-weight:700; }
+    .budget-desc { font-size:0.85rem;color:var(--muted);margin-top:4px; }
+    .progress-bar { height:6px;background:var(--bg);border-radius:3px;margin-top:12px;overflow:hidden; }
+    .progress-fill { height:100%;border-radius:3px;transition:width 0.5s; }
+    .progress-fill.needs { background:var(--green); }
+    .progress-fill.wants { background:var(--accent); }
+    .progress-fill.savings { background:var(--yellow); }
+    .summary-row { display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(48,54,61,0.5);font-size:0.9rem; }
+    .summary-row:last-child { border-bottom:none;font-weight:700; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">50/30/20 Budget Calculator</h1>
+    <p class="page-subtitle">The classic budgeting rule: 50% needs, 30% wants, 20% savings. Apply it to your income instantly.</p>
+
+    <div class="card">
+      <div class="card-title">Your Income</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Monthly Take-Home Pay ($)</label>
+          <input type="number" id="income" value="5000" min="0" step="100">
+        </div>
+        <div class="field">
+          <label>Pay Frequency</label>
+          <select id="frequency" onchange="updateIncome()">
+            <option value="monthly" selected>Monthly</option>
+            <option value="biweekly">Bi-weekly</option>
+            <option value="weekly">Weekly</option>
+            <option value="annual">Annual</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Needs % (default 50%)</label>
+          <input type="number" id="needsPct" value="50" min="0" max="100" step="1">
+        </div>
+        <div class="field">
+          <label>Wants % (default 30%)</label>
+          <input type="number" id="wantsPct" value="30" min="0" max="100" step="1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate Budget</button>
+    </div>
+
+    <div id="results">
+      <div class="budget-block needs">
+        <div class="budget-header">
+          <div>
+            <div class="budget-label needs">Needs <span id="needsPctDisplay">50%</span></div>
+            <div class="budget-desc">Rent, groceries, utilities, insurance, minimum debt payments</div>
+          </div>
+          <div class="budget-amount" style="color:var(--green)" id="needsAmount">—</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill needs" id="needsBar" style="width:50%"></div></div>
+      </div>
+
+      <div class="budget-block wants">
+        <div class="budget-header">
+          <div>
+            <div class="budget-label wants">Wants <span id="wantsPctDisplay">30%</span></div>
+            <div class="budget-desc">Dining out, entertainment, subscriptions, hobbies, travel</div>
+          </div>
+          <div class="budget-amount" style="color:var(--accent)" id="wantsAmount">—</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill wants" id="wantsBar" style="width:30%"></div></div>
+      </div>
+
+      <div class="budget-block savings">
+        <div class="budget-header">
+          <div>
+            <div class="budget-label savings">Savings <span id="savingsPctDisplay">20%</span></div>
+            <div class="budget-desc">Emergency fund, retirement (401k/IRA), investments, extra debt payoff</div>
+          </div>
+          <div class="budget-amount" style="color:var(--yellow)" id="savingsAmount">—</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill savings" id="savingsBar" style="width:20%"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Annual Summary</div>
+        <div class="summary-row"><span>Annual income</span><span id="annualIncome">—</span></div>
+        <div class="summary-row"><span>Annual needs budget</span><span id="annualNeeds">—</span></div>
+        <div class="summary-row"><span>Annual wants budget</span><span id="annualWants">—</span></div>
+        <div class="summary-row"><span>Annual savings</span><span id="annualSavings">—</span></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+    function getMonthlyIncome() {
+      const raw = parseFloat(document.getElementById('income').value) || 5000;
+      const freq = document.getElementById('frequency').value;
+      if (freq === 'biweekly') return raw * 26 / 12;
+      if (freq === 'weekly') return raw * 52 / 12;
+      if (freq === 'annual') return raw / 12;
+      return raw;
+    }
+
+    function calculate() {
+      const monthly = getMonthlyIncome();
+      const needsPct = parseFloat(document.getElementById('needsPct').value) || 50;
+      const wantsPct = parseFloat(document.getElementById('wantsPct').value) || 30;
+      const savingsPct = Math.max(0, 100 - needsPct - wantsPct);
+
+      const needs = monthly * needsPct / 100;
+      const wants = monthly * wantsPct / 100;
+      const savings = monthly * savingsPct / 100;
+
+      document.getElementById('needsPctDisplay').textContent = needsPct + '%';
+      document.getElementById('wantsPctDisplay').textContent = wantsPct + '%';
+      document.getElementById('savingsPctDisplay').textContent = savingsPct + '%';
+      document.getElementById('needsAmount').textContent = fmt(needs);
+      document.getElementById('wantsAmount').textContent = fmt(wants);
+      document.getElementById('savingsAmount').textContent = fmt(savings);
+      document.getElementById('needsBar').style.width = needsPct + '%';
+      document.getElementById('wantsBar').style.width = wantsPct + '%';
+      document.getElementById('savingsBar').style.width = savingsPct + '%';
+      document.getElementById('annualIncome').textContent = fmt(monthly * 12);
+      document.getElementById('annualNeeds').textContent = fmt(needs * 12);
+      document.getElementById('annualWants').textContent = fmt(wants * 12);
+      document.getElementById('annualSavings').textContent = fmt(savings * 12);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

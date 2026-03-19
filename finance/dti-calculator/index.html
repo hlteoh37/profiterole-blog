@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debt-to-Income (DTI) Ratio Calculator — Mortgage Qualification</title>
+  <meta name="description" content="Calculate your debt-to-income ratio to see if you qualify for a mortgage. Lenders use DTI to approve loans. Free, instant, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/dti-calculator/">
+  <meta property="og:title" content="Debt-to-Income Ratio Calculator — Mortgage Qualification">
+  <meta property="og:description" content="Calculate your DTI ratio. See if you qualify for a mortgage. Understand front-end vs back-end DTI.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/dti-calculator/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--yellow:#d29922;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    .field-hint { font-size:0.75rem;color:var(--muted);opacity:0.7; }
+    input[type="number"] { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .dti-display { text-align:center;padding:24px;margin-bottom:24px; }
+    .dti-number { font-size:3.5rem;font-weight:800;letter-spacing:-2px;margin-bottom:4px; }
+    .dti-label { font-size:0.9rem;color:var(--muted); }
+    .dti-status { display:inline-block;margin-top:12px;padding:4px 16px;border-radius:20px;font-size:0.85rem;font-weight:700; }
+    .status-good { background:rgba(63,185,80,0.15);color:var(--green);border:1px solid rgba(63,185,80,0.4); }
+    .status-caution { background:rgba(210,153,34,0.15);color:var(--yellow);border:1px solid rgba(210,153,34,0.4); }
+    .status-high { background:rgba(248,81,73,0.15);color:var(--red);border:1px solid rgba(248,81,73,0.4); }
+    .results-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px; }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.4rem;font-weight:700;color:var(--text); }
+    .benchmark-table { width:100%;border-collapse:collapse;font-size:0.88rem; }
+    .benchmark-table th { text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:0.78rem;text-transform:uppercase;border-bottom:1px solid var(--border); }
+    .benchmark-table td { padding:8px 12px;border-bottom:1px solid rgba(48,54,61,0.5); }
+    .benchmark-table tr:last-child td { border-bottom:none; }
+    .dot { display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Debt-to-Income (DTI) Ratio Calculator</h1>
+    <p class="page-subtitle">Lenders use your DTI to approve mortgages and loans. Calculate yours and see where you stand.</p>
+
+    <div class="card">
+      <div class="card-title">Monthly Income</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Gross Monthly Income ($)</label>
+          <span class="field-hint">Before taxes, all sources</span>
+          <input type="number" id="grossIncome" value="8000" min="0" step="100">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Monthly Debt Payments</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Proposed Housing (mortgage/rent) ($)</label>
+          <input type="number" id="housing" value="2000" min="0" step="50">
+        </div>
+        <div class="field">
+          <label>Car Loan ($)</label>
+          <input type="number" id="carLoan" value="400" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>Student Loans ($)</label>
+          <input type="number" id="studentLoan" value="300" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>Credit Cards (min payment) ($)</label>
+          <input type="number" id="creditCard" value="150" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>Other Debt Payments ($)</label>
+          <input type="number" id="otherDebt" value="0" min="0" step="10">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate DTI Ratio</button>
+    </div>
+
+    <div id="results">
+      <div class="card">
+        <div class="dti-display">
+          <div class="dti-number" id="dtiNumber">—</div>
+          <div class="dti-label">Back-End DTI Ratio</div>
+          <div><span class="dti-status" id="dtiStatus">—</span></div>
+        </div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Front-End DTI</div>
+            <div class="result-value" id="frontEndDti">—</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">Housing only</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Back-End DTI</div>
+            <div class="result-value" id="backEndDti">—</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">All debts</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total Monthly Debt</div>
+            <div class="result-value" id="totalDebt">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Remaining Income</div>
+            <div class="result-value" id="remaining">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">DTI Benchmarks (Mortgage)</div>
+        <table class="benchmark-table">
+          <thead><tr><th>DTI Range</th><th>Status</th><th>Loan Eligibility</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dot" style="background:var(--green)"></span>Below 36%</td><td style="color:var(--green)">Excellent</td><td>Most lenders approve easily</td></tr>
+            <tr><td><span class="dot" style="background:#3fb950aa"></span>36% – 43%</td><td style="color:var(--green)">Good</td><td>Conventional mortgage likely</td></tr>
+            <tr><td><span class="dot" style="background:var(--yellow)"></span>43% – 50%</td><td style="color:var(--yellow)">Caution</td><td>FHA loan possible, harder approval</td></tr>
+            <tr><td><span class="dot" style="background:var(--red)"></span>Above 50%</td><td style="color:var(--red)">High</td><td>Difficult to get approved</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    function fmtPct(n) { return n.toFixed(1) + '%'; }
+    function fmtDollar(n) { return '$' + Math.round(n).toLocaleString(); }
+
+    function calculate() {
+      const income = parseFloat(document.getElementById('grossIncome').value) || 8000;
+      const housing = parseFloat(document.getElementById('housing').value) || 0;
+      const car = parseFloat(document.getElementById('carLoan').value) || 0;
+      const student = parseFloat(document.getElementById('studentLoan').value) || 0;
+      const cc = parseFloat(document.getElementById('creditCard').value) || 0;
+      const other = parseFloat(document.getElementById('otherDebt').value) || 0;
+
+      const totalDebt = housing + car + student + cc + other;
+      const frontEnd = (housing / income) * 100;
+      const backEnd = (totalDebt / income) * 100;
+      const remaining = income - totalDebt;
+
+      document.getElementById('dtiNumber').textContent = fmtPct(backEnd);
+      document.getElementById('frontEndDti').textContent = fmtPct(frontEnd);
+      document.getElementById('backEndDti').textContent = fmtPct(backEnd);
+      document.getElementById('totalDebt').textContent = fmtDollar(totalDebt);
+      document.getElementById('remaining').textContent = fmtDollar(remaining);
+
+      let statusClass, statusText;
+      if (backEnd < 36) { statusClass = 'status-good'; statusText = 'Excellent DTI'; }
+      else if (backEnd < 43) { statusClass = 'status-good'; statusText = 'Good DTI'; }
+      else if (backEnd < 50) { statusClass = 'status-caution'; statusText = 'Caution — High DTI'; }
+      else { statusClass = 'status-high'; statusText = 'High DTI — Hard to qualify'; }
+
+      const el = document.getElementById('dtiStatus');
+      el.className = 'dti-status ' + statusClass;
+      el.textContent = statusText;
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelance Rate Calculator — What Should I Charge Per Hour?</title>
+  <meta name="description" content="Calculate your freelance hourly rate based on your income goals, expenses, and billable hours. Never underprice your work again. Free, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/freelance-rate/">
+  <meta property="og:title" content="Freelance Rate Calculator — What Should I Charge Per Hour?">
+  <meta property="og:description" content="Calculate your minimum freelance hourly rate based on income goals and business expenses.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/freelance-rate/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    .field-hint { font-size:0.75rem;color:var(--muted);opacity:0.7; }
+    input[type="number"] { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .rate-hero { text-align:center;padding:32px 20px;background:rgba(63,185,80,0.05);border:1px solid rgba(63,185,80,0.3);border-radius:10px;margin-bottom:24px; }
+    .rate-hero .rate-number { font-size:4rem;font-weight:800;color:var(--green);letter-spacing:-3px; }
+    .rate-hero .rate-label { color:var(--muted);font-size:0.95rem;margin-top:4px; }
+    .rate-hero .rate-note { font-size:0.8rem;color:var(--muted);margin-top:8px;opacity:0.7; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.3rem;font-weight:700;color:var(--text); }
+    .breakdown-row { display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(48,54,61,0.5);font-size:0.9rem; }
+    .breakdown-row:last-child { border-bottom:none;font-weight:700;padding-top:12px; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Freelance Rate Calculator</h1>
+    <p class="page-subtitle">What should you charge per hour? Enter your income goals and expenses to find your minimum viable rate.</p>
+
+    <div class="card">
+      <div class="card-title">Income Goals</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Desired Annual Income ($)</label>
+          <span class="field-hint">Take-home pay you want</span>
+          <input type="number" id="targetIncome" value="80000" min="0" step="1000">
+        </div>
+        <div class="field">
+          <label>Annual Business Expenses ($)</label>
+          <span class="field-hint">Software, equipment, marketing</span>
+          <input type="number" id="bizExpenses" value="5000" min="0" step="500">
+        </div>
+        <div class="field">
+          <label>Self-Employment Tax Buffer (%)</label>
+          <span class="field-hint">SE tax ~15.3% + income tax</span>
+          <input type="number" id="taxBuffer" value="30" min="0" max="50" step="1">
+        </div>
+        <div class="field">
+          <label>Vacation Weeks Per Year</label>
+          <span class="field-hint">Weeks you won't work</span>
+          <input type="number" id="vacationWeeks" value="3" min="0" max="20" step="1">
+        </div>
+        <div class="field">
+          <label>Billable Hours Per Day</label>
+          <span class="field-hint">Actual client hours (not total)</span>
+          <input type="number" id="billableHours" value="6" min="1" max="12" step="0.5">
+        </div>
+        <div class="field">
+          <label>Billable Days Per Week</label>
+          <input type="number" id="billableDays" value="5" min="1" max="7" step="1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate My Rate</button>
+    </div>
+
+    <div id="results">
+      <div class="rate-hero">
+        <div class="rate-number" id="minRate">—</div>
+        <div class="rate-label">Minimum Hourly Rate</div>
+        <div class="rate-note">This is your floor — charge more to account for scope creep and negotiation</div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-label">Suggested Rate</div>
+          <div class="result-value" id="suggestedRate">—</div>
+          <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">+20% buffer</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Annual Billable Hours</div>
+          <div class="result-value" id="annualHours">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Revenue Needed</div>
+          <div class="result-value" id="revenueNeeded">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Rate Breakdown</div>
+        <div class="breakdown-row"><span>Desired take-home income</span><span id="bIncome">—</span></div>
+        <div class="breakdown-row"><span>Business expenses</span><span id="bExpenses">—</span></div>
+        <div class="breakdown-row"><span>Tax buffer (<span id="bTaxPct">—</span>)</span><span id="bTax">—</span></div>
+        <div class="breakdown-row"><span>Total revenue needed</span><span id="bTotal">—</span></div>
+        <div class="breakdown-row"><span>÷ Billable hours/year</span><span id="bHours">—</span></div>
+        <div class="breakdown-row"><span>= Minimum hourly rate</span><span id="bRate">—</span></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+    function fmtHr(n) { return '$' + n.toFixed(2) + '/hr'; }
+
+    function calculate() {
+      const targetIncome = parseFloat(document.getElementById('targetIncome').value) || 80000;
+      const bizExpenses = parseFloat(document.getElementById('bizExpenses').value) || 5000;
+      const taxBuffer = parseFloat(document.getElementById('taxBuffer').value) || 30;
+      const vacWeeks = parseFloat(document.getElementById('vacationWeeks').value) || 3;
+      const hrPerDay = parseFloat(document.getElementById('billableHours').value) || 6;
+      const daysPerWeek = parseFloat(document.getElementById('billableDays').value) || 5;
+
+      const workWeeks = 52 - vacWeeks;
+      const annualHours = workWeeks * daysPerWeek * hrPerDay;
+
+      // Revenue = (income + expenses) / (1 - tax rate)
+      const baseNeeded = targetIncome + bizExpenses;
+      const revenueNeeded = baseNeeded / (1 - taxBuffer / 100);
+      const taxAmount = revenueNeeded - baseNeeded;
+      const minRate = revenueNeeded / annualHours;
+      const suggestedRate = minRate * 1.2;
+
+      document.getElementById('minRate').textContent = fmtHr(minRate);
+      document.getElementById('suggestedRate').textContent = fmtHr(suggestedRate);
+      document.getElementById('annualHours').textContent = Math.round(annualHours) + ' hrs';
+      document.getElementById('revenueNeeded').textContent = fmt(revenueNeeded);
+
+      document.getElementById('bIncome').textContent = fmt(targetIncome);
+      document.getElementById('bExpenses').textContent = fmt(bizExpenses);
+      document.getElementById('bTaxPct').textContent = taxBuffer + '%';
+      document.getElementById('bTax').textContent = fmt(taxAmount);
+      document.getElementById('bTotal').textContent = fmt(revenueNeeded);
+      document.getElementById('bHours').textContent = Math.round(annualHours) + ' hours';
+      document.getElementById('bRate').textContent = fmtHr(minRate);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

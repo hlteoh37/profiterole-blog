@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malaysia Stamp Duty Calculator 2025 — Property Purchase</title>
+  <meta name="description" content="Calculate Malaysia stamp duty (MOT) for property purchase 2025. Includes Memorandum of Transfer, loan agreement stamp duty, and legal fees estimate. Free, instant.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/my/stamp-duty/">
+  <meta property="og:title" content="Malaysia Stamp Duty Calculator 2025 — Property Purchase">
+  <meta property="og:description" content="Calculate stamp duty for property purchase in Malaysia. MOT + loan agreement stamp duty + legal fees.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/my/stamp-duty/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    .field-hint { font-size:0.75rem;color:var(--muted);opacity:0.7; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer; }
+    .checkbox-field { display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:6px; }
+    .checkbox-field input { width:16px;height:16px;cursor:pointer;accent-color:var(--accent); }
+    .checkbox-field label { font-size:0.9rem;color:var(--text);cursor:pointer;margin:0; }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .total-highlight { text-align:center;padding:24px;background:rgba(88,166,255,0.05);border:1px solid rgba(88,166,255,0.3);border-radius:10px;margin-bottom:24px; }
+    .total-number { font-size:3rem;font-weight:800;color:var(--accent);letter-spacing:-2px; }
+    .total-label { color:var(--muted);font-size:0.9rem; }
+    .breakdown-row { display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(48,54,61,0.5);font-size:0.9rem; }
+    .breakdown-row:last-child { border-bottom:none;font-weight:700;font-size:1rem; }
+    .breakdown-row .amount { color:var(--text);font-variant-numeric:tabular-nums; }
+    .breakdown-row.total-row .amount { color:var(--accent); }
+    .exemption-badge { display:inline-block;font-size:0.75rem;padding:2px 8px;border-radius:20px;background:rgba(63,185,80,0.15);color:var(--green);border:1px solid rgba(63,185,80,0.4);margin-left:8px; }
+    .info-box { background:rgba(88,166,255,0.05);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:16px;font-size:0.85rem;color:var(--muted);margin-bottom:24px; }
+    .info-box ul { padding-left:16px;margin-top:6px; }
+    .info-box li { margin-bottom:4px; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Malaysia Stamp Duty Calculator 2025</h1>
+    <p class="page-subtitle">Calculate MOT stamp duty and loan agreement stamp duty for property purchase in Malaysia. Includes first home buyer exemption.</p>
+
+    <div class="card">
+      <div class="card-title">Property Details</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Property Purchase Price (RM)</label>
+          <input type="number" id="price" value="500000" min="0" step="10000">
+        </div>
+        <div class="field">
+          <label>Loan Amount (RM)</label>
+          <span class="field-hint">Leave 0 if full cash purchase</span>
+          <input type="number" id="loanAmount" value="450000" min="0" step="10000">
+        </div>
+        <div class="field">
+          <label>Buyer Type</label>
+          <select id="buyerType">
+            <option value="citizen" selected>Malaysian Citizen</option>
+            <option value="pr">Permanent Resident</option>
+            <option value="foreign">Foreign Buyer</option>
+          </select>
+        </div>
+        <div class="field" style="align-self:end">
+          <div class="checkbox-field">
+            <input type="checkbox" id="firstHome" checked>
+            <label for="firstHome">First Home (stamp duty exemption)</label>
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate Stamp Duty</button>
+    </div>
+
+    <div id="results">
+      <div class="total-highlight">
+        <div class="total-number" id="totalCost">—</div>
+        <div class="total-label">Total upfront costs (stamp duty + legal fees)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Breakdown</div>
+        <div class="breakdown-row"><span id="motLabel">MOT Stamp Duty</span><span class="amount" id="motDuty">—</span></div>
+        <div class="breakdown-row"><span>Loan Agreement Stamp Duty (0.5%)</span><span class="amount" id="loanDuty">—</span></div>
+        <div class="breakdown-row"><span>Legal Fees (SPA)</span><span class="amount" id="spaLegal">—</span></div>
+        <div class="breakdown-row"><span>Legal Fees (Loan)</span><span class="amount" id="loanLegal">—</span></div>
+        <div class="breakdown-row total-row"><span>Total Upfront Costs</span><span class="amount" id="totalBreakdown">—</span></div>
+      </div>
+
+      <div class="info-box">
+        <strong>Notes:</strong>
+        <ul>
+          <li>MOT Stamp Duty: 1% on first RM100k, 2% on RM100k–RM500k, 3% on RM500k–RM1M, 4% above RM1M</li>
+          <li>First home exemption (citizens): Full exemption for properties ≤RM500k (until 31 Dec 2025)</li>
+          <li>Legal fees are estimates based on the Solicitors' Remuneration Order 2023</li>
+          <li>Foreign buyers pay additional RPGT and may have restrictions by state</li>
+          <li>Consult a licensed lawyer for exact figures</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>For reference only. Consult a solicitor for exact figures. · Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    function fmtRM(n) { return 'RM ' + Math.round(n).toLocaleString(); }
+
+    function calcMOT(price) {
+      let duty = 0;
+      if (price > 1000000) duty += (price - 1000000) * 0.04;
+      if (price > 500000) duty += (Math.min(price, 1000000) - 500000) * 0.03;
+      if (price > 100000) duty += (Math.min(price, 500000) - 100000) * 0.02;
+      duty += Math.min(price, 100000) * 0.01;
+      return duty;
+    }
+
+    function calcLegalFees(amount) {
+      // SRO 2023 scale fees
+      let fee = 0;
+      if (amount <= 500000) fee = amount * 0.01;
+      else if (amount <= 7500000) fee = 5000 + (amount - 500000) * 0.008;
+      else fee = 65000 + (amount - 7500000) * 0.005;
+      return Math.max(fee, 500);
+    }
+
+    function calculate() {
+      const price = parseFloat(document.getElementById('price').value) || 500000;
+      const loan = parseFloat(document.getElementById('loanAmount').value) || 0;
+      const buyerType = document.getElementById('buyerType').value;
+      const firstHome = document.getElementById('firstHome').checked;
+
+      let motDuty = calcMOT(price);
+      let motLabel = 'MOT Stamp Duty';
+      let exemptionText = '';
+
+      // First home exemption (citizens only, property <= RM500k, until Dec 2025)
+      if (firstHome && buyerType === 'citizen' && price <= 500000) {
+        motDuty = 0;
+        exemptionText = ' (FULLY EXEMPT)';
+        motLabel = 'MOT Stamp Duty' + exemptionText;
+      }
+
+      const loanDuty = loan > 0 ? loan * 0.005 : 0;
+      const spaLegal = calcLegalFees(price);
+      const loanLegal = loan > 0 ? calcLegalFees(loan) * 0.5 : 0; // loan legal ~50% of SPA scale
+      const total = motDuty + loanDuty + spaLegal + loanLegal;
+
+      document.getElementById('motLabel').innerHTML = motLabel + (exemptionText ? `<span class="exemption-badge">Exempt</span>` : '');
+      document.getElementById('motDuty').textContent = motDuty === 0 ? 'RM 0 (Exempt)' : fmtRM(motDuty);
+      document.getElementById('loanDuty').textContent = loan > 0 ? fmtRM(loanDuty) : 'N/A (cash)';
+      document.getElementById('spaLegal').textContent = fmtRM(spaLegal);
+      document.getElementById('loanLegal').textContent = loan > 0 ? fmtRM(loanLegal) : 'N/A (cash)';
+      document.getElementById('totalBreakdown').textContent = fmtRM(total);
+      document.getElementById('totalCost').textContent = fmtRM(total);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

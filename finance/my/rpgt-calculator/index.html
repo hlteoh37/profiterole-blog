@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malaysia RPGT Calculator 2025 — Real Property Gains Tax</title>
+  <meta name="description" content="Calculate Real Property Gains Tax (RPGT) in Malaysia 2025. Know your capital gains tax before selling your property. Free, instant, no login.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/my/rpgt-calculator/">
+  <meta property="og:title" content="Malaysia RPGT Calculator 2025 — Real Property Gains Tax">
+  <meta property="og:description" content="Calculate your RPGT liability before selling property in Malaysia. Updated for 2025 rates.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/my/rpgt-calculator/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    .field-hint { font-size:0.75rem;color:var(--muted);opacity:0.7; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input[type="number"]:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer; }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .rpgt-display { text-align:center;padding:24px;border-radius:10px;margin-bottom:24px; }
+    .rpgt-display.taxable { background:rgba(248,81,73,0.05);border:1px solid rgba(248,81,73,0.3); }
+    .rpgt-display.zero { background:rgba(63,185,80,0.05);border:1px solid rgba(63,185,80,0.3); }
+    .rpgt-number { font-size:3rem;font-weight:800;letter-spacing:-2px; }
+    .rpgt-number.taxable { color:var(--red); }
+    .rpgt-number.zero { color:var(--green); }
+    .rpgt-label { color:var(--muted);font-size:0.9rem;margin-top:4px; }
+    .breakdown-row { display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(48,54,61,0.5);font-size:0.9rem; }
+    .breakdown-row:last-child { border-bottom:none;font-weight:700; }
+    .rate-table { width:100%;border-collapse:collapse;font-size:0.88rem; }
+    .rate-table th { text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:0.78rem;text-transform:uppercase;border-bottom:1px solid var(--border); }
+    .rate-table td { padding:8px 12px;border-bottom:1px solid rgba(48,54,61,0.5); }
+    .rate-table tr:last-child td { border-bottom:none; }
+    .rate-table .active-row td { font-weight:700;color:var(--accent); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Profiterole <span>Finance</span></div>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+  </header>
+  <div class="container">
+    <h1 class="page-title">Malaysia RPGT Calculator 2025</h1>
+    <p class="page-subtitle">Calculate your Real Property Gains Tax before selling a property in Malaysia. Rates updated for 2025.</p>
+
+    <div class="card">
+      <div class="card-title">Property Sale Details</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Selling Price (RM)</label>
+          <input type="number" id="sellPrice" value="800000" min="0" step="10000">
+        </div>
+        <div class="field">
+          <label>Original Purchase Price (RM)</label>
+          <input type="number" id="buyPrice" value="500000" min="0" step="10000">
+        </div>
+        <div class="field">
+          <label>Improvement Costs (RM)</label>
+          <span class="field-hint">Renovation, legal, stamp duty</span>
+          <input type="number" id="costs" value="30000" min="0" step="1000">
+        </div>
+        <div class="field">
+          <label>Years Held</label>
+          <select id="yearsHeld">
+            <option value="1">Less than 1 year (Year 1)</option>
+            <option value="2">1–2 years (Year 2)</option>
+            <option value="3">2–3 years (Year 3)</option>
+            <option value="4">3–4 years (Year 4)</option>
+            <option value="5" selected>4–5 years (Year 5)</option>
+            <option value="6">More than 5 years (Year 6+)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Seller Type</label>
+          <select id="sellerType">
+            <option value="citizen" selected>Malaysian Citizen / PR</option>
+            <option value="company">Company</option>
+            <option value="foreign">Foreign Individual</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate RPGT</button>
+    </div>
+
+    <div id="results">
+      <div class="rpgt-display" id="rpgtDisplay">
+        <div class="rpgt-number" id="rpgtAmount">—</div>
+        <div class="rpgt-label" id="rpgtLabel">—</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Calculation Breakdown</div>
+        <div class="breakdown-row"><span>Selling Price</span><span id="bSell">—</span></div>
+        <div class="breakdown-row"><span>Original Purchase Price</span><span id="bBuy">—</span></div>
+        <div class="breakdown-row"><span>Allowable Costs</span><span id="bCosts">—</span></div>
+        <div class="breakdown-row"><span>Chargeable Gain</span><span id="bGain">—</span></div>
+        <div class="breakdown-row"><span>RPGT Rate (Year <span id="bYear">—</span>)</span><span id="bRate">—</span></div>
+        <div class="breakdown-row"><span>RPGT Payable</span><span id="bTax">—</span></div>
+        <div class="breakdown-row"><span>Net Proceeds</span><span id="bNet">—</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">RPGT Rates 2025 — Citizens &amp; PR</div>
+        <table class="rate-table">
+          <thead><tr><th>Year of Disposal</th><th>RPGT Rate</th></tr></thead>
+          <tbody id="rateTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>For reference only. Consult LHDN or a tax professional. · Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+  <script>
+    function fmtRM(n) { return 'RM ' + Math.round(Math.abs(n)).toLocaleString(); }
+
+    // RPGT rates 2025 for citizen/PR
+    const citizenRates = { 1: 0.30, 2: 0.20, 3: 0.15, 4: 0.10, 5: 0.05, 6: 0.00 };
+    const companyRates = { 1: 0.30, 2: 0.20, 3: 0.15, 4: 0.10, 5: 0.05, 6: 0.05 };
+    const foreignRates = { 1: 0.30, 2: 0.30, 3: 0.30, 4: 0.30, 5: 0.30, 6: 0.10 };
+
+    function getRates(sellerType) {
+      if (sellerType === 'company') return companyRates;
+      if (sellerType === 'foreign') return foreignRates;
+      return citizenRates;
+    }
+
+    function calculate() {
+      const sell = parseFloat(document.getElementById('sellPrice').value) || 800000;
+      const buy = parseFloat(document.getElementById('buyPrice').value) || 500000;
+      const costs = parseFloat(document.getElementById('costs').value) || 0;
+      const year = parseInt(document.getElementById('yearsHeld').value) || 5;
+      const sellerType = document.getElementById('sellerType').value;
+
+      const gain = sell - buy - costs;
+      const rates = getRates(sellerType);
+      const rate = rates[year] || 0;
+      const tax = gain > 0 ? gain * rate : 0;
+      const netProceeds = sell - tax;
+
+      const isZero = tax === 0;
+      const display = document.getElementById('rpgtDisplay');
+      const num = document.getElementById('rpgtAmount');
+      display.className = 'rpgt-display ' + (isZero ? 'zero' : 'taxable');
+      num.className = 'rpgt-number ' + (isZero ? 'zero' : 'taxable');
+      num.textContent = fmtRM(tax);
+      document.getElementById('rpgtLabel').textContent = isZero
+        ? (gain <= 0 ? 'No gain — no RPGT payable' : 'No RPGT (exempt after ' + (sellerType==='company'?'5':'5') + '+ years for citizens)')
+        : 'RPGT payable at ' + (rate * 100) + '% (Year ' + year + ')';
+
+      document.getElementById('bSell').textContent = fmtRM(sell);
+      document.getElementById('bBuy').textContent = fmtRM(buy);
+      document.getElementById('bCosts').textContent = fmtRM(costs);
+      document.getElementById('bGain').textContent = gain > 0 ? fmtRM(gain) : 'RM 0 (no gain)';
+      document.getElementById('bYear').textContent = year + (year >= 6 ? '+' : '');
+      document.getElementById('bRate').textContent = (rate * 100) + '%';
+      document.getElementById('bTax').textContent = fmtRM(tax);
+      document.getElementById('bNet').textContent = fmtRM(netProceeds);
+
+      const yearLabels = { 1:'Year 1 (< 1 yr)', 2:'Year 2 (1–2 yrs)', 3:'Year 3 (2–3 yrs)', 4:'Year 4 (3–4 yrs)', 5:'Year 5 (4–5 yrs)', 6:'Year 6+ (> 5 yrs)' };
+      const tbody = document.getElementById('rateTable');
+      tbody.innerHTML = Object.entries(citizenRates).map(([y, r]) =>
+        `<tr class="${y == year ? 'active-row' : ''}"><td>${yearLabels[y]}${y == year ? ' ← you' : ''}</td><td>${r === 0 ? 'Exempt (0%)' : (r*100)+'%'}</td></tr>`
+      ).join('');
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>
