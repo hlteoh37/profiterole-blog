@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Insurance Needs Calculator — How Much Do You Need?</title>
+  <meta name="description" content="Calculate how much life insurance coverage you need to protect your family. Uses DIME method and income replacement approach. Free, instant, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/life-insurance/">
+  <meta property="og:title" content="Life Insurance Needs Calculator — How Much Do You Need?">
+  <meta property="og:description" content="Calculate how much life insurance coverage you need. Uses DIME method and income replacement. Free.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/life-insurance/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Life Insurance Needs Calculator — How Much Do You Need?">
+  <meta name="twitter:description" content="Calculate how much life insurance coverage you need to protect your family. Free.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"], select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+    }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn {
+      margin-top: 20px; background: var(--accent); color: #0d1117; border: none;
+      border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+      padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%;
+    }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+    .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-card.primary { border-color: var(--green); box-shadow: 0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.full { grid-column: 1 / -1; }
+    .result-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 8px; }
+    .result-value { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .result-card.primary .result-value { font-size: 1.9rem; color: var(--green); }
+    .breakdown-table { width: 100%; border-collapse: collapse; }
+    .breakdown-table td { padding: 9px 0; border-bottom: 1px solid rgba(48,54,61,0.5); font-size: 0.9rem; }
+    .breakdown-table tr:last-child td { border-bottom: none; }
+    .breakdown-table td:last-child { text-align: right; color: var(--green); font-weight: 600; }
+    .breakdown-table .total-row td { font-weight: 700; color: var(--text); font-size: 1rem; border-top: 1px solid var(--border); }
+    .explainer { color: var(--muted); font-size: 0.9rem; line-height: 1.75; }
+    .explainer h2 { color: var(--text); font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; }
+    .explainer h3 { color: var(--text); font-size: 0.92rem; font-weight: 600; margin: 16px 0 6px; }
+    .explainer p { margin-bottom: 10px; }
+    .explainer ul { padding-left: 20px; margin-bottom: 10px; }
+    .explainer li { margin-bottom: 4px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .bmac-float { position: fixed; bottom: 24px; right: 24px; z-index: 100; }
+    .bmac-float a {
+      display: inline-flex; align-items: center; gap: 8px; background: #FFDD00; color: #000;
+      font-family: var(--font); font-size: 0.85rem; font-weight: 700; padding: 10px 16px;
+      border-radius: 50px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap;
+    }
+    .bmac-float a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/profiterole-blog/" class="logo">Profiter<span>ole</span></a>
+  <span style="color:var(--border);">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;">
+    <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+  </p>
+
+  <h1 class="page-title">Life Insurance Needs Calculator</h1>
+  <p class="page-subtitle">How much life insurance do you actually need? Uses the DIME method (Debt + Income + Mortgage + Education) to calculate your coverage needs.</p>
+
+  <div class="card">
+    <div class="card-title">Your Financial Picture</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="annualIncome">Annual Income ($)</label>
+        <input type="number" id="annualIncome" value="80000" min="0" step="1000">
+        <span class="field-hint">Your gross annual income</span>
+      </div>
+      <div class="field">
+        <label for="incomeYears">Years of Income to Replace</label>
+        <input type="number" id="incomeYears" value="20" min="1" max="50" step="1">
+        <span class="field-hint">Until youngest child is independent</span>
+      </div>
+      <div class="field">
+        <label for="mortgage2">Mortgage Balance ($)</label>
+        <input type="number" id="mortgage2" value="300000" min="0" step="1000">
+        <span class="field-hint">Enough to pay off the house</span>
+      </div>
+      <div class="field">
+        <label for="otherDebts">Other Debts ($)</label>
+        <input type="number" id="otherDebts" value="25000" min="0" step="1000">
+        <span class="field-hint">Credit cards, car loans, student loans, etc.</span>
+      </div>
+      <div class="field">
+        <label for="numChildren">Number of Children</label>
+        <input type="number" id="numChildren" value="2" min="0" max="10" step="1">
+      </div>
+      <div class="field">
+        <label for="collegePerChild">College Cost per Child ($)</label>
+        <input type="number" id="collegePerChild" value="120000" min="0" step="5000">
+        <span class="field-hint">4-year private avg ~$200K; public ~$112K</span>
+      </div>
+      <div class="field">
+        <label for="finalExpenses">Final Expenses ($)</label>
+        <input type="number" id="finalExpenses" value="15000" min="0" step="1000">
+        <span class="field-hint">Funeral, medical, estate costs (~$15K avg)</span>
+      </div>
+      <div class="field">
+        <label for="existingCoverage">Existing Life Insurance ($)</label>
+        <input type="number" id="existingCoverage" value="0" min="0" step="10000">
+        <span class="field-hint">Employer group policy + existing policies</span>
+      </div>
+      <div class="field">
+        <label for="savings2">Existing Savings / Assets ($)</label>
+        <input type="number" id="savings2" value="50000" min="0" step="5000">
+        <span class="field-hint">Liquid assets your family could use</span>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Coverage Needed</button>
+  </div>
+
+  <div id="results">
+    <div class="results-grid">
+      <div class="result-card primary full">
+        <div class="result-label">Recommended Coverage (DIME Method)</div>
+        <div class="result-value" id="totalCoverage"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Coverage Breakdown</div>
+      <table class="breakdown-table">
+        <tbody>
+          <tr><td>Debt (other than mortgage)</td><td id="bDebt"></td></tr>
+          <tr><td>Income replacement (<span id="incYearsLabel"></span> years × annual income)</td><td id="bIncome"></td></tr>
+          <tr><td>Mortgage payoff</td><td id="bMortgage"></td></tr>
+          <tr><td>Education (<span id="numChildrenLabel"></span> children × per-child cost)</td><td id="bEducation"></td></tr>
+          <tr><td>Final expenses</td><td id="bFinal"></td></tr>
+          <tr><td>Existing savings / assets (reduces need)</td><td id="bSavings" style="color:#f85149;"></td></tr>
+          <tr><td>Existing life insurance (reduces need)</td><td id="bExisting" style="color:#f85149;"></td></tr>
+          <tr class="total-row"><td><strong>Total Coverage Needed</strong></td><td id="bTotal"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-label">10× Income Rule</div>
+        <div class="result-value" id="tenxRule"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Gap (DIME vs 10× Rule)</div>
+        <div class="result-value" id="coverageGap"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="explainer">
+    <h2>The DIME Method</h2>
+    <p>DIME is the most comprehensive way to estimate life insurance needs. It accounts for four key areas:</p>
+    <ul>
+      <li><strong>D — Debt:</strong> All non-mortgage debts your family would need to pay off</li>
+      <li><strong>I — Income:</strong> Years of income replacement until dependents are self-sufficient</li>
+      <li><strong>M — Mortgage:</strong> Full mortgage payoff so your family keeps the home</li>
+      <li><strong>E — Education:</strong> College costs for each child</li>
+    </ul>
+
+    <h3>The 10× Rule (Quick Estimate)</h3>
+    <p>A simpler rule of thumb: get 10× your annual income in coverage. This is fast but less accurate than DIME — it doesn't account for your actual debts, number of children, or existing assets.</p>
+
+    <h3>Term vs. Whole Life Insurance</h3>
+    <ul>
+      <li><strong>Term life:</strong> Coverage for a set period (10, 20, 30 years). Cheapest option. Most financial advisors recommend this for pure protection.</li>
+      <li><strong>Whole life:</strong> Permanent coverage with a cash value component. Much more expensive. Only consider if you've maxed out all other tax-advantaged accounts.</li>
+    </ul>
+
+    <h3>When Do You Need Life Insurance?</h3>
+    <p>If others depend on your income — spouse, children, aging parents — you likely need life insurance. If you're single with no dependents and significant assets, you may need little or none.</p>
+
+    <p><strong>Note:</strong> This calculator provides an estimate. Actual coverage needs depend on your specific circumstances. Consult a fee-only financial advisor for personalized recommendations.</p>
+  </div>
+</div>
+
+<div class="bmac-float">
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">
+    <span class="bmac-icon">☕</span> Buy me a coffee
+  </a>
+</div>
+
+<script>
+  function fmt(n) {
+    if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+    if (n < 0) return '-$' + Math.round(Math.abs(n)).toLocaleString();
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function calculate() {
+    const income = parseFloat(document.getElementById('annualIncome').value) || 0;
+    const incYears = parseFloat(document.getElementById('incomeYears').value) || 20;
+    const mortgage = parseFloat(document.getElementById('mortgage2').value) || 0;
+    const debts = parseFloat(document.getElementById('otherDebts').value) || 0;
+    const kids = parseInt(document.getElementById('numChildren').value) || 0;
+    const collegePerKid = parseFloat(document.getElementById('collegePerChild').value) || 0;
+    const finalExp = parseFloat(document.getElementById('finalExpenses').value) || 0;
+    const existCov = parseFloat(document.getElementById('existingCoverage').value) || 0;
+    const savings = parseFloat(document.getElementById('savings2').value) || 0;
+
+    const bDebt = debts;
+    const bIncome = income * incYears;
+    const bMortgage = mortgage;
+    const bEducation = kids * collegePerKid;
+    const bFinal = finalExp;
+    const bSavings = savings;
+    const bExisting = existCov;
+
+    const gross = bDebt + bIncome + bMortgage + bEducation + bFinal;
+    const net = Math.max(0, gross - bSavings - bExisting);
+    const tenX = income * 10;
+
+    document.getElementById('bDebt').textContent = fmt(bDebt);
+    document.getElementById('bIncome').textContent = fmt(bIncome);
+    document.getElementById('bMortgage').textContent = fmt(bMortgage);
+    document.getElementById('bEducation').textContent = fmt(bEducation);
+    document.getElementById('bFinal').textContent = fmt(bFinal);
+    document.getElementById('bSavings').textContent = '−' + fmt(bSavings);
+    document.getElementById('bExisting').textContent = '−' + fmt(bExisting);
+    document.getElementById('bTotal').textContent = fmt(net);
+    document.getElementById('totalCoverage').textContent = fmt(net);
+    document.getElementById('tenxRule').textContent = fmt(tenX);
+    document.getElementById('coverageGap').textContent = net > tenX ? '+' + fmt(net - tenX) + ' more' : fmt(tenX - net) + ' less';
+    document.getElementById('incYearsLabel').textContent = incYears;
+    document.getElementById('numChildrenLabel').textContent = kids;
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>

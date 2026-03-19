@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>529 College Savings Calculator — Free, No Login</title>
+  <meta name="description" content="Calculate how much you need to save monthly to reach your college savings goal. Projects 529 plan growth with tuition inflation. Free, instant, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/college-savings/">
+  <meta property="og:title" content="529 College Savings Calculator — Free, No Login">
+  <meta property="og:description" content="Calculate how much you need to save monthly to reach your college savings goal. Projects 529 plan growth.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/college-savings/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="529 College Savings Calculator — Free, No Login">
+  <meta name="twitter:description" content="Calculate how much you need to save monthly for college. Projects 529 plan growth with tuition inflation.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"], select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+    }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn {
+      margin-top: 20px; background: var(--accent); color: #0d1117; border: none;
+      border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+      padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%;
+    }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+    .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-card.primary { border-color: var(--green); box-shadow: 0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.warn { border-color: #e3b341; }
+    .result-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 8px; }
+    .result-value { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .result-card.primary .result-value { font-size: 1.9rem; color: var(--green); }
+    .result-card.warn .result-value { color: #e3b341; }
+    .progress-bar-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .progress-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; }
+    .progress-bar { height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 8px; }
+    .progress-fill { height: 100%; border-radius: 6px; background: var(--green); transition: width 0.5s; }
+    .progress-fill.over { background: #e3b341; }
+    .progress-pct { font-size: 0.9rem; color: var(--muted); }
+    .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg); }
+    th { padding: 10px 14px; text-align: right; color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+    th:first-child { text-align: center; }
+    td { padding: 9px 14px; text-align: right; border-bottom: 1px solid rgba(48,54,61,0.5); color: var(--text); font-variant-numeric: tabular-nums; }
+    td:first-child { text-align: center; color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(88,166,255,0.04); }
+    td.green { color: var(--green); }
+    .explainer { color: var(--muted); font-size: 0.9rem; line-height: 1.75; }
+    .explainer h2 { color: var(--text); font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; }
+    .explainer h3 { color: var(--text); font-size: 0.92rem; font-weight: 600; margin: 16px 0 6px; }
+    .explainer p { margin-bottom: 10px; }
+    .explainer ul { padding-left: 20px; margin-bottom: 10px; }
+    .explainer li { margin-bottom: 4px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .bmac-float { position: fixed; bottom: 24px; right: 24px; z-index: 100; }
+    .bmac-float a {
+      display: inline-flex; align-items: center; gap: 8px; background: #FFDD00; color: #000;
+      font-family: var(--font); font-size: 0.85rem; font-weight: 700; padding: 10px 16px;
+      border-radius: 50px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap;
+    }
+    .bmac-float a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/profiterole-blog/" class="logo">Profiter<span>ole</span></a>
+  <span style="color:var(--border);">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;">
+    <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+  </p>
+
+  <h1 class="page-title">529 College Savings Calculator</h1>
+  <p class="page-subtitle">How much do you need to save monthly to fund your child's education? Accounts for tuition inflation and investment growth.</p>
+
+  <div class="card">
+    <div class="card-title">College Cost & Timeline</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="childAge">Child's Current Age</label>
+        <input type="number" id="childAge" value="5" min="0" max="17" step="1">
+      </div>
+      <div class="field">
+        <label for="collegeAge">College Start Age</label>
+        <input type="number" id="collegeAge" value="18" min="14" max="25" step="1">
+        <span class="field-hint">Usually 18</span>
+      </div>
+      <div class="field">
+        <label for="annualCost">Current Annual College Cost ($)</label>
+        <select id="annualCost">
+          <option value="12000">$12,000 — Community College</option>
+          <option value="28000" selected>$28,000 — Public 4-Year (avg)</option>
+          <option value="45000">$45,000 — Private Non-Profit (avg)</option>
+          <option value="60000">$60,000 — Elite Private</option>
+        </select>
+        <span class="field-hint">Total cost (tuition, room, board, fees)</span>
+      </div>
+      <div class="field">
+        <label for="years">Years in College</label>
+        <select id="years">
+          <option value="2">2 years</option>
+          <option value="4" selected>4 years</option>
+          <option value="5">5 years</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="tuitionInflation">Tuition Inflation Rate (%/yr)</label>
+        <input type="number" id="tuitionInflation" value="5" min="0" max="15" step="0.5">
+        <span class="field-hint">Historical avg ~5% per year</span>
+      </div>
+      <div class="field">
+        <label for="investReturn">Expected 529 Return (%/yr)</label>
+        <input type="number" id="investReturn" value="7" min="0" max="15" step="0.5">
+        <span class="field-hint">Age-based funds typically 6–8%</span>
+      </div>
+      <div class="field">
+        <label for="currentSavings">Current 529 Balance ($)</label>
+        <input type="number" id="currentSavings" value="0" min="0" step="500">
+        <span class="field-hint">What you already have saved</span>
+      </div>
+      <div class="field">
+        <label for="coverage">Savings Coverage Goal (%)</label>
+        <select id="coverage">
+          <option value="50">50% — Split with loans/aid</option>
+          <option value="75">75% — Mostly covered</option>
+          <option value="100" selected>100% — Fully fund</option>
+        </select>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Savings Plan</button>
+  </div>
+
+  <div id="results">
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-label">Future Total Cost</div>
+        <div class="result-value" id="futureCost"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Savings Target</div>
+        <div class="result-value" id="savingsTarget"></div>
+      </div>
+      <div class="result-card primary">
+        <div class="result-label">Monthly Savings Needed</div>
+        <div class="result-value" id="monthlyNeeded"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Years Until College</div>
+        <div class="result-value" id="yearsLeft"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Growth of Existing Savings</div>
+        <div class="result-value" id="existingGrowth"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Still Need to Save</div>
+        <div class="result-value" id="stillNeeded"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Year-by-Year Savings Projection</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Child's Age</th>
+              <th>Monthly Savings</th>
+              <th>Balance</th>
+              <th>Target</th>
+            </tr>
+          </thead>
+          <tbody id="projTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="explainer">
+    <h2>About 529 College Savings Plans</h2>
+    <p>A 529 plan is a tax-advantaged savings account designed for education expenses. Contributions grow tax-free, and qualified withdrawals for education expenses are also tax-free federally (and usually state tax-free too).</p>
+
+    <h3>Key 529 Facts</h3>
+    <ul>
+      <li>No annual contribution limit (but contributions over $18,000/year trigger gift tax rules)</li>
+      <li>Many states offer state income tax deductions for contributions</li>
+      <li>Can be used for tuition, room and board, books, computers, and K-12 expenses</li>
+      <li>Can be transferred to another family member if child doesn't go to college</li>
+      <li>Starting 2024: Unused 529 funds can be rolled into a Roth IRA (up to $35,000 lifetime, with conditions)</li>
+      <li>Counts against FAFSA, but at a lower rate than student assets</li>
+    </ul>
+
+    <h3>Start Early — Compounding Matters</h3>
+    <p>Starting at birth vs. age 5 can cut your required monthly savings nearly in half. Even small amounts compound significantly over 18 years.</p>
+
+    <p><strong>Note:</strong> This calculator provides estimates only. Actual college costs, investment returns, and financial aid availability will vary.</p>
+  </div>
+</div>
+
+<div class="bmac-float">
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">
+    <span class="bmac-icon">☕</span> Buy me a coffee
+  </a>
+</div>
+
+<script>
+  function fmt(n) {
+    if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function calculate() {
+    const childAge = parseInt(document.getElementById('childAge').value) || 5;
+    const collegeAge = parseInt(document.getElementById('collegeAge').value) || 18;
+    const annualCost = parseFloat(document.getElementById('annualCost').value) || 28000;
+    const collegYears = parseInt(document.getElementById('years').value) || 4;
+    const tInflation = parseFloat(document.getElementById('tuitionInflation').value) / 100;
+    const iReturn = parseFloat(document.getElementById('investReturn').value) / 100;
+    const currentSav = parseFloat(document.getElementById('currentSavings').value) || 0;
+    const coverage = parseFloat(document.getElementById('coverage').value) / 100;
+
+    const yearsLeft = Math.max(0, collegeAge - childAge);
+    const monthlyRate = iReturn / 12;
+
+    // Future total cost (4 years of inflation-adjusted tuition)
+    let futureTotalCost = 0;
+    for (let y = 0; y < collegYears; y++) {
+      futureTotalCost += annualCost * Math.pow(1 + tInflation, yearsLeft + y);
+    }
+
+    const savingsTarget = futureTotalCost * coverage;
+
+    // Growth of existing savings
+    const existingGrowth = currentSav * Math.pow(1 + iReturn, yearsLeft);
+
+    // Still needed after existing savings grow
+    const stillNeeded = Math.max(0, savingsTarget - existingGrowth);
+
+    // Monthly savings needed (future value of annuity formula)
+    let monthlyNeeded = 0;
+    if (yearsLeft > 0 && monthlyRate > 0) {
+      const n = yearsLeft * 12;
+      monthlyNeeded = stillNeeded * monthlyRate / (Math.pow(1 + monthlyRate, n) - 1);
+    } else if (yearsLeft > 0) {
+      monthlyNeeded = stillNeeded / (yearsLeft * 12);
+    }
+
+    document.getElementById('futureCost').textContent = fmt(futureTotalCost);
+    document.getElementById('savingsTarget').textContent = fmt(savingsTarget);
+    document.getElementById('monthlyNeeded').textContent = fmt(monthlyNeeded) + '/mo';
+    document.getElementById('yearsLeft').textContent = yearsLeft + ' yrs';
+    document.getElementById('existingGrowth').textContent = fmt(existingGrowth);
+    document.getElementById('stillNeeded').textContent = fmt(stillNeeded);
+
+    // Year-by-year table
+    let bal = currentSav;
+    let tbody = '';
+    for (let i = 0; i < yearsLeft; i++) {
+      const age = childAge + i;
+      const annualContrib = monthlyNeeded * 12;
+      // Balance: grow existing, add contributions
+      const newBal = bal * (1 + iReturn) + annualContrib;
+      const targetPct = savingsTarget > 0 ? Math.min(100, (newBal / savingsTarget * 100)).toFixed(0) : 100;
+      tbody += `<tr>
+        <td>Year ${i+1}</td>
+        <td>${age} → ${age+1}</td>
+        <td>${fmt(monthlyNeeded)}/mo</td>
+        <td class="green">${fmt(newBal)}</td>
+        <td>${targetPct}% of goal</td>
+      </tr>`;
+      bal = newBal;
+    }
+    document.getElementById('projTable').innerHTML = tbody;
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roth Conversion Calculator — Free, No Login</title>
+  <meta name="description" content="Calculate whether a Roth IRA conversion makes sense for you. Compare tax costs now vs. tax-free growth later. Free, instant, no signup.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/roth-conversion/">
+  <meta property="og:title" content="Roth Conversion Calculator — Free, No Login">
+  <meta property="og:description" content="Calculate whether a Roth IRA conversion makes sense for you. Compare tax costs now vs. tax-free growth later.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/roth-conversion/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Roth Conversion Calculator — Free, No Login">
+  <meta name="twitter:description" content="Calculate whether a Roth IRA conversion makes sense for you. Compare tax costs now vs. tax-free growth later.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --muted: #8b949e; --green: #3fb950;
+      --text: #e6edf3; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header .logo { font-weight: 700; font-size: 1.05rem; color: var(--text); letter-spacing: -0.3px; }
+    header .logo span { color: var(--accent); }
+    .back-link { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+    .back-link:hover { color: var(--accent); }
+    .container { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.5px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px; }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .fields-grid { grid-template-columns: 1fr; } .page-title { font-size: 1.4rem; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    input[type="number"], select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 0.95rem;
+      padding: 9px 12px; width: 100%; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input[type="number"]:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+    }
+    .field-hint { font-size: 0.75rem; color: var(--muted); opacity: 0.7; }
+    .calc-btn {
+      margin-top: 20px; background: var(--accent); color: #0d1117; border: none;
+      border-radius: 6px; font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+      padding: 11px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; width: 100%;
+    }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+    #results { display: none; }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+    .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .result-card.primary { border-color: var(--green); box-shadow: 0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.warn { border-color: #e3b341; box-shadow: 0 0 0 1px rgba(227,179,65,0.15); }
+    .result-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 8px; }
+    .result-value { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .result-card.primary .result-value { font-size: 1.9rem; color: var(--green); }
+    .result-card.warn .result-value { color: #e3b341; }
+    .verdict-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center; }
+    .verdict-box.go { border-color: var(--green); }
+    .verdict-box.nogo { border-color: #f85149; }
+    .verdict-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+    .verdict-text { font-size: 1.3rem; font-weight: 700; }
+    .verdict-box.go .verdict-text { color: var(--green); }
+    .verdict-box.nogo .verdict-text { color: #f85149; }
+    .verdict-sub { font-size: 0.88rem; color: var(--muted); margin-top: 6px; }
+    .explainer { color: var(--muted); font-size: 0.9rem; line-height: 1.75; }
+    .explainer h2 { color: var(--text); font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; }
+    .explainer h3 { color: var(--text); font-size: 0.92rem; font-weight: 600; margin: 16px 0 6px; }
+    .explainer p { margin-bottom: 10px; }
+    .explainer ul { padding-left: 20px; margin-bottom: 10px; }
+    .explainer li { margin-bottom: 4px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .bmac-float { position: fixed; bottom: 24px; right: 24px; z-index: 100; }
+    .bmac-float a {
+      display: inline-flex; align-items: center; gap: 8px; background: #FFDD00; color: #000;
+      font-family: var(--font); font-size: 0.85rem; font-weight: 700; padding: 10px 16px;
+      border-radius: 50px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap;
+    }
+    .bmac-float a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/profiterole-blog/" class="logo">Profiter<span>ole</span></a>
+  <span style="color:var(--border);">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;">
+    <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+  </p>
+
+  <h1 class="page-title">Roth Conversion Calculator</h1>
+  <p class="page-subtitle">Should you convert your Traditional IRA to a Roth? Compare the tax cost now vs. tax-free growth later.</p>
+
+  <div class="card">
+    <div class="card-title">Your Situation</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="balance">Traditional IRA Balance ($)</label>
+        <input type="number" id="balance" value="100000" min="0" step="1000">
+        <span class="field-hint">Amount to convert</span>
+      </div>
+      <div class="field">
+        <label for="convert">Amount to Convert ($)</label>
+        <input type="number" id="convert" value="50000" min="0" step="1000">
+        <span class="field-hint">Partial conversions are fine</span>
+      </div>
+      <div class="field">
+        <label for="currentBracket">Current Marginal Tax Bracket (%)</label>
+        <select id="currentBracket">
+          <option value="10">10%</option>
+          <option value="12">12%</option>
+          <option value="22" selected>22%</option>
+          <option value="24">24%</option>
+          <option value="32">32%</option>
+          <option value="35">35%</option>
+          <option value="37">37%</option>
+        </select>
+        <span class="field-hint">Your bracket during conversion year</span>
+      </div>
+      <div class="field">
+        <label for="retirementBracket">Expected Retirement Tax Bracket (%)</label>
+        <select id="retirementBracket">
+          <option value="10">10%</option>
+          <option value="12">12%</option>
+          <option value="22">22%</option>
+          <option value="24" selected>24%</option>
+          <option value="32">32%</option>
+          <option value="35">35%</option>
+          <option value="37">37%</option>
+        </select>
+        <span class="field-hint">Your bracket in retirement</span>
+      </div>
+      <div class="field">
+        <label for="yearsToRetirement">Years Until Retirement</label>
+        <input type="number" id="yearsToRetirement" value="20" min="1" max="50" step="1">
+      </div>
+      <div class="field">
+        <label for="growthRate">Expected Annual Growth (%)</label>
+        <input type="number" id="growthRate" value="7" min="0" max="20" step="0.1">
+        <span class="field-hint">Historical stock market avg ~7% real</span>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Roth Conversion</button>
+  </div>
+
+  <div id="results">
+    <div class="verdict-box" id="verdictBox">
+      <div class="verdict-label">Roth Conversion Verdict</div>
+      <div class="verdict-text" id="verdictText"></div>
+      <div class="verdict-sub" id="verdictSub"></div>
+    </div>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-label">Tax Cost Today</div>
+        <div class="result-value" id="taxToday"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Roth at Retirement</div>
+        <div class="result-value" id="rothValue"></div>
+      </div>
+      <div class="result-card primary">
+        <div class="result-label">Net Advantage</div>
+        <div class="result-value" id="netAdvantage"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Tax if Left in Trad (at withdrawal)</div>
+        <div class="result-value" id="tradTax"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Trad IRA After-Tax Value</div>
+        <div class="result-value" id="tradValue"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Break-Even Years</div>
+        <div class="result-value" id="breakEven"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="explainer">
+    <h2>When Does a Roth Conversion Make Sense?</h2>
+    <p>A Roth IRA conversion is a taxable event — you pay income tax now on money you transfer from a Traditional IRA to a Roth IRA. In return, all future growth is tax-free and you owe no tax on qualified withdrawals in retirement.</p>
+
+    <h3>Convert if (typically):</h3>
+    <ul>
+      <li>Your current tax bracket is lower than your expected retirement bracket</li>
+      <li>You have 10+ years for the Roth to compound tax-free</li>
+      <li>You can pay the conversion tax from non-IRA funds</li>
+      <li>You expect tax rates to rise broadly in the future</li>
+      <li>You want to reduce future Required Minimum Distributions (RMDs)</li>
+    </ul>
+
+    <h3>Skip conversion if:</h3>
+    <ul>
+      <li>You're in a higher bracket now than you expect in retirement</li>
+      <li>You'd need to use IRA funds to pay the conversion tax</li>
+      <li>Retirement is less than 5–7 years away</li>
+      <li>The conversion would push you into AMT or trigger IRMAA surcharges</li>
+    </ul>
+
+    <h3>The Roth 5-Year Rule</h3>
+    <p>Each conversion amount has its own 5-year holding period before penalty-free withdrawal. Converting at age 58+ generally avoids this issue since you'll be 63 before touching converted funds.</p>
+
+    <p><strong>Note:</strong> This calculator provides estimates only. Consult a tax professional for personalized advice, especially if you have complex financial situations, state taxes, or IRMAA concerns.</p>
+  </div>
+</div>
+
+<div class="bmac-float">
+  <a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener">
+    <span class="bmac-icon">☕</span> Buy me a coffee
+  </a>
+</div>
+
+<script>
+  function fmt(n) {
+    if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function calculate() {
+    const convertAmt = parseFloat(document.getElementById('convert').value) || 0;
+    const currentRate = parseFloat(document.getElementById('currentBracket').value) / 100;
+    const retireRate = parseFloat(document.getElementById('retirementBracket').value) / 100;
+    const years = parseFloat(document.getElementById('yearsToRetirement').value) || 20;
+    const growth = parseFloat(document.getElementById('growthRate').value) / 100;
+
+    // Tax cost to convert today
+    const taxToday = convertAmt * currentRate;
+
+    // Roth value at retirement (full amount grows tax-free)
+    const rothFuture = convertAmt * Math.pow(1 + growth, years);
+
+    // Traditional IRA: same amount grows, but taxed on withdrawal
+    const tradFuture = convertAmt * Math.pow(1 + growth, years);
+    const tradTaxAtWithdrawal = tradFuture * retireRate;
+    const tradAfterTax = tradFuture - tradTaxAtWithdrawal;
+
+    // Net advantage of Roth (in future dollars)
+    const rothAdvantage = rothFuture - tradAfterTax;
+
+    // Break-even: year at which Roth after-tax exceeds traditional after-tax
+    // Roth after-tax = (convertAmt - taxToday) * (1+g)^t
+    // Trad after-tax = convertAmt * (1+g)^t * (1 - retireRate)
+    // Break-even when these are equal:
+    // convertAmt - taxToday = convertAmt * (1 - retireRate)
+    // If Roth advantage exists, break-even is roughly:
+    let breakEven = '—';
+    if (currentRate < retireRate) {
+      // Roth always wins eventually
+      const ratio = (convertAmt - taxToday) / (convertAmt * (1 - retireRate));
+      if (ratio < 1) {
+        breakEven = Math.ceil(Math.log(1/ratio) / Math.log(1 + growth)) + ' yrs';
+      } else {
+        breakEven = 'Immediate';
+      }
+    } else if (currentRate > retireRate) {
+      breakEven = 'Never (Trad wins)';
+    } else {
+      breakEven = 'Equal';
+    }
+
+    document.getElementById('taxToday').textContent = fmt(taxToday);
+    document.getElementById('rothValue').textContent = fmt(rothFuture);
+    document.getElementById('tradTax').textContent = fmt(tradTaxAtWithdrawal);
+    document.getElementById('tradValue').textContent = fmt(tradAfterTax);
+    document.getElementById('netAdvantage').textContent = (rothAdvantage >= 0 ? '+' : '') + fmt(rothAdvantage);
+
+    const beEl = document.getElementById('breakEven');
+    beEl.textContent = breakEven;
+
+    const box = document.getElementById('verdictBox');
+    const txt = document.getElementById('verdictText');
+    const sub = document.getElementById('verdictSub');
+
+    if (rothAdvantage > 0) {
+      box.className = 'verdict-box go';
+      txt.textContent = 'Conversion Favors Roth';
+      sub.textContent = `You gain ${fmt(rothAdvantage)} more (in future dollars) by converting now.`;
+    } else {
+      box.className = 'verdict-box nogo';
+      txt.textContent = 'Conversion Favors Traditional';
+      sub.textContent = `Staying in Traditional saves ${fmt(Math.abs(rothAdvantage))} (in future dollars). Consider converting in a lower-income year.`;
+    }
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
