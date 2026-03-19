@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APR to APY Calculator — Convert Interest Rates</title>
+  <meta name="description" content="Convert between APR and APY. Calculate effective annual rate with different compounding periods. Free interest rate converter.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/apr-apy-calculator/">
+  <meta property="og:title" content="APR to APY Calculator — Convert Interest Rates">
+  <meta property="og:description" content="Convert between APR and APY. Calculate effective annual rate with different compounding periods. Free interest rate converter.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/apr-apy-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="APR to APY Calculator — Convert Interest Rates">
+  <meta name="twitter:description" content="Convert between APR and APY. Calculate effective annual rate with different compounding periods. Free interest rate converter.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],input[type="text"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    .results-grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid,.results-grid-2 { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .explainer { background:rgba(88,166,255,0.05);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:16px;font-size:0.88rem;color:var(--muted);margin-bottom:24px; }
+    .explainer strong { color:var(--text); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+    .mode-tabs { display:flex;gap:8px;margin-bottom:20px; }
+    .mode-tab { padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font); }
+    .mode-tab.active { background:var(--accent);color:#0d1117;border-color:var(--accent);font-weight:600; }
+    .mode-tab:hover:not(.active) { border-color:var(--accent);color:var(--accent); }
+    .error { color:#f85149;font-size:0.85rem;margin-top:8px;display:none; }
+    table { width:100%;border-collapse:collapse;font-size:0.88rem; }
+    th { text-align:left;color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;padding:8px 12px;border-bottom:1px solid var(--border); }
+    td { padding:9px 12px;border-bottom:1px solid #21262d;color:var(--text); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:rgba(255,255,255,0.02); }
+    .tbl-highlight { color:var(--accent);font-weight:600; }
+    .tbl-muted { color:var(--muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;font-size:0.82rem;color:var(--muted);">Finance Calculators</p>
+  <h1 class="page-title">APR to APY Calculator</h1>
+  <p class="page-subtitle">Convert between APR and APY — and see how compounding frequency affects what you actually earn or pay.</p>
+
+  <div class="card">
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('apr2apy')">APR → APY</button>
+      <button class="mode-tab" onclick="switchMode('apy2apr')">APY → APR</button>
+    </div>
+
+    <div class="fields-grid">
+      <div class="field">
+        <label id="rateLabel">Annual Percentage Rate — APR (%)</label>
+        <input type="number" id="rateInput" placeholder="5.0" min="0.001" step="any">
+      </div>
+      <div class="field">
+        <label for="compFreq">Compounding Frequency</label>
+        <select id="compFreq">
+          <option value="365">Daily (365x/year)</option>
+          <option value="12" selected>Monthly (12x/year)</option>
+          <option value="4">Quarterly (4x/year)</option>
+          <option value="2">Semi-Annually (2x/year)</option>
+          <option value="1">Annually (1x/year)</option>
+        </select>
+      </div>
+    </div>
+    <div class="error" id="errorMsg">Please enter a valid positive interest rate.</div>
+    <button class="calc-btn" onclick="calculate()">Convert Rate</button>
+  </div>
+
+  <div id="results">
+    <div class="results-grid">
+      <div class="result-card primary">
+        <div class="result-label" id="res-primary-label">APY</div>
+        <div class="result-value" id="res-converted">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Daily Rate</div>
+        <div class="result-value" id="res-daily">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Monthly Rate</div>
+        <div class="result-value" id="res-monthly">—</div>
+      </div>
+    </div>
+
+    <div class="results-grid-2">
+      <div class="result-card">
+        <div class="result-label">Monthly Earnings per $1,000</div>
+        <div class="result-value" id="res-monthly-earn">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Annual Earnings per $1,000</div>
+        <div class="result-value" id="res-annual-earn">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Compounding Frequency Comparison — Same APR, Different APY</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Compounding</th>
+            <th>Periods/Year</th>
+            <th>APY</th>
+            <th>Annual Earn per $1K</th>
+          </tr>
+        </thead>
+        <tbody id="compTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="explainer">
+    <strong>APR vs APY — the key difference:</strong><br><br>
+    <strong>APR (Annual Percentage Rate)</strong> is the stated rate before compounding. It's what lenders and issuers advertise.<br><br>
+    <strong>APY (Annual Percentage Yield)</strong> is the effective rate after compounding — what you actually earn or pay. The more frequently interest compounds, the higher the APY relative to APR.<br><br>
+    <strong>APR → APY:</strong> APY = (1 + APR/n)<sup>n</sup> − 1, where n = compounding periods per year.<br>
+    <strong>APY → APR:</strong> APR = n × ((1 + APY)<sup>1/n</sup> − 1)
+  </div>
+
+  <div class="footer">
+    <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+<script>
+  let currentMode = 'apr2apy';
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-tab').forEach((t, i) => {
+      t.classList.toggle('active', ['apr2apy','apy2apr'][i] === mode);
+    });
+    document.getElementById('rateLabel').textContent = mode === 'apr2apy'
+      ? 'Annual Percentage Rate — APR (%)'
+      : 'Annual Percentage Yield — APY (%)';
+    document.getElementById('rateInput').value = '';
+    document.getElementById('results').style.display = 'none';
+  }
+
+  function fmtPct(n, decimals) {
+    return n.toFixed(decimals !== undefined ? decimals : 4) + '%';
+  }
+  function fmtDollar(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  }
+  function fmtDollar2(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function calculate() {
+    const rate = parseFloat(document.getElementById('rateInput').value);
+    const n    = parseInt(document.getElementById('compFreq').value);
+    const err  = document.getElementById('errorMsg');
+
+    if (!rate || rate <= 0) { err.style.display = 'block'; return; }
+    err.style.display = 'none';
+
+    let apr, apy;
+    if (currentMode === 'apr2apy') {
+      apr = rate / 100;
+      apy = Math.pow(1 + apr / n, n) - 1;
+    } else {
+      apy = rate / 100;
+      apr = n * (Math.pow(1 + apy, 1 / n) - 1);
+    }
+
+    const dailyRate   = Math.pow(1 + apy, 1 / 365) - 1;
+    const monthlyRate = Math.pow(1 + apy, 1 / 12) - 1;
+    const monthlyEarn = 1000 * monthlyRate;
+    const annualEarn  = 1000 * apy;
+
+    document.getElementById('res-primary-label').textContent = currentMode === 'apr2apy' ? 'APY' : 'APR';
+    document.getElementById('res-converted').textContent = fmtPct(currentMode === 'apr2apy' ? apy * 100 : apr * 100, 4);
+    document.getElementById('res-daily').textContent = fmtPct(dailyRate * 100, 6);
+    document.getElementById('res-monthly').textContent = fmtPct(monthlyRate * 100, 4);
+    document.getElementById('res-monthly-earn').textContent = fmtDollar(monthlyEarn);
+    document.getElementById('res-annual-earn').textContent = fmtDollar2(annualEarn);
+
+    // Comparison table — same APR, different compounding
+    const displayApr = currentMode === 'apr2apy' ? rate / 100 : apr;
+    const freqs = [
+      { label: 'Daily', n: 365 },
+      { label: 'Monthly', n: 12 },
+      { label: 'Quarterly', n: 4 },
+      { label: 'Semi-Annually', n: 2 },
+      { label: 'Annually', n: 1 },
+    ];
+    const tbody = document.getElementById('compTable');
+    tbody.innerHTML = '';
+    freqs.forEach(f => {
+      const thisApy = Math.pow(1 + displayApr / f.n, f.n) - 1;
+      const earn    = 1000 * thisApy;
+      const isCur   = f.n === n;
+      const cls     = isCur ? ' class="tbl-highlight"' : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td${cls}>${f.label}${isCur ? ' ←' : ''}</td>
+        <td${cls}>${f.n}x/year</td>
+        <td${cls}>${fmtPct(thisApy * 100, 4)}</td>
+        <td class="tbl-muted">${fmtDollar2(earn)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

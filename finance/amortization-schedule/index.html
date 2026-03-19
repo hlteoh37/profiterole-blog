@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amortization Schedule Calculator — Full Payment Breakdown</title>
+  <meta name="description" content="Generate a complete amortization schedule for any loan. See principal, interest, and balance for every payment. Free amortization calculator.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/amortization-schedule/">
+  <meta property="og:title" content="Amortization Schedule Calculator — Full Payment Breakdown">
+  <meta property="og:description" content="Generate a complete amortization schedule for any loan. See principal, interest, and balance for every payment. Free amortization calculator.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/amortization-schedule/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Amortization Schedule Calculator — Full Payment Breakdown">
+  <meta name="twitter:description" content="Generate a complete amortization schedule for any loan. See principal, interest, and balance for every payment. Free amortization calculator.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:760px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],input[type="text"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px; }
+    .results-grid-4 { display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid,.results-grid-4 { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.danger { border-color:var(--red);box-shadow:0 0 0 1px rgba(248,81,73,0.15); }
+    .result-card.savings { border-color:#e3b341;box-shadow:0 0 0 1px rgba(227,179,65,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .result-card.danger .result-value { color:var(--red); }
+    .result-card.savings .result-value { color:#e3b341; }
+    .explainer { background:rgba(88,166,255,0.05);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:16px;font-size:0.88rem;color:var(--muted);margin-bottom:24px; }
+    .explainer strong { color:var(--text); }
+    .savings-box { background:rgba(227,179,65,0.06);border:1px solid rgba(227,179,65,0.3);border-radius:8px;padding:16px;font-size:0.88rem;color:var(--muted);margin-bottom:24px; }
+    .savings-box strong { color:#e3b341; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+    .error { color:#f85149;font-size:0.85rem;margin-top:8px;display:none; }
+    .tbl-wrap { overflow-x:auto; }
+    table { width:100%;border-collapse:collapse;font-size:0.85rem; }
+    th { text-align:right;color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border); }
+    th:first-child { text-align:left; }
+    td { padding:8px 10px;border-bottom:1px solid #21262d;color:var(--text);text-align:right; }
+    td:first-child { text-align:left;color:var(--muted); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:rgba(255,255,255,0.02); }
+    .int-cell { color:#f85149; }
+    .pri-cell { color:var(--green); }
+    .tbl-note { font-size:0.8rem;color:var(--muted);margin-top:12px;text-align:center; }
+    .label-hint { font-size:0.75rem;color:var(--muted);margin-top:4px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;font-size:0.82rem;color:var(--muted);">Finance Calculators</p>
+  <h1 class="page-title">Amortization Schedule Calculator</h1>
+  <p class="page-subtitle">See every payment broken down into principal and interest — and how extra payments save you money.</p>
+
+  <div class="card">
+    <div class="card-title">Loan Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="loanAmount">Loan Amount ($)</label>
+        <input type="number" id="loanAmount" placeholder="300000" min="1" step="any">
+      </div>
+      <div class="field">
+        <label for="annualRate">Annual Interest Rate (%)</label>
+        <input type="number" id="annualRate" placeholder="6.5" min="0.01" step="any">
+      </div>
+      <div class="field">
+        <label for="loanTerm">Loan Term (Years)</label>
+        <input type="number" id="loanTerm" placeholder="30" min="1" max="50" step="1">
+      </div>
+      <div class="field">
+        <label for="extraPayment">Extra Monthly Payment ($) <span class="label-hint">optional</span></label>
+        <input type="number" id="extraPayment" placeholder="0" min="0" step="any">
+      </div>
+    </div>
+    <div class="error" id="errorMsg">Please enter valid values for loan amount, rate, and term.</div>
+    <button class="calc-btn" onclick="calculate()">Generate Schedule</button>
+  </div>
+
+  <div id="results">
+    <div class="results-grid-4">
+      <div class="result-card primary">
+        <div class="result-label">Monthly Payment</div>
+        <div class="result-value" id="res-payment">—</div>
+      </div>
+      <div class="result-card danger">
+        <div class="result-label">Total Interest</div>
+        <div class="result-value" id="res-total-int">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Total Cost</div>
+        <div class="result-value" id="res-total-cost">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Payoff Date</div>
+        <div class="result-value" id="res-payoff" style="font-size:1.1rem;">—</div>
+      </div>
+    </div>
+
+    <div class="savings-box" id="savings-box" style="display:none;">
+      <strong>Extra Payment Savings:</strong> By paying an extra <span id="save-extra">$0</span>/month, you'll pay off <span id="save-months">0 months</span> earlier and save <span id="save-interest">$0</span> in interest.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Amortization Schedule — First 24 Months</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Payment</th>
+              <th>Principal</th>
+              <th>Interest</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleTable"></tbody>
+        </table>
+      </div>
+      <p class="tbl-note" id="tbl-note"></p>
+    </div>
+  </div>
+
+  <div class="explainer">
+    <strong>How amortization works:</strong> Each payment is split between interest (charged on the remaining balance) and principal (reduces what you owe). Early in the loan, most of your payment goes to interest. Over time, as the balance falls, more goes to principal — this is why extra payments early in a loan have an outsized effect.
+  </div>
+
+  <div class="footer">
+    <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+<script>
+  function fmt(n) {
+    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function monthName(offset) {
+    const d = new Date();
+    d.setMonth(d.getMonth() + offset);
+    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  }
+
+  function buildSchedule(principal, monthlyRate, totalMonths, extra) {
+    let balance = principal;
+    const schedule = [];
+    let month = 0;
+    const basePayment = principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -totalMonths));
+    while (balance > 0.005 && month < totalMonths) {
+      month++;
+      const interest = balance * monthlyRate;
+      let payment = Math.min(basePayment + extra, balance + interest);
+      const principalPaid = payment - interest;
+      balance = Math.max(0, balance - principalPaid);
+      schedule.push({ month, payment, principal: principalPaid, interest, balance });
+    }
+    return { schedule, basePayment, totalMonths: month };
+  }
+
+  function calculate() {
+    const principal = parseFloat(document.getElementById('loanAmount').value);
+    const annualRate = parseFloat(document.getElementById('annualRate').value);
+    const termYears  = parseFloat(document.getElementById('loanTerm').value);
+    const extra      = parseFloat(document.getElementById('extraPayment').value) || 0;
+    const err = document.getElementById('errorMsg');
+
+    if (!principal || principal <= 0 || !annualRate || annualRate <= 0 || !termYears || termYears <= 0) {
+      err.style.display = 'block';
+      return;
+    }
+    err.style.display = 'none';
+
+    const monthlyRate  = annualRate / 100 / 12;
+    const totalMonths  = Math.round(termYears * 12);
+
+    const { schedule: baseSchedule, basePayment } = buildSchedule(principal, monthlyRate, totalMonths, 0);
+    const baseTotalInterest = baseSchedule.reduce((s, r) => s + r.interest, 0);
+    const baseTotalCost     = baseSchedule.reduce((s, r) => s + r.payment, 0);
+    const baseMonths        = baseSchedule.length;
+
+    document.getElementById('res-payment').textContent = fmt(basePayment + extra);
+    document.getElementById('res-total-int').textContent = fmt(baseTotalInterest);
+    document.getElementById('res-total-cost').textContent = fmt(baseTotalCost);
+    document.getElementById('res-payoff').textContent = monthName(baseMonths);
+
+    // Extra payment savings
+    const savingsBox = document.getElementById('savings-box');
+    if (extra > 0) {
+      const { schedule: extraSch } = buildSchedule(principal, monthlyRate, totalMonths, extra);
+      const extraInterest = extraSch.reduce((s, r) => s + r.interest, 0);
+      const savedMonths   = baseMonths - extraSch.length;
+      const savedInterest = baseTotalInterest - extraInterest;
+      document.getElementById('save-extra').textContent = fmt(extra);
+      document.getElementById('save-months').textContent = savedMonths + ' month' + (savedMonths !== 1 ? 's' : '');
+      document.getElementById('save-interest').textContent = fmt(savedInterest);
+      savingsBox.style.display = 'block';
+    } else {
+      savingsBox.style.display = 'none';
+    }
+
+    // Schedule table (first 24 months)
+    const displayRows = baseSchedule.slice(0, 24);
+    const tbody = document.getElementById('scheduleTable');
+    tbody.innerHTML = '';
+    displayRows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>Mo. ${row.month} <span style="color:var(--muted);font-size:0.78rem;">${monthName(row.month - 1)}</span></td>
+        <td>${fmt(row.payment)}</td>
+        <td class="pri-cell">${fmt(row.principal)}</td>
+        <td class="int-cell">${fmt(row.interest)}</td>
+        <td>${fmt(row.balance)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const note = document.getElementById('tbl-note');
+    if (baseSchedule.length > 24) {
+      note.textContent = `Showing first 24 of ${baseSchedule.length} payments. Total loan term: ${termYears} years.`;
+    } else {
+      note.textContent = `All ${baseSchedule.length} payments shown.`;
+    }
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

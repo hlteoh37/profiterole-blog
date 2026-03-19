@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salary Raise Calculator — Calculate Your Pay Increase</title>
+  <meta name="description" content="Calculate your new salary after a raise. See the dollar increase, percentage change, and monthly/weekly breakdown. Free salary raise calculator.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/salary-raise/">
+  <meta property="og:title" content="Salary Raise Calculator — Calculate Your Pay Increase">
+  <meta property="og:description" content="Calculate your new salary after a raise. See the dollar increase, percentage change, and monthly/weekly breakdown. Free salary raise calculator.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/salary-raise/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Salary Raise Calculator — Calculate Your Pay Increase">
+  <meta name="twitter:description" content="Calculate your new salary after a raise. See the dollar increase, percentage change, and monthly/weekly breakdown. Free salary raise calculator.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],input[type="text"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px; }
+    .results-grid-4 { display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid,.results-grid-4 { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .explainer { background:rgba(88,166,255,0.05);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:16px;font-size:0.88rem;color:var(--muted);margin-bottom:24px; }
+    .explainer strong { color:var(--text); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+    .mode-tabs { display:flex;gap:8px;margin-bottom:20px; }
+    .mode-tab { padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font); }
+    .mode-tab.active { background:var(--accent);color:#0d1117;border-color:var(--accent);font-weight:600; }
+    .mode-tab:hover:not(.active) { border-color:var(--accent);color:var(--accent); }
+    .mode-section { display:none; }
+    .mode-section.active { display:block; }
+    .error { color:#f85149;font-size:0.85rem;margin-top:8px;display:none; }
+    table { width:100%;border-collapse:collapse;font-size:0.88rem; }
+    th { text-align:left;color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;padding:8px 12px;border-bottom:1px solid var(--border); }
+    td { padding:9px 12px;border-bottom:1px solid #21262d;color:var(--text); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:rgba(255,255,255,0.02); }
+    .tbl-highlight { color:var(--green);font-weight:600; }
+    .tbl-muted { color:var(--muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;font-size:0.82rem;color:var(--muted);">Finance Calculators</p>
+  <h1 class="page-title">Salary Raise Calculator</h1>
+  <p class="page-subtitle">See exactly what your raise is worth — annually, monthly, weekly, and hourly.</p>
+
+  <div class="card">
+    <div class="card-title">Your Current Salary</div>
+    <div class="fields-grid" style="margin-bottom:16px;">
+      <div class="field">
+        <label for="currentSalary">Current Annual Salary ($)</label>
+        <input type="number" id="currentSalary" placeholder="75000" min="1" step="any">
+      </div>
+    </div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('pct')">By Percentage</button>
+      <button class="mode-tab" onclick="switchMode('new')">By New Salary</button>
+    </div>
+
+    <div class="mode-section active" id="mode-pct">
+      <div class="field">
+        <label for="raisePct">Raise Percentage (%)</label>
+        <input type="number" id="raisePct" placeholder="5" min="0" step="any">
+      </div>
+    </div>
+
+    <div class="mode-section" id="mode-new">
+      <div class="field">
+        <label for="newSalary">New Annual Salary ($)</label>
+        <input type="number" id="newSalary" placeholder="80000" min="1" step="any">
+      </div>
+    </div>
+
+    <div class="error" id="errorMsg">Please enter valid positive values.</div>
+    <button class="calc-btn" onclick="calculate()">Calculate Raise</button>
+  </div>
+
+  <div id="results">
+    <div class="results-grid" style="grid-template-columns:repeat(2,1fr);">
+      <div class="result-card primary">
+        <div class="result-label">New Annual Salary</div>
+        <div class="result-value" id="res-new-salary">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Raise Percentage</div>
+        <div class="result-value" id="res-pct">—</div>
+      </div>
+    </div>
+    <div class="results-grid-4">
+      <div class="result-card">
+        <div class="result-label">Annual Increase</div>
+        <div class="result-value" id="res-annual-inc">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Monthly Increase</div>
+        <div class="result-value" id="res-monthly-inc">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Weekly Increase</div>
+        <div class="result-value" id="res-weekly-inc">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">New Hourly Rate</div>
+        <div class="result-value" id="res-hourly">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Raise Comparison Table — Based on Your Current Salary</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Raise %</th>
+            <th>New Salary</th>
+            <th>Annual Increase</th>
+            <th>Monthly Increase</th>
+          </tr>
+        </thead>
+        <tbody id="compareTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="explainer">
+    <strong>Hourly rate</strong> is calculated assuming 2,080 working hours per year (52 weeks × 40 hours). New monthly salary = new annual salary / 12. Weekly = annual / 52.<br><br>
+    <strong>Negotiation tip:</strong> Always negotiate in dollar terms, not percentage. A 5% raise sounds the same to everyone, but the dollar difference at $120,000 vs $60,000 is enormous.
+  </div>
+
+  <div class="footer">
+    <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+<script>
+  let currentMode = 'pct';
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-tab').forEach((t, i) => {
+      t.classList.toggle('active', ['pct','new'][i] === mode);
+    });
+    document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('mode-' + mode).classList.add('active');
+  }
+
+  function fmt(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function calculate() {
+    const cur = parseFloat(document.getElementById('currentSalary').value);
+    const err = document.getElementById('errorMsg');
+
+    if (!cur || cur <= 0) { err.style.display = 'block'; return; }
+
+    let newSal;
+    if (currentMode === 'pct') {
+      const pct = parseFloat(document.getElementById('raisePct').value);
+      if (isNaN(pct) || pct < 0) { err.style.display = 'block'; return; }
+      newSal = cur * (1 + pct / 100);
+    } else {
+      newSal = parseFloat(document.getElementById('newSalary').value);
+      if (!newSal || newSal <= 0) { err.style.display = 'block'; return; }
+    }
+
+    err.style.display = 'none';
+
+    const pctIncrease = (newSal - cur) / cur * 100;
+    const annualInc  = newSal - cur;
+    const monthlyInc = annualInc / 12;
+    const weeklyInc  = annualInc / 52;
+    const hourlyNew  = newSal / 2080;
+
+    document.getElementById('res-new-salary').textContent = fmt(newSal);
+    document.getElementById('res-pct').textContent = (pctIncrease >= 0 ? '+' : '') + pctIncrease.toFixed(2) + '%';
+    document.getElementById('res-annual-inc').textContent = (annualInc >= 0 ? '+' : '') + fmt(annualInc);
+    document.getElementById('res-monthly-inc').textContent = (monthlyInc >= 0 ? '+' : '') + fmt(monthlyInc);
+    document.getElementById('res-weekly-inc').textContent = (weeklyInc >= 0 ? '+' : '') + fmt(weeklyInc);
+    document.getElementById('res-hourly').textContent = fmt(hourlyNew) + '/hr';
+
+    // Comparison table
+    const pcts = [1, 2, 3, 4, 5, 7, 10];
+    const tbody = document.getElementById('compareTable');
+    tbody.innerHTML = '';
+    pcts.forEach(p => {
+      const ns = cur * (1 + p / 100);
+      const ai = ns - cur;
+      const mi = ai / 12;
+      const isThis = Math.abs(pctIncrease - p) < 0.01;
+      const cls = isThis ? ' class="tbl-highlight"' : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td${cls}>${p}%${isThis ? ' ← you' : ''}</td>
+        <td${cls}>${fmt(ns)}</td>
+        <td${cls}>+${fmt(ai)}</td>
+        <td class="tbl-muted">+${fmt(mi)}/mo</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

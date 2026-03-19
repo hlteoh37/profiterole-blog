@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profit Margin Calculator — Gross, Net & Operating Margin</title>
+  <meta name="description" content="Calculate gross margin, net margin, and operating margin. Enter revenue and costs to see your profit margins instantly.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/margin-calculator/">
+  <meta property="og:title" content="Profit Margin Calculator — Gross, Net & Operating Margin">
+  <meta property="og:description" content="Calculate gross margin, net margin, and operating margin. Enter revenue and costs to see your profit margins instantly.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/margin-calculator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Profit Margin Calculator — Gross, Net & Operating Margin">
+  <meta name="twitter:description" content="Calculate gross margin, net margin, and operating margin. Enter revenue and costs to see your profit margins instantly.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; } a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],input[type="text"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .explainer { background:rgba(88,166,255,0.05);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:16px;font-size:0.88rem;color:var(--muted);margin-bottom:24px; }
+    .explainer strong { color:var(--text); }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+    .mode-tabs { display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap; }
+    .mode-tab { padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font); }
+    .mode-tab.active { background:var(--accent);color:#0d1117;border-color:var(--accent);font-weight:600; }
+    .mode-tab:hover:not(.active) { border-color:var(--accent);color:var(--accent); }
+    .mode-section { display:none; }
+    .mode-section.active { display:block; }
+    .result-section { display:none; }
+    .result-section.visible { display:block; }
+    .error { color:#f85149;font-size:0.85rem;margin-top:8px;display:none; }
+    .negative { color:#f85149 !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <p style="margin-bottom:8px;font-size:0.82rem;color:var(--muted);">Finance Calculators</p>
+  <h1 class="page-title">Profit Margin Calculator</h1>
+  <p class="page-subtitle">Calculate gross, net, and operating margins — or convert between markup and margin.</p>
+
+  <div class="card">
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('gross')">Gross Margin</button>
+      <button class="mode-tab" onclick="switchMode('net')">Net Margin</button>
+      <button class="mode-tab" onclick="switchMode('markup')">Markup vs Margin</button>
+    </div>
+
+    <!-- Gross Margin -->
+    <div class="mode-section active" id="mode-gross">
+      <div class="card-title">Gross Margin</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label for="g-revenue">Revenue ($)</label>
+          <input type="number" id="g-revenue" placeholder="100000" min="0" step="any">
+        </div>
+        <div class="field">
+          <label for="g-cogs">Cost of Goods Sold ($)</label>
+          <input type="number" id="g-cogs" placeholder="60000" min="0" step="any">
+        </div>
+      </div>
+      <div class="error" id="g-error">Please enter valid positive values.</div>
+      <button class="calc-btn" onclick="calcGross()">Calculate Gross Margin</button>
+    </div>
+
+    <!-- Net Margin -->
+    <div class="mode-section" id="mode-net">
+      <div class="card-title">Net Margin</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label for="n-revenue">Revenue ($)</label>
+          <input type="number" id="n-revenue" placeholder="100000" min="0" step="any">
+        </div>
+        <div class="field">
+          <label for="n-expenses">Total Expenses ($)</label>
+          <input type="number" id="n-expenses" placeholder="85000" min="0" step="any">
+        </div>
+      </div>
+      <div class="error" id="n-error">Please enter valid positive values.</div>
+      <button class="calc-btn" onclick="calcNet()">Calculate Net Margin</button>
+    </div>
+
+    <!-- Markup vs Margin -->
+    <div class="mode-section" id="mode-markup">
+      <div class="card-title">Markup to Margin Converter</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label for="m-cost">Cost ($)</label>
+          <input type="number" id="m-cost" placeholder="50" min="0" step="any">
+        </div>
+        <div class="field">
+          <label for="m-markup">Markup (%)</label>
+          <input type="number" id="m-markup" placeholder="40" min="0" step="any">
+        </div>
+      </div>
+      <div class="error" id="m-error">Please enter valid positive values.</div>
+      <button class="calc-btn" onclick="calcMarkup()">Calculate</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="result-section" id="res-gross">
+    <div class="results-grid">
+      <div class="result-card primary">
+        <div class="result-label">Gross Margin</div>
+        <div class="result-value" id="rg-margin">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Gross Profit</div>
+        <div class="result-value" id="rg-profit">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">COGS Ratio</div>
+        <div class="result-value" id="rg-cogs-pct">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-section" id="res-net">
+    <div class="results-grid">
+      <div class="result-card primary">
+        <div class="result-label">Net Margin</div>
+        <div class="result-value" id="rn-margin">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Net Profit</div>
+        <div class="result-value" id="rn-profit">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Expense Ratio</div>
+        <div class="result-value" id="rn-exp-pct">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-section" id="res-markup">
+    <div class="results-grid">
+      <div class="result-card primary">
+        <div class="result-label">Profit Margin</div>
+        <div class="result-value" id="rm-margin">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Selling Price</div>
+        <div class="result-value" id="rm-price">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Profit</div>
+        <div class="result-value" id="rm-profit">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explainer">
+    <strong>Margin vs. Markup — what's the difference?</strong><br><br>
+    <strong>Margin</strong> is profit as a percentage of <em>revenue</em>: (Revenue − Cost) / Revenue.<br>
+    <strong>Markup</strong> is profit as a percentage of <em>cost</em>: (Revenue − Cost) / Cost.<br><br>
+    A 50% markup gives you a 33% margin. A 100% markup gives you a 50% margin. They're measuring the same profit — just against different denominators. Always clarify which one you're using.
+  </div>
+
+  <div class="footer">
+    <p>Built by <a href="https://hlteoh37.github.io/profiterole-blog/">Profiterole</a> · <a href="/profiterole-blog/finance/">More Calculators</a></p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" class="coffee-btn">Buy me a coffee ☕</a>
+
+<script>
+  function fmt(n) {
+    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtSigned(n) {
+    return (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function switchMode(mode) {
+    document.querySelectorAll('.mode-tab').forEach((t, i) => {
+      const modes = ['gross', 'net', 'markup'];
+      t.classList.toggle('active', modes[i] === mode);
+    });
+    document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('mode-' + mode).classList.add('active');
+    document.querySelectorAll('.result-section').forEach(s => s.classList.remove('visible'));
+  }
+
+  function calcGross() {
+    const rev  = parseFloat(document.getElementById('g-revenue').value);
+    const cogs = parseFloat(document.getElementById('g-cogs').value);
+    const err  = document.getElementById('g-error');
+    if (!rev || rev <= 0 || isNaN(cogs) || cogs < 0) { err.style.display='block'; return; }
+    err.style.display = 'none';
+    const profit = rev - cogs;
+    const margin = profit / rev;
+    const cogsPct = cogs / rev;
+    document.getElementById('rg-margin').textContent = (margin * 100).toFixed(2) + '%';
+    document.getElementById('rg-margin').className = 'result-value' + (profit < 0 ? ' negative' : '');
+    document.getElementById('rg-profit').textContent = fmtSigned(profit);
+    document.getElementById('rg-profit').className = 'result-value' + (profit < 0 ? ' negative' : '');
+    document.getElementById('rg-cogs-pct').textContent = (cogsPct * 100).toFixed(2) + '%';
+    document.querySelectorAll('.result-section').forEach(s => s.classList.remove('visible'));
+    document.getElementById('res-gross').classList.add('visible');
+  }
+
+  function calcNet() {
+    const rev = parseFloat(document.getElementById('n-revenue').value);
+    const exp = parseFloat(document.getElementById('n-expenses').value);
+    const err = document.getElementById('n-error');
+    if (!rev || rev <= 0 || isNaN(exp) || exp < 0) { err.style.display='block'; return; }
+    err.style.display = 'none';
+    const profit = rev - exp;
+    const margin = profit / rev;
+    const expPct = exp / rev;
+    document.getElementById('rn-margin').textContent = (margin * 100).toFixed(2) + '%';
+    document.getElementById('rn-margin').className = 'result-value' + (profit < 0 ? ' negative' : '');
+    document.getElementById('rn-profit').textContent = fmtSigned(profit);
+    document.getElementById('rn-profit').className = 'result-value' + (profit < 0 ? ' negative' : '');
+    document.getElementById('rn-exp-pct').textContent = (expPct * 100).toFixed(2) + '%';
+    document.querySelectorAll('.result-section').forEach(s => s.classList.remove('visible'));
+    document.getElementById('res-net').classList.add('visible');
+  }
+
+  function calcMarkup() {
+    const cost   = parseFloat(document.getElementById('m-cost').value);
+    const markup = parseFloat(document.getElementById('m-markup').value);
+    const err    = document.getElementById('m-error');
+    if (!cost || cost <= 0 || isNaN(markup) || markup < 0) { err.style.display='block'; return; }
+    err.style.display = 'none';
+    const price  = cost * (1 + markup / 100);
+    const profit = price - cost;
+    const margin = profit / price;
+    document.getElementById('rm-margin').textContent = (margin * 100).toFixed(2) + '%';
+    document.getElementById('rm-price').textContent = fmt(price);
+    document.getElementById('rm-profit').textContent = fmt(profit);
+    document.querySelectorAll('.result-section').forEach(s => s.classList.remove('visible'));
+    document.getElementById('res-markup').classList.add('visible');
+  }
+</script>
+</body>
+</html>
