@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passive Income Calculator — How Much Capital Do You Need?</title>
+  <meta name="description" content="Calculate exactly how much capital you need to generate your target monthly passive income from dividend stocks, REITs, high-yield savings, rental property, and bonds. Includes time-to-goal projections.">
+  <meta name="keywords" content="passive income calculator, how much capital for passive income, dividend income calculator, REIT income calculator, rental income calculator, financial independence calculator, passive income investing">
+  <meta property="og:title" content="Passive Income Calculator — How Much Capital Do You Need?">
+  <meta property="og:description" content="Calculate exactly how much capital you need to generate your target monthly passive income from dividend stocks, REITs, HYSA, rental property, and bonds.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/passive-income-calculator/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/passive-income-calculator/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>💰</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--purple:#bc8cff;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:760px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    .fields-grid-3 { display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px; }
+    @media (max-width:600px) { .fields-grid, .fields-grid-3 { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:600px) { .results-grid { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.accent { border-color:var(--accent);box-shadow:0 0 0 1px rgba(88,166,255,0.15); }
+    .result-label { font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.35rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.75rem;color:var(--green); }
+    .result-card.accent .result-value { color:var(--accent); }
+    .section-label { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border); }
+    .invest-section { margin-bottom:20px; }
+    .invest-section-title { font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px; }
+    .invest-section-title .tag { font-size:0.72rem;background:rgba(88,166,255,0.12);color:var(--accent);border:1px solid rgba(88,166,255,0.2);border-radius:4px;padding:2px 7px;font-weight:600; }
+    .divider { border:none;border-top:1px solid var(--border);margin:18px 0; }
+    /* Comparison table */
+    .compare-table { width:100%;border-collapse:collapse;font-size:0.83rem;margin-top:4px; }
+    .compare-table th { text-align:right;color:var(--muted);font-weight:600;padding:8px 12px;border-bottom:1px solid var(--border); }
+    .compare-table th:first-child { text-align:left; }
+    .compare-table td { text-align:right;padding:8px 12px;border-bottom:1px solid #21262d; }
+    .compare-table td:first-child { text-align:left;font-weight:600; }
+    .compare-table tr:last-child td { border-bottom:none; }
+    .compare-table .highlight-row td { background:rgba(63,185,80,0.06); }
+    .compare-table .blended-row td { background:rgba(88,166,255,0.06);font-weight:600;color:var(--accent); }
+    .compare-table .blended-row td:first-child { color:var(--accent); }
+    .capital-val { color:var(--green);font-weight:700; }
+    .yield-badge { display:inline-block;font-size:0.72rem;background:rgba(63,185,80,0.12);color:var(--green);border:1px solid rgba(63,185,80,0.2);border-radius:4px;padding:1px 6px;margin-left:4px; }
+    .info-note { font-size:0.82rem;color:var(--muted);margin-top:10px;line-height:1.6; }
+    .info-note strong { color:var(--text); }
+    .explainer { color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:20px; }
+    .explainer h2 { color:var(--text);font-size:1.1rem;font-weight:600;margin:24px 0 10px; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+    .progress-bar-wrap { background:#21262d;border-radius:6px;height:8px;margin-top:6px;overflow:hidden; }
+    .progress-bar { height:8px;border-radius:6px;background:var(--green);transition:width 0.4s; }
+    .goal-progress { margin-top:16px; }
+    .goal-label { font-size:0.82rem;color:var(--muted);margin-bottom:4px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <div class="page-title">Passive Income Calculator</div>
+  <div class="page-subtitle">Find out exactly how much capital you need — and how long it takes to get there — for your target monthly passive income.</div>
+
+  <!-- Target Income -->
+  <div class="card">
+    <div class="card-title">Target &amp; Accumulation</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="targetMonthly">Target Monthly Passive Income ($)</label>
+        <input type="number" id="targetMonthly" value="3000" min="100" step="100">
+      </div>
+      <div class="field">
+        <label for="monthlySavings">Current Monthly Savings ($)</label>
+        <input type="number" id="monthlySavings" value="1500" min="0" step="100">
+      </div>
+      <div class="field">
+        <label for="accumReturn">Expected Return During Accumulation (%)</label>
+        <input type="number" id="accumReturn" value="7" min="0.1" step="0.1">
+      </div>
+      <div class="field">
+        <label for="inflationRate">Inflation Rate (%)</label>
+        <input type="number" id="inflationRate" value="3" min="0" step="0.1">
+      </div>
+    </div>
+  </div>
+
+  <!-- Investment Sources -->
+  <div class="card">
+    <div class="card-title">Investment Source Yields</div>
+
+    <div class="invest-section">
+      <div class="invest-section-title">
+        Dividend Stocks
+        <span class="tag">Equities</span>
+      </div>
+      <div class="fields-grid" style="grid-template-columns:1fr;">
+        <div class="field">
+          <label for="divYield">Expected Annual Yield (%)</label>
+          <input type="number" id="divYield" value="3.5" min="0.1" step="0.1">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="invest-section">
+      <div class="invest-section-title">
+        REITs
+        <span class="tag">Real Estate</span>
+      </div>
+      <div class="fields-grid" style="grid-template-columns:1fr;">
+        <div class="field">
+          <label for="reitYield">Expected Annual Yield (%)</label>
+          <input type="number" id="reitYield" value="5" min="0.1" step="0.1">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="invest-section">
+      <div class="invest-section-title">
+        High-Yield Savings / CDs
+        <span class="tag">Cash</span>
+      </div>
+      <div class="fields-grid" style="grid-template-columns:1fr;">
+        <div class="field">
+          <label for="hysaYield">Annual Yield (%)</label>
+          <input type="number" id="hysaYield" value="4.5" min="0.1" step="0.1">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="invest-section">
+      <div class="invest-section-title">
+        Rental Property
+        <span class="tag">Real Estate</span>
+      </div>
+      <div class="fields-grid">
+        <div class="field">
+          <label for="rentalMonthlyTarget">Monthly Rent Target ($)</label>
+          <input type="number" id="rentalMonthlyTarget" value="3000" min="100" step="100">
+        </div>
+        <div class="field">
+          <label for="rentalGrossYield">Expected Gross Yield (%)</label>
+          <input type="number" id="rentalGrossYield" value="8" min="0.1" step="0.1">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="invest-section">
+      <div class="invest-section-title">
+        Bonds / T-Bills
+        <span class="tag">Fixed Income</span>
+      </div>
+      <div class="fields-grid" style="grid-template-columns:1fr;">
+        <div class="field">
+          <label for="bondYield">Annual Yield (%)</label>
+          <input type="number" id="bondYield" value="4.8" min="0.1" step="0.1">
+        </div>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">Calculate Passive Income Plan</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+
+    <!-- Summary Cards -->
+    <div class="card">
+      <div class="card-title">Summary</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Capital Needed (Blended)</div>
+          <div class="result-value" id="blendedCapital">—</div>
+        </div>
+        <div class="result-card accent">
+          <div class="result-label">Years to Goal</div>
+          <div class="result-value" id="yearsToGoal">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Monthly Income at Goal</div>
+          <div class="result-value" id="monthlyAtGoal">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Inflation-Adjusted Target</div>
+          <div class="result-value" id="inflationAdjusted">—</div>
+        </div>
+      </div>
+
+      <div class="goal-progress">
+        <div class="goal-label">Progress to goal (savings speed at blended capital)</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="info-note" id="progressNote"></div>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="card">
+      <div class="card-title">Capital Required by Investment Type</div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Investment Type</th>
+            <th>Yield</th>
+            <th>Capital Required</th>
+            <th>Annual Income</th>
+            <th>Monthly Income</th>
+          </tr>
+        </thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+      <div class="info-note" style="margin-top:14px;">
+        <strong>Capital required</strong> = Annual income target ÷ Yield (%). For rental property, it is based on: Property price = Monthly rent target ÷ (Gross yield / 12). The blended portfolio splits equally across all five sources.
+      </div>
+    </div>
+
+    <!-- Accumulation Detail -->
+    <div class="card">
+      <div class="card-title">Time to Goal — Accumulation Details</div>
+      <div class="fields-grid">
+        <div class="result-card" style="text-align:left;padding:14px 16px;">
+          <div class="result-label">Monthly Savings</div>
+          <div class="result-value" id="detailSavings" style="font-size:1.1rem;">—</div>
+        </div>
+        <div class="result-card" style="text-align:left;padding:14px 16px;">
+          <div class="result-label">Accumulation Return</div>
+          <div class="result-value" id="detailReturn" style="font-size:1.1rem;">—</div>
+        </div>
+        <div class="result-card" style="text-align:left;padding:14px 16px;">
+          <div class="result-label">Capital Target (Blended)</div>
+          <div class="result-value" id="detailCapital" style="font-size:1.1rem;">—</div>
+        </div>
+        <div class="result-card" style="text-align:left;padding:14px 16px;">
+          <div class="result-label">Inflation-Adjusted Target</div>
+          <div class="result-value" id="detailInflTarget" style="font-size:1.1rem;">—</div>
+        </div>
+      </div>
+      <div class="info-note" style="margin-top:16px;" id="accumNote"></div>
+    </div>
+
+  </div><!-- end #results -->
+
+  <div class="explainer">
+    <h2>What is Passive Income?</h2>
+    <p>Passive income is money earned with minimal active effort — from assets you own rather than hours you work. The key is accumulating enough capital that the income from that capital covers your expenses. This is the foundation of financial independence.</p>
+
+    <h2>Dividend Stocks</h2>
+    <p>Dividend-paying stocks distribute a portion of company profits to shareholders — typically quarterly. High-quality dividend growers (like the S&amp;P 500 Dividend Aristocrats) often yield 2–5% and increase payouts over time, providing some inflation protection. Capital requirements are higher but you also benefit from equity appreciation.</p>
+
+    <h2>REITs (Real Estate Investment Trusts)</h2>
+    <p>REITs are required by law to distribute 90% of taxable income to shareholders, resulting in higher yields than most dividend stocks (typically 4–8%). They provide real estate exposure without landlord responsibilities. Note: REIT dividends are mostly taxed as ordinary income, not qualified dividends.</p>
+
+    <h2>High-Yield Savings &amp; CDs</h2>
+    <p>FDIC-insured and low risk, HYSA and CDs offer predictable returns. The catch: rates fluctuate with Fed policy, and they rarely keep pace with inflation long-term. Best used as the safe, liquid portion of a passive income portfolio, not the entire strategy.</p>
+
+    <h2>Rental Property</h2>
+    <p>Rental income is one of the most robust forms of passive income, but it requires significant upfront capital and ongoing management. The gross yield shown here is before expenses — expect net yields to be 2–4% lower after property tax, insurance, maintenance, and vacancy. A property manager adds ~10% of rent costs but makes it more truly passive.</p>
+
+    <h2>Bonds &amp; T-Bills</h2>
+    <p>US Treasury bonds and bills are among the safest investments available. T-bills (short-term) currently yield around 4–5% with no state/local tax on interest. Long-term bonds add duration risk — prices fall when rates rise. Best suited for capital preservation and predictable income rather than growth.</p>
+
+    <h2>The Blended Approach</h2>
+    <p>Diversifying across multiple passive income sources reduces concentration risk. No single source — market downturns hit dividends and REITs, rate cuts compress HYSA yields, rental markets soften, bond prices fluctuate. A blended portfolio smooths income across economic cycles.</p>
+
+    <h2>Inflation Matters</h2>
+    <p>$3,000/month today will have the purchasing power of less in 10–20 years. The inflation-adjusted target shows what you actually need to earn at your goal date to match today's dollars. Dividend stocks and rental income often grow with inflation naturally; bonds and HYSA may not.</p>
+  </div>
+
+  <div class="footer">
+    <p>Part of <a href="/profiterole-blog/finance/">Profiterole Finance Hub</a> — Free financial calculators.</p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-btn" target="_blank" rel="noopener">Buy me a coffee</a>
+
+<script>
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const fmtPct = (n) => n.toFixed(2) + '%';
+
+  function calculate() {
+    // Inputs
+    const targetMonthly = parseFloat(document.getElementById('targetMonthly').value) || 3000;
+    const monthlySavings = parseFloat(document.getElementById('monthlySavings').value) || 0;
+    const accumReturn = parseFloat(document.getElementById('accumReturn').value) || 7;
+    const inflationRate = parseFloat(document.getElementById('inflationRate').value) || 3;
+
+    const divYield = parseFloat(document.getElementById('divYield').value) || 3.5;
+    const reitYield = parseFloat(document.getElementById('reitYield').value) || 5;
+    const hysaYield = parseFloat(document.getElementById('hysaYield').value) || 4.5;
+    const rentalGrossYield = parseFloat(document.getElementById('rentalGrossYield').value) || 8;
+    const rentalMonthlyTarget = parseFloat(document.getElementById('rentalMonthlyTarget').value) || 3000;
+    const bondYield = parseFloat(document.getElementById('bondYield').value) || 4.8;
+
+    const targetAnnual = targetMonthly * 12;
+
+    // Capital required for each source (to generate full target monthly income)
+    const divCapital = targetAnnual / (divYield / 100);
+    const reitCapital = targetAnnual / (reitYield / 100);
+    const hysaCapital = targetAnnual / (hysaYield / 100);
+    // Rental: property price = monthly rent target / (gross yield / 12)
+    const rentalCapital = rentalMonthlyTarget / (rentalGrossYield / 100 / 12);
+    const bondCapital = targetAnnual / (bondYield / 100);
+
+    // Blended: equal split across 5 sources
+    // Each source contributes targetMonthly/5 per month = targetAnnual/5 per year
+    const blendedShare = targetAnnual / 5;
+    const blendedDivCapital = blendedShare / (divYield / 100);
+    const blendedReitCapital = blendedShare / (reitYield / 100);
+    const blendedHysaCapital = blendedShare / (hysaYield / 100);
+    // For rental blended: monthly share = targetMonthly/5, still same yield formula
+    const blendedRentalMonthly = targetMonthly / 5;
+    const blendedRentalCapital = blendedRentalMonthly / (rentalGrossYield / 100 / 12);
+    const blendedBondCapital = blendedShare / (bondYield / 100);
+    const blendedTotal = blendedDivCapital + blendedReitCapital + blendedHysaCapital + blendedRentalCapital + blendedBondCapital;
+
+    // Time to goal: FV = PMT * ((1+r)^n - 1) / r
+    // Solve for n: n = ln(FV*r/PMT + 1) / ln(1+r)
+    const monthlyRate = accumReturn / 100 / 12;
+    let monthsToGoal, yearsToGoal;
+    if (monthlySavings <= 0) {
+      monthsToGoal = Infinity;
+      yearsToGoal = Infinity;
+    } else if (monthlyRate === 0) {
+      monthsToGoal = blendedTotal / monthlySavings;
+      yearsToGoal = monthsToGoal / 12;
+    } else {
+      // n = ln(FV * r / PMT + 1) / ln(1 + r)
+      const ratio = blendedTotal * monthlyRate / monthlySavings;
+      if (ratio <= -1) {
+        monthsToGoal = Infinity;
+        yearsToGoal = Infinity;
+      } else {
+        monthsToGoal = Math.log(ratio + 1) / Math.log(1 + monthlyRate);
+        yearsToGoal = monthsToGoal / 12;
+      }
+    }
+
+    // Inflation-adjusted target: what monthly income you need at goal date
+    const inflMonthly = inflationRate / 100 / 12;
+    const inflAdjusted = targetMonthly * Math.pow(1 + inflationRate / 100, yearsToGoal);
+
+    // Summary cards
+    document.getElementById('blendedCapital').textContent = fmt(blendedTotal);
+    document.getElementById('monthlyAtGoal').textContent = fmt(targetMonthly);
+
+    if (isFinite(yearsToGoal)) {
+      document.getElementById('yearsToGoal').textContent = yearsToGoal.toFixed(1) + ' yrs';
+      document.getElementById('inflationAdjusted').textContent = fmt(inflAdjusted) + '/mo';
+    } else {
+      document.getElementById('yearsToGoal').textContent = 'N/A';
+      document.getElementById('inflationAdjusted').textContent = '—';
+    }
+
+    // Progress bar: rough estimate based on how feasible the savings rate is
+    // % of target blended yield that savings covers if invested now (annualized)
+    const annualSavings = monthlySavings * 12;
+    const blendedYield = targetAnnual / blendedTotal; // effective blended yield
+    const progressPct = Math.min(100, Math.round((annualSavings / blendedTotal) * 100 * 10));
+    document.getElementById('progressBar').style.width = progressPct + '%';
+
+    let progressNoteText = '';
+    if (monthlySavings <= 0) {
+      progressNoteText = 'Enter a monthly savings amount to see time-to-goal projections.';
+    } else if (!isFinite(yearsToGoal)) {
+      progressNoteText = 'At your current savings rate, you cannot reach the blended capital target — increase your savings or lower your target.';
+    } else {
+      const targetYear = new Date().getFullYear() + Math.ceil(yearsToGoal);
+      progressNoteText = `Saving ${fmt(monthlySavings)}/mo at ${accumReturn}% annualized, you reach the blended capital target around ${targetYear}.`;
+    }
+    document.getElementById('progressNote').textContent = progressNoteText;
+
+    // Comparison table
+    const sources = [
+      { name: 'Dividend Stocks', yield: divYield, capital: divCapital, annual: targetAnnual, monthly: targetMonthly },
+      { name: 'REITs', yield: reitYield, capital: reitCapital, annual: targetAnnual, monthly: targetMonthly },
+      { name: 'High-Yield Savings / CDs', yield: hysaYield, capital: hysaCapital, annual: targetAnnual, monthly: targetMonthly },
+      { name: 'Rental Property', yield: rentalGrossYield, capital: rentalCapital, annual: rentalMonthlyTarget * 12, monthly: rentalMonthlyTarget },
+      { name: 'Bonds / T-Bills', yield: bondYield, capital: bondCapital, annual: targetAnnual, monthly: targetMonthly },
+    ];
+
+    const tbody = document.getElementById('compareBody');
+    tbody.innerHTML = '';
+    sources.forEach(s => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${s.name}</td><td>${fmtPct(s.yield)}</td><td class="capital-val">${fmt(s.capital)}</td><td>${fmt(s.annual)}</td><td>${fmt(s.monthly)}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // Blended row
+    const trBlended = document.createElement('tr');
+    trBlended.className = 'blended-row';
+    const blendedEffYield = (targetAnnual / blendedTotal * 100);
+    trBlended.innerHTML = `<td>Blended (Equal Split)</td><td>${fmtPct(blendedEffYield)}</td><td>${fmt(blendedTotal)}</td><td>${fmt(targetAnnual)}</td><td>${fmt(targetMonthly)}</td>`;
+    tbody.appendChild(trBlended);
+
+    // Accumulation detail
+    document.getElementById('detailSavings').textContent = fmt(monthlySavings) + '/mo';
+    document.getElementById('detailReturn').textContent = accumReturn.toFixed(1) + '%/yr';
+    document.getElementById('detailCapital').textContent = fmt(blendedTotal);
+    document.getElementById('detailInflTarget').textContent = isFinite(inflAdjusted) ? fmt(inflAdjusted) + '/mo' : '—';
+
+    let accumNoteText = '';
+    if (monthlySavings > 0 && isFinite(yearsToGoal)) {
+      const totalContributions = monthlySavings * monthsToGoal;
+      const investmentGrowth = blendedTotal - totalContributions;
+      accumNoteText = `You would contribute roughly ${fmt(totalContributions)} in savings over ${yearsToGoal.toFixed(1)} years. Compounding at ${accumReturn}% would generate approximately ${fmt(Math.max(0, investmentGrowth))} in investment growth — bringing you to the ${fmt(blendedTotal)} blended capital target. The inflation-adjusted income target at that point would be ${fmt(inflAdjusted)}/month.`;
+    } else if (monthlySavings <= 0) {
+      accumNoteText = 'Enter your monthly savings amount above to see accumulation projections.';
+    } else {
+      accumNoteText = 'Your monthly savings rate is too low to reach the capital target with compounding alone. Consider increasing savings, reducing the income target, or using a higher-return investment strategy.';
+    }
+    document.getElementById('accumNote').textContent = accumNoteText;
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  // Auto-calculate on load
+  calculate();
+</script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-Bill Calculator — Treasury Bill Yield &amp; Return Calculator</title>
+  <meta name="description" content="Calculate Treasury Bill yield, discount rate, coupon equivalent yield, and after-tax return. See how T-Bills compare to savings accounts after federal and state taxes.">
+  <meta name="keywords" content="T-Bill calculator, treasury bill calculator, T-Bill yield calculator, coupon equivalent yield, treasury bill discount rate, T-Bill after-tax return, treasury bill vs savings account">
+  <meta property="og:title" content="T-Bill Calculator — Treasury Bill Yield &amp; Return Calculator">
+  <meta property="og:description" content="Calculate Treasury Bill yield, discount rate, coupon equivalent yield, and after-tax return. See how T-Bills compare to savings accounts after taxes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/tbill-calculator/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/tbill-calculator/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>💰</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    .field-full { grid-column:1 / -1; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    label .hint { font-size:0.78rem;color:#6e7681;font-weight:400;margin-left:4px; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.highlight { border-color:var(--yellow);box-shadow:0 0 0 1px rgba(210,153,34,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.45rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .result-card.highlight .result-value { color:var(--yellow); }
+    .result-sub { font-size:0.75rem;color:var(--muted);margin-top:4px; }
+    .comparison-box { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:18px;margin-top:4px; }
+    .comparison-row { display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #21262d;font-size:0.88rem; }
+    .comparison-row:last-child { border-bottom:none;padding-top:12px;font-weight:600;font-size:0.92rem; }
+    .comparison-label { color:var(--muted); }
+    .comparison-value { color:var(--text); }
+    .comparison-value.positive { color:var(--green); }
+    .tag-exempt { display:inline-block;font-size:0.68rem;background:rgba(63,185,80,0.15);color:var(--green);border:1px solid rgba(63,185,80,0.3);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle;font-weight:600;text-transform:uppercase;letter-spacing:0.05em; }
+    .explainer { color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:20px; }
+    .explainer h2 { color:var(--text);font-size:1.1rem;font-weight:600;margin:24px 0 10px; }
+    .explainer p { margin-bottom:12px; }
+    .explainer ul { padding-left:20px; }
+    .explainer ul li { margin-bottom:6px; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+    #dynamic-label { color:var(--muted);font-size:0.85rem;font-weight:500; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <div class="page-title">T-Bill Calculator</div>
+  <div class="page-subtitle">Calculate Treasury Bill yield, coupon equivalent yield, and after-tax return. Compare to savings accounts after accounting for state-tax exemption.</div>
+
+  <div class="card">
+    <div class="card-title">T-Bill Details</div>
+    <div class="fields-grid">
+
+      <div class="field field-full">
+        <label for="investType">Investment Type</label>
+        <select id="investType" onchange="toggleInputMode()">
+          <option value="auction">Buy at auction (enter discount rate)</option>
+          <option value="secondary">Buy on secondary market (enter price)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="faceValue">Face Value ($)</label>
+        <input type="number" id="faceValue" value="1000" min="100" step="100">
+      </div>
+
+      <div class="field">
+        <label id="dynamic-label" for="dynamicInput">Discount Rate (%)</label>
+        <input type="number" id="dynamicInput" value="4.85" min="0" step="0.01">
+      </div>
+
+      <div class="field">
+        <label for="termDays">T-Bill Term</label>
+        <select id="termDays">
+          <option value="28">4-week (28 days)</option>
+          <option value="56">8-week (56 days)</option>
+          <option value="91" selected>13-week (91 days)</option>
+          <option value="119">17-week (119 days)</option>
+          <option value="182">26-week (182 days)</option>
+          <option value="364">52-week (364 days)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="federalRate">Federal Income Tax Bracket (%)<span class="hint">— T-Bills are federally taxable</span></label>
+        <input type="number" id="federalRate" value="22" min="0" max="100" step="1">
+      </div>
+
+      <div class="field">
+        <label for="stateRate">State Income Tax Rate (%)<span class="hint">— T-Bills are state-tax exempt</span></label>
+        <input type="number" id="stateRate" value="5" min="0" max="20" step="0.1">
+      </div>
+
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate T-Bill Returns</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Returns Summary</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Dollar Return</div>
+          <div class="result-value" id="res-return">—</div>
+          <div class="result-sub" id="res-return-sub"></div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Purchase Price</div>
+          <div class="result-value" id="res-price">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Face Value</div>
+          <div class="result-value" id="res-face">—</div>
+        </div>
+        <div class="result-card highlight">
+          <div class="result-label">Coupon Equiv. Yield</div>
+          <div class="result-value" id="res-cey">—</div>
+          <div class="result-sub">Annualized (365-day basis)</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Discount Rate</div>
+          <div class="result-value" id="res-discount">—</div>
+          <div class="result-sub">360-day basis</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Holding Period</div>
+          <div class="result-value" id="res-days">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">After-Tax Breakdown <span class="tag-exempt">State Exempt</span></div>
+      <div class="comparison-box">
+        <div class="comparison-row">
+          <span class="comparison-label">Gross dollar return</span>
+          <span class="comparison-value" id="tax-gross">—</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">Federal tax on return</span>
+          <span class="comparison-value" id="tax-federal">—</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">State tax <span class="tag-exempt">Exempt</span></span>
+          <span class="comparison-value positive">$0.00</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">State tax savings (vs. taxable investment)</span>
+          <span class="comparison-value positive" id="tax-state-savings">—</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">After-federal-tax return</span>
+          <span class="comparison-value positive" id="tax-after">—</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">After-federal-tax annualized yield</span>
+          <span class="comparison-value positive" id="tax-yield">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">T-Bill vs. Savings Account Comparison</div>
+      <div class="comparison-box">
+        <div class="comparison-row">
+          <span class="comparison-label">T-Bill coupon equivalent yield</span>
+          <span class="comparison-value" id="cmp-cey">—</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">T-Bill after-federal-tax yield</span>
+          <span class="comparison-value" id="cmp-after-tax">—</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">Savings account must yield (fully taxable) to match T-Bill after all taxes</span>
+          <span class="comparison-value positive" id="cmp-breakeven">—</span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label" id="cmp-verdict-label">Verdict</span>
+          <span class="comparison-value positive" id="cmp-verdict">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explainer">
+    <h2>What Is a Treasury Bill (T-Bill)?</h2>
+    <p>A Treasury Bill is a short-term U.S. government debt instrument that matures in one year or less. Unlike bonds, T-Bills do not pay periodic coupon interest. Instead, you buy them at a <strong>discount</strong> to face value and receive the full face value at maturity. Your return is the difference between what you paid and what you receive.</p>
+    <p>For example, a 13-week (91-day) $1,000 T-Bill might be purchased for $987.80. At maturity, the U.S. Treasury pays you $1,000 — your $12.20 gain is your entire return.</p>
+
+    <h2>Why T-Bills Are Popular</h2>
+    <ul>
+      <li><strong>Backed by the U.S. government</strong> — considered the safest short-term investment in the world.</li>
+      <li><strong>State and local tax exempt</strong> — interest income is exempt from state and local income taxes. This is a meaningful advantage for residents of high-tax states.</li>
+      <li><strong>Highly liquid</strong> — T-Bills can be bought and sold on the secondary market before maturity.</li>
+      <li><strong>Sold at weekly auctions</strong> — the U.S. Treasury holds regular competitive and non-competitive auctions via TreasuryDirect.gov.</li>
+      <li><strong>No credit risk</strong> — unlike corporate bonds or even money market funds, there is no default risk on T-Bills (barring a U.S. sovereign default).</li>
+    </ul>
+
+    <h2>Discount Rate vs. Coupon Equivalent Yield</h2>
+    <p>The <strong>discount rate</strong> is the rate used to price T-Bills. It is calculated on a 360-day bank year basis relative to face value — it understates the true return because (a) you're earning on a smaller investment than face value, and (b) the year is assumed to be 360 days.</p>
+    <p>The <strong>coupon equivalent yield (CEY)</strong>, also called the bond equivalent yield, converts the T-Bill return to an annualized yield on a 365-day basis relative to your actual purchase price. This makes it directly comparable to yields on notes, bonds, and savings accounts. The CEY is always higher than the discount rate.</p>
+    <p>When comparing a T-Bill to a high-yield savings account, always use the CEY — not the discount rate.</p>
+
+    <h2>State Tax Exemption: The Hidden Advantage</h2>
+    <p>T-Bill interest is subject to federal income tax but is exempt from all state and local income taxes. For investors in states with high income tax rates (e.g., California at 13.3%, New York at 10.9%), this exemption can add 0.5–1.5 percentage points to the effective after-tax yield compared to a savings account or CD that is fully taxable at all levels.</p>
+    <p>The "equivalent taxable yield" shown above is the savings account rate you would need to match your T-Bill return after all taxes are considered — accounting for federal tax on both, but only state tax applying to the savings account.</p>
+  </div>
+
+  <div class="footer">
+    <p>Part of <a href="/profiterole-blog/finance/">Profiterole Finance Hub</a> — Free financial calculators.</p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-btn" target="_blank" rel="noopener">Buy me a coffee</a>
+
+<script>
+  const fmtD = (n) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const fmtPct = (n) => n.toFixed(3) + '%';
+
+  function toggleInputMode() {
+    const type = document.getElementById('investType').value;
+    const label = document.getElementById('dynamic-label');
+    const input = document.getElementById('dynamicInput');
+    if (type === 'auction') {
+      label.textContent = 'Discount Rate (%)';
+      input.value = input.dataset.lastDiscount || '4.85';
+      input.step = '0.01';
+      input.min = '0';
+      input.max = '100';
+    } else {
+      // Save current discount rate value before switching
+      input.dataset.lastDiscount = input.value;
+      label.textContent = 'Purchase Price ($)';
+      // Default secondary market price based on current face value
+      const fv = parseFloat(document.getElementById('faceValue').value) || 1000;
+      input.value = (fv * 0.9878).toFixed(2);
+      input.step = '0.01';
+      input.min = '1';
+      input.max = '';
+    }
+  }
+
+  function calculate() {
+    const type = document.getElementById('investType').value;
+    const faceValue = parseFloat(document.getElementById('faceValue').value) || 0;
+    const dynamicVal = parseFloat(document.getElementById('dynamicInput').value) || 0;
+    const days = parseInt(document.getElementById('termDays').value) || 91;
+    const federalRate = parseFloat(document.getElementById('federalRate').value) || 0;
+    const stateRate = parseFloat(document.getElementById('stateRate').value) || 0;
+
+    if (faceValue <= 0) { alert('Please enter a valid face value.'); return; }
+    if (dynamicVal <= 0) { alert('Please enter a valid discount rate or purchase price.'); return; }
+
+    let purchasePrice, discountRate, dollarReturn, cey;
+
+    if (type === 'auction') {
+      // Input is discount rate
+      discountRate = dynamicVal;
+      purchasePrice = faceValue * (1 - (discountRate / 100) * (days / 360));
+      dollarReturn = faceValue - purchasePrice;
+      cey = (dollarReturn / purchasePrice) * (365 / days) * 100;
+    } else {
+      // Input is purchase price
+      purchasePrice = dynamicVal;
+      if (purchasePrice >= faceValue) { alert('Purchase price must be less than face value for a T-Bill.'); return; }
+      dollarReturn = faceValue - purchasePrice;
+      discountRate = (dollarReturn / faceValue) * (360 / days) * 100;
+      cey = (dollarReturn / purchasePrice) * (365 / days) * 100;
+    }
+
+    // After-tax calculations
+    const federalTax = dollarReturn * (federalRate / 100);
+    const stateTaxIfTaxable = dollarReturn * (stateRate / 100);  // what you'd owe if NOT exempt
+    const afterFederalReturn = dollarReturn - federalTax;
+    const afterFederalCEY = (afterFederalReturn / purchasePrice) * (365 / days) * 100;
+
+    // Equivalent taxable yield: a savings account would need this yield (subject to both federal + state tax)
+    // to produce the same after-tax return as the T-Bill (subject only to federal tax)
+    // T-Bill net after-tax return = dollarReturn * (1 - federalRate/100)
+    // Savings account (on purchasePrice, annualized): rate * purchasePrice * (days/365) * (1 - federalRate/100 - stateRate/100) = afterFederalReturn
+    // rate = afterFederalReturn / (purchasePrice * (days/365) * (1 - federalRate/100 - stateRate/100))
+    const combinedTaxRate = (federalRate + stateRate) / 100;
+    let equivalentTaxableYield;
+    if (combinedTaxRate >= 1) {
+      equivalentTaxableYield = Infinity;
+    } else {
+      equivalentTaxableYield = (afterFederalReturn / (purchasePrice * (days / 365) * (1 - combinedTaxRate))) * 100;
+    }
+
+    // --- Populate results ---
+
+    // Returns summary
+    document.getElementById('res-return').textContent = fmtD(dollarReturn);
+    document.getElementById('res-return-sub').textContent = 'At maturity';
+    document.getElementById('res-price').textContent = fmtD(purchasePrice);
+    document.getElementById('res-face').textContent = fmtD(faceValue);
+    document.getElementById('res-cey').textContent = fmtPct(cey);
+    document.getElementById('res-discount').textContent = fmtPct(discountRate);
+    document.getElementById('res-days').textContent = days + ' days';
+
+    // After-tax breakdown
+    document.getElementById('tax-gross').textContent = fmtD(dollarReturn);
+    document.getElementById('tax-federal').textContent = '−' + fmtD(federalTax);
+    document.getElementById('tax-state-savings').textContent = '+' + fmtD(stateTaxIfTaxable);
+    document.getElementById('tax-after').textContent = fmtD(afterFederalReturn);
+    document.getElementById('tax-yield').textContent = fmtPct(afterFederalCEY);
+
+    // Comparison
+    document.getElementById('cmp-cey').textContent = fmtPct(cey);
+    document.getElementById('cmp-after-tax').textContent = fmtPct(afterFederalCEY);
+    if (isFinite(equivalentTaxableYield)) {
+      document.getElementById('cmp-breakeven').textContent = fmtPct(equivalentTaxableYield);
+    } else {
+      document.getElementById('cmp-breakeven').textContent = 'N/A (100% tax rate)';
+    }
+
+    // Verdict: compare T-Bill CEY to equivalent taxable yield
+    const verdictEl = document.getElementById('cmp-verdict');
+    if (isFinite(equivalentTaxableYield)) {
+      const diff = equivalentTaxableYield - cey;
+      if (diff > 0.001) {
+        verdictEl.textContent = 'T-Bill wins vs. savings account yielding less than ' + fmtPct(equivalentTaxableYield);
+      } else {
+        verdictEl.textContent = 'T-Bill matches savings account at ' + fmtPct(equivalentTaxableYield);
+      }
+    } else {
+      verdictEl.textContent = 'T-Bill is beneficial for any positive tax rate.';
+    }
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>

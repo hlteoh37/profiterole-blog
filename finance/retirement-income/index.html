@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retirement Income Calculator — How Much Will Your Savings Generate?</title>
+  <meta name="description" content="Calculate how much monthly income your retirement savings will generate. Includes Social Security, pension, inflation adjustment, and sustainability check. Find out exactly how much you need.">
+  <meta name="keywords" content="retirement income calculator, how much retirement savings, retirement withdrawal calculator, 4% rule calculator, retirement income planning, monthly retirement income">
+  <meta property="og:title" content="Retirement Income Calculator — How Much Will Your Savings Generate?">
+  <meta property="og:description" content="Find out how much monthly income your retirement savings will produce, including Social Security and pension. Check if your nest egg will last.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/retirement-income/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/retirement-income/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>💰</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--red:#f85149;--yellow:#d29922;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:680px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.warn { border-color:var(--red);box-shadow:0 0 0 1px rgba(248,81,73,0.15); }
+    .result-card.caution { border-color:var(--yellow);box-shadow:0 0 0 1px rgba(210,153,34,0.15); }
+    .result-label { font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px; }
+    .result-value { font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px; }
+    .result-card.primary .result-value { font-size:1.9rem;color:var(--green); }
+    .result-card.warn .result-value { color:var(--red); }
+    .result-card.caution .result-value { color:var(--yellow); }
+    .status-banner { border-radius:8px;padding:16px 20px;margin-bottom:24px;font-size:0.92rem;font-weight:500;line-height:1.5; }
+    .status-banner.good { background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);color:#7ee787; }
+    .status-banner.bad { background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.3);color:#ffa198; }
+    .breakdown-table { width:100%;border-collapse:collapse;font-size:0.88rem; }
+    .breakdown-table tr { border-bottom:1px solid #21262d; }
+    .breakdown-table tr:last-child { border-bottom:none; }
+    .breakdown-table td { padding:10px 4px; }
+    .breakdown-table td:last-child { text-align:right;font-weight:600;color:var(--text); }
+    .breakdown-table .total-row td { color:var(--green);font-weight:700;font-size:1rem;padding-top:14px;border-top:1px solid var(--border); }
+    .section-divider { border:none;border-top:1px solid var(--border);margin:4px 0 20px; }
+    .gap-positive { color:var(--green); }
+    .gap-negative { color:var(--red); }
+    .explainer { color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:20px; }
+    .explainer h2 { color:var(--text);font-size:1.1rem;font-weight:600;margin:24px 0 10px; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <div class="page-title">Retirement Income Calculator</div>
+  <div class="page-subtitle">Find out how much monthly income your retirement savings will generate — and whether it will last.</div>
+
+  <!-- Inputs -->
+  <div class="card">
+    <div class="card-title">Your Retirement Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="savings">Current Retirement Savings ($)</label>
+        <input type="number" id="savings" value="500000" min="0" step="10000">
+      </div>
+      <div class="field">
+        <label for="returnRate">Expected Annual Return in Retirement (%)</label>
+        <input type="number" id="returnRate" value="6" min="0" max="20" step="0.1">
+      </div>
+      <div class="field">
+        <label for="inflationRate">Inflation Rate (%)</label>
+        <input type="number" id="inflationRate" value="3" min="0" max="15" step="0.1">
+      </div>
+      <div class="field">
+        <label for="retirementYears">Years in Retirement</label>
+        <input type="number" id="retirementYears" value="30" min="1" max="60" step="1">
+      </div>
+      <div class="field">
+        <label for="ssBenefit">Annual Social Security Benefit ($)</label>
+        <input type="number" id="ssBenefit" value="0" min="0" step="500" placeholder="0 if none">
+      </div>
+      <div class="field">
+        <label for="pensionIncome">Annual Pension Income ($)</label>
+        <input type="number" id="pensionIncome" value="0" min="0" step="500" placeholder="0 if none">
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Retirement Income</button>
+  </div>
+
+  <!-- Reverse: How much do I need? -->
+  <div class="card">
+    <div class="card-title">How Much Savings Do You Need?</div>
+    <div class="fields-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label for="targetMonthly">Target Monthly Income in Retirement ($)</label>
+        <input type="number" id="targetMonthly" value="5000" min="0" step="100">
+      </div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">Uses the same return, inflation, years, Social Security, and pension values above.</p>
+    <button class="calc-btn" onclick="calculate()">Calculate Required Savings</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+
+    <div id="statusBanner" class="status-banner good"></div>
+
+    <!-- Income breakdown -->
+    <div class="card">
+      <div class="card-title">Monthly Income Breakdown</div>
+      <table class="breakdown-table">
+        <tr>
+          <td style="color:var(--muted)">From savings (inflation-adjusted withdrawal)</td>
+          <td id="savingsMonthly">—</td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">Social Security (monthly)</td>
+          <td id="ssMonthly">—</td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">Pension (monthly)</td>
+          <td id="pensionMonthly">—</td>
+        </tr>
+        <tr class="total-row">
+          <td>Total Monthly Income (today's dollars)</td>
+          <td id="totalMonthly">—</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Key metrics -->
+    <div class="card">
+      <div class="card-title">Key Figures</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Total Monthly Income</div>
+          <div class="result-value" id="totalMonthlyBig">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Total Annual Income</div>
+          <div class="result-value" id="totalAnnual">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Nominal Monthly (future $)</div>
+          <div class="result-value" id="nominalMonthly">—</div>
+        </div>
+        <div class="result-card" id="sustainCard">
+          <div class="result-label">Savings Last All <span id="yearsLabel">30</span> Years?</div>
+          <div class="result-value" id="sustainStatus">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Balance at End</div>
+          <div class="result-value" id="endBalance">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Effective Withdrawal Rate</div>
+          <div class="result-value" id="withdrawalRate">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Required savings -->
+    <div class="card">
+      <div class="card-title">Required Savings Analysis</div>
+      <table class="breakdown-table">
+        <tr>
+          <td style="color:var(--muted)">Target monthly income</td>
+          <td id="targetDisplay">—</td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">Covered by Social Security + Pension</td>
+          <td id="coveredByOther">—</td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">Must come from savings (monthly)</td>
+          <td id="neededFromSavings">—</td>
+        </tr>
+        <tr class="total-row">
+          <td>Required Savings Balance</td>
+          <td id="requiredSavings">—</td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">Your current savings</td>
+          <td id="currentSavingsDisplay">—</td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted);font-weight:600">Savings Gap (or Surplus)</td>
+          <td id="savingsGap">—</td>
+        </tr>
+      </table>
+    </div>
+
+  </div><!-- /results -->
+
+  <!-- Explainer -->
+  <div class="explainer">
+    <h2>How This Calculator Works</h2>
+    <p>The calculator uses a real return rate — nominal return minus inflation — to express everything in today's purchasing power. It computes the maximum sustainable monthly withdrawal from your savings over your chosen retirement period using the standard annuity formula, then adds Social Security and pension on top.</p>
+
+    <h2>What Is a "Real" Return?</h2>
+    <p>A 6% nominal return during a 3% inflation period gives you roughly a 2.9% real return. That's the growth rate that actually increases your purchasing power. By working in real terms, the monthly income figure is already inflation-adjusted — it represents what that money can buy in today's dollars.</p>
+
+    <h2>The 4% Rule Benchmark</h2>
+    <p>Financial planners often cite the "4% rule": withdraw 4% of your savings per year and the money should last 30 years. With $500,000 that's $20,000/year or about $1,667/month. This calculator goes further by letting you adjust the return rate, inflation, and time horizon to match your actual situation.</p>
+
+    <h2>Social Security Timing Matters</h2>
+    <p>Claiming Social Security at 62 vs. 70 can mean a 76% difference in your monthly benefit. This calculator accepts whatever benefit estimate you have — use ssa.gov's estimator for the most accurate figures based on your earnings record.</p>
+
+    <h2>Why the Savings Gap Matters</h2>
+    <p>The required savings figure tells you exactly where you need to be. If you have a gap, you can close it by saving more, retiring later, targeting a lower monthly income, or finding ways to increase Social Security or pension income. Small changes compound dramatically over time.</p>
+  </div>
+
+  <div class="footer">
+    <p>Part of <a href="/profiterole-blog/finance/">Profiterole Finance Hub</a> — Free financial calculators.</p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-btn" target="_blank" rel="noopener">Buy me a coffee</a>
+
+<script>
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const fmtD = (n, decimals) => {
+    const d = decimals !== undefined ? decimals : 0;
+    return '$' + n.toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
+  };
+  const pct = (n) => n.toFixed(2) + '%';
+
+  function calculate() {
+    const savings       = parseFloat(document.getElementById('savings').value)        || 0;
+    const nominalRate   = parseFloat(document.getElementById('returnRate').value)     / 100;
+    const inflationRate = parseFloat(document.getElementById('inflationRate').value)  / 100;
+    const years         = parseInt(document.getElementById('retirementYears').value)  || 30;
+    const ssAnnual      = parseFloat(document.getElementById('ssBenefit').value)      || 0;
+    const pensionAnnual = parseFloat(document.getElementById('pensionIncome').value)  || 0;
+    const targetMonthly = parseFloat(document.getElementById('targetMonthly').value)  || 0;
+
+    // Real return: strips out inflation so result is in today's dollars
+    const realAnnual  = (1 + nominalRate) / (1 + inflationRate) - 1;
+    const realMonthly = Math.pow(1 + realAnnual, 1 / 12) - 1;
+    const n           = years * 12;
+
+    // Monthly withdrawal from savings (annuity formula in real terms)
+    let savingsMonthly;
+    if (realMonthly === 0) {
+      savingsMonthly = savings / n;
+    } else {
+      const factor = realMonthly * Math.pow(1 + realMonthly, n) / (Math.pow(1 + realMonthly, n) - 1);
+      savingsMonthly = savings * factor;
+    }
+
+    // Fixed income sources (already in today's dollars — we treat them as constant-real)
+    const ssMonthly      = ssAnnual / 12;
+    const pensionMonthly = pensionAnnual / 12;
+
+    // Total income in today's dollars
+    const totalMonthly = savingsMonthly + ssMonthly + pensionMonthly;
+    const totalAnnual  = totalMonthly * 12;
+
+    // Nominal monthly (what the number will say in future dollars)
+    const inflationFactor = Math.pow(1 + inflationRate, years / 2); // mid-point
+    const nominalMonthly  = totalMonthly * inflationFactor;
+
+    // Sustainability check: simulate savings drawdown in nominal terms
+    const nominalMonthlyReturn = nominalRate / 12;
+    const nominalWithdrawal    = savingsMonthly * Math.pow(1 + inflationRate, 1/12); // first month nominal
+    let balance = savings;
+    let sustainable = true;
+    let endBal = savings;
+
+    if (nominalMonthlyReturn === 0) {
+      // Simple case
+      endBal = savings - savingsMonthly * Math.pow(1 + inflationRate, 1/12) * n;
+    } else {
+      // Month-by-month simulation in nominal terms
+      let monthlyWithdrawal = savingsMonthly * Math.pow(1 + inflationRate, 1/12);
+      for (let m = 0; m < n; m++) {
+        balance = balance * (1 + nominalMonthlyReturn) - monthlyWithdrawal;
+        monthlyWithdrawal *= Math.pow(1 + inflationRate, 1/12);
+        if (balance < 0) { sustainable = false; }
+      }
+      endBal = balance;
+    }
+
+    // Effective withdrawal rate (annual withdrawal / savings)
+    const withdrawalRatePct = savings > 0 ? (savingsMonthly * 12) / savings * 100 : 0;
+
+    // Required savings calculation
+    let requiredSavings = 0;
+    const neededFromSavings = Math.max(0, targetMonthly - ssMonthly - pensionMonthly);
+    if (neededFromSavings > 0) {
+      if (realMonthly === 0) {
+        requiredSavings = neededFromSavings * n;
+      } else {
+        const factor = realMonthly * Math.pow(1 + realMonthly, n) / (Math.pow(1 + realMonthly, n) - 1);
+        requiredSavings = neededFromSavings / factor;
+      }
+    }
+    const savingsGap = savings - requiredSavings;
+
+    // --- Update DOM ---
+    document.getElementById('yearsLabel').textContent = years;
+
+    // Status banner
+    const banner = document.getElementById('statusBanner');
+    if (sustainable) {
+      banner.className = 'status-banner good';
+      banner.textContent = `Your savings are on track to last all ${years} years. At the end of retirement, you're projected to have ${fmt(Math.max(0, endBal))} remaining.`;
+    } else {
+      banner.className = 'status-banner bad';
+      banner.textContent = `Warning: At this withdrawal rate your savings run out before ${years} years. Consider a lower withdrawal, higher return, or shorter retirement period.`;
+    }
+
+    // Breakdown table
+    document.getElementById('savingsMonthly').textContent = fmtD(savingsMonthly, 0);
+    document.getElementById('ssMonthly').textContent      = fmtD(ssMonthly, 0);
+    document.getElementById('pensionMonthly').textContent = fmtD(pensionMonthly, 0);
+    document.getElementById('totalMonthly').textContent   = fmtD(totalMonthly, 0);
+
+    // Key metrics
+    document.getElementById('totalMonthlyBig').textContent = fmtD(totalMonthly, 0);
+    document.getElementById('totalAnnual').textContent     = fmt(totalAnnual);
+    document.getElementById('nominalMonthly').textContent  = fmt(nominalMonthly);
+    document.getElementById('sustainStatus').textContent   = sustainable ? 'Yes' : 'No';
+    document.getElementById('endBalance').textContent      = fmt(Math.max(0, endBal));
+    document.getElementById('withdrawalRate').textContent  = pct(withdrawalRatePct);
+
+    // Colour the sustain card
+    const sustainCard = document.getElementById('sustainCard');
+    sustainCard.className = 'result-card ' + (sustainable ? 'primary' : 'warn');
+
+    // Required savings section
+    const gapEl = document.getElementById('savingsGap');
+    document.getElementById('targetDisplay').textContent        = fmtD(targetMonthly, 0);
+    document.getElementById('coveredByOther').textContent       = fmtD(ssMonthly + pensionMonthly, 0);
+    document.getElementById('neededFromSavings').textContent    = fmtD(neededFromSavings, 0);
+    document.getElementById('requiredSavings').textContent      = fmt(requiredSavings);
+    document.getElementById('currentSavingsDisplay').textContent = fmt(savings);
+    gapEl.textContent = (savingsGap >= 0 ? '+' : '') + fmt(savingsGap);
+    gapEl.className   = savingsGap >= 0 ? 'gap-positive' : 'gap-negative';
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  // Run on load so results appear immediately with defaults
+  calculate();
+</script>
+</body>
+</html>

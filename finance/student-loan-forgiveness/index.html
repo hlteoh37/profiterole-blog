@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Loan Forgiveness Calculator — PSLF & IDR Forgiveness Estimator</title>
+  <meta name="description" content="Estimate when your student loans will be forgiven under PSLF (Public Service Loan Forgiveness) or IDR plans (SAVE, PAYE, IBR). See payments remaining, projected forgiven amount, and total paid.">
+  <meta name="keywords" content="student loan forgiveness calculator, PSLF calculator, IDR forgiveness calculator, SAVE plan calculator, income driven repayment calculator, public service loan forgiveness, student loan payoff calculator">
+  <meta property="og:title" content="Student Loan Forgiveness Calculator — PSLF & IDR Forgiveness Estimator">
+  <meta property="og:description" content="Find out when your student loans will be forgiven under PSLF or IDR plans. Estimate payments remaining, forgiven balance, and total paid.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/student-loan-forgiveness/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/student-loan-forgiveness/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🎓</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--text:#e6edf3;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    body { background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;padding:0 0 80px; }
+    a { color:var(--accent);text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    header { border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+    header .logo { font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-0.3px; }
+    header .logo span { color:var(--accent); }
+    .back-link { color:var(--muted);font-size:0.85rem; }
+    .container { max-width:720px;margin:0 auto;padding:32px 20px; }
+    .page-title { font-size:1.75rem;font-weight:700;margin:12px 0 6px;letter-spacing:-0.5px; }
+    .page-subtitle { color:var(--muted);font-size:0.95rem;margin-bottom:28px; }
+    .card { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px; }
+    .card-title { font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:18px; }
+    .fields-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media (max-width:520px) { .fields-grid { grid-template-columns:1fr; } .page-title { font-size:1.4rem; } }
+    .field { display:flex;flex-direction:column;gap:6px; }
+    .field.full { grid-column:1 / -1; }
+    label { font-size:0.85rem;color:var(--muted);font-weight:500; }
+    label .hint { font-weight:400;font-style:italic; }
+    input[type="number"],select { background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.95rem;padding:9px 12px;width:100%;transition:border-color 0.15s;-webkit-appearance:none;appearance:none; }
+    input:focus,select:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+    .toggle-row { display:flex;align-items:center;gap:14px;padding:14px 0; }
+    .toggle-label { font-size:0.9rem;color:var(--text);font-weight:500; }
+    .toggle-sublabel { font-size:0.8rem;color:var(--muted);margin-top:2px; }
+    .toggle-wrap { display:flex;flex-direction:column; }
+    .toggle { position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0; }
+    .toggle input { opacity:0;width:0;height:0; }
+    .slider { position:absolute;cursor:pointer;inset:0;background:#30363d;border-radius:24px;transition:0.2s; }
+    .slider:before { position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#8b949e;border-radius:50%;transition:0.2s; }
+    input:checked + .slider { background:rgba(88,166,255,0.25);border:1px solid var(--accent); }
+    input:checked + .slider:before { transform:translateX(20px);background:var(--accent); }
+    .calc-btn { margin-top:20px;background:var(--accent);color:#0d1117;border:none;border-radius:6px;font-family:var(--font);font-size:0.95rem;font-weight:600;padding:11px 28px;cursor:pointer;transition:opacity 0.15s;width:100%; }
+    .calc-btn:hover { opacity:0.88; }
+    #results { display:none; }
+    .section-label { font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border); }
+    .results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px; }
+    .results-grid-2 { display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px; }
+    @media (max-width:520px) { .results-grid { grid-template-columns:1fr 1fr; } .results-grid-2 { grid-template-columns:1fr 1fr; } }
+    .result-card { background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .result-card.primary { border-color:var(--accent);box-shadow:0 0 0 1px rgba(88,166,255,0.15); }
+    .result-card.green { border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.15); }
+    .result-card.yellow { border-color:var(--yellow);box-shadow:0 0 0 1px rgba(210,153,34,0.15); }
+    .result-label { font-size:0.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-bottom:8px;line-height:1.3; }
+    .result-value { font-size:1.45rem;font-weight:700;color:var(--text);letter-spacing:-0.4px; }
+    .result-card.primary .result-value { color:var(--accent); }
+    .result-card.green .result-value { color:var(--green); }
+    .result-card.yellow .result-value { color:var(--yellow); }
+    .result-sub { font-size:0.75rem;color:var(--muted);margin-top:4px; }
+    .pslf-section { margin-bottom:24px; }
+    .idr-section { margin-bottom:0; }
+    .section-divider { height:1px;background:var(--border);margin:20px 0; }
+    .note-box { background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:14px 16px;font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:16px; }
+    .note-box strong { color:var(--text); }
+    .warning-box { background:rgba(210,153,34,0.06);border:1px solid rgba(210,153,34,0.2);border-radius:8px;padding:14px 16px;font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:16px; }
+    .warning-box strong { color:var(--yellow); }
+    #pslfBlock { display:none; }
+    .explainer { color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:20px; }
+    .explainer h2 { color:var(--text);font-size:1.1rem;font-weight:600;margin:24px 0 10px; }
+    .explainer ul { margin-left:18px;margin-top:6px; }
+    .explainer li { margin-bottom:4px; }
+    .footer { margin-top:40px;padding-top:20px;border-top:1px solid #21262d;font-size:0.8rem;color:#6e7681;text-align:center; }
+    .footer a { color:var(--accent); }
+    .coffee-btn { position:fixed;bottom:24px;right:24px;z-index:100;background:#ffdd00;color:#000;font-size:0.8rem;font-weight:700;padding:10px 16px;border-radius:24px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);transition:opacity 0.15s; }
+    .coffee-btn:hover { opacity:0.9;text-decoration:none; }
+    .tag { display:inline-block;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:12px;margin-left:6px;vertical-align:middle; }
+    .tag-pslf { background:rgba(88,166,255,0.15);color:var(--accent); }
+    .tag-idr { background:rgba(63,185,80,0.15);color:var(--green); }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Profiterole <span>Finance</span></div>
+  <span style="color:var(--border);margin:0 4px">|</span>
+  <a href="/profiterole-blog/finance/" class="back-link">← All Calculators</a>
+</header>
+
+<div class="container">
+  <div class="page-title">Student Loan Forgiveness Calculator</div>
+  <div class="page-subtitle">Estimate how many payments remain until PSLF or IDR forgiveness — and how much will be forgiven. Covers SAVE, PAYE, and IBR plans.</div>
+
+  <div class="card">
+    <div class="card-title">Loan & Income Details</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label for="loanBalance">Current Loan Balance ($)</label>
+        <input type="number" id="loanBalance" value="45000" min="100" step="1000">
+      </div>
+      <div class="field">
+        <label for="interestRate">Interest Rate (%)</label>
+        <input type="number" id="interestRate" value="6.5" min="0" max="20" step="0.125">
+      </div>
+      <div class="field">
+        <label for="monthlyIncome">Gross Monthly Income ($)</label>
+        <input type="number" id="monthlyIncome" value="5000" min="0" step="100">
+      </div>
+      <div class="field">
+        <label for="familySize">Family Size</label>
+        <input type="number" id="familySize" value="1" min="1" max="20" step="1">
+      </div>
+      <div class="field">
+        <label for="idrPlan">IDR Plan</label>
+        <select id="idrPlan">
+          <option value="SAVE">SAVE (Saving on a Valuable Education)</option>
+          <option value="PAYE">PAYE (Pay As You Earn)</option>
+          <option value="IBR_NEW">IBR — New borrowers (after 7/1/2014)</option>
+          <option value="IBR_OLD">IBR — Old borrowers (before 7/1/2014)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="paymentsMade">Qualifying Payments Already Made</label>
+        <input type="number" id="paymentsMade" value="0" min="0" max="360" step="1">
+      </div>
+      <div class="field full">
+        <div class="toggle-row">
+          <label class="toggle" for="pursuePSLF">
+            <input type="checkbox" id="pursuePSLF" onchange="togglePSLF()">
+            <span class="slider"></span>
+          </label>
+          <div class="toggle-wrap">
+            <div class="toggle-label">Pursuing PSLF (Public Service Loan Forgiveness)</div>
+            <div class="toggle-sublabel">Working full-time for government or qualifying non-profit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Forgiveness</button>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="card-title">Your IDR Payment</div>
+      <div class="results-grid">
+        <div class="result-card primary">
+          <div class="result-label">Monthly IDR Payment</div>
+          <div class="result-value" id="monthlyPaymentVal">—</div>
+          <div class="result-sub" id="paymentPlanSub">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Annual Income Used</div>
+          <div class="result-value" id="annualIncomeVal">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Discretionary Income</div>
+          <div class="result-value" id="discretionaryVal">—</div>
+          <div class="result-sub" id="povertyLineSub">—</div>
+        </div>
+      </div>
+
+      <div id="pslfBlock">
+        <div class="section-divider"></div>
+        <div class="section-label">PSLF Path <span class="tag tag-pslf">10 years</span></div>
+        <div class="results-grid" style="margin-bottom:0">
+          <div class="result-card primary">
+            <div class="result-label">Payments Remaining</div>
+            <div class="result-value" id="pslfPaymentsLeft">—</div>
+            <div class="result-sub" id="pslfYearsLeft">—</div>
+          </div>
+          <div class="result-card green">
+            <div class="result-label">Projected Forgiven</div>
+            <div class="result-value" id="pslfForgiven">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total Paid (PSLF)</div>
+            <div class="result-value" id="pslfTotalPaid">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+      <div class="section-label" id="idrSectionLabel">IDR Forgiveness Path <span class="tag tag-idr">20 yrs</span></div>
+      <div class="results-grid" style="margin-bottom:0">
+        <div class="result-card primary">
+          <div class="result-label">Payments Remaining</div>
+          <div class="result-value" id="idrPaymentsLeft">—</div>
+          <div class="result-sub" id="idrYearsLeft">—</div>
+        </div>
+        <div class="result-card green">
+          <div class="result-label">Projected Forgiven</div>
+          <div class="result-value" id="idrForgiven">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Total Paid (IDR)</div>
+          <div class="result-value" id="idrTotalPaid">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="comparisonCard">
+      <div class="card-title">Path Comparison</div>
+      <div id="comparisonContent"></div>
+    </div>
+
+    <div id="warningArea"></div>
+  </div>
+
+  <div class="explainer">
+    <h2>How IDR Plans Calculate Your Payment</h2>
+    <p>Income-Driven Repayment plans set your monthly payment as a percentage of your "discretionary income" — what's left after a poverty-line exemption.</p>
+    <ul>
+      <li><strong>SAVE:</strong> 5% of income above 225% of the federal poverty line (FPL). Lowest payments for most borrowers.</li>
+      <li><strong>PAYE:</strong> 10% of income above 150% of FPL. Capped at standard 10-year payment.</li>
+      <li><strong>IBR (new, post-2014):</strong> 10% of income above 150% of FPL.</li>
+      <li><strong>IBR (old, pre-2014):</strong> 15% of income above 150% of FPL.</li>
+    </ul>
+
+    <h2>PSLF — Public Service Loan Forgiveness</h2>
+    <p>If you work full-time for a qualifying employer (federal, state, local government, or 501(c)(3) non-profit), you can have your remaining balance forgiven after <strong>120 qualifying payments</strong> (10 years). PSLF forgiveness is currently tax-free at the federal level.</p>
+
+    <h2>IDR Forgiveness</h2>
+    <p>After your repayment period ends, any remaining balance is forgiven — but the timeline depends on your plan:</p>
+    <ul>
+      <li><strong>SAVE:</strong> 20 years (undergrad loans) or 25 years (any grad loans)</li>
+      <li><strong>PAYE:</strong> 20 years</li>
+      <li><strong>IBR new:</strong> 20 years</li>
+      <li><strong>IBR old:</strong> 25 years</li>
+    </ul>
+    <p style="margin-top:8px;">Note: IDR forgiveness (outside PSLF) may be taxable as income in the year it occurs. Consult a tax advisor.</p>
+
+    <h2>Federal Poverty Line (2024, Contiguous US)</h2>
+    <p>$15,060 for a family of 1, plus $5,380 per additional person. This calculator uses 2024 FPL values.</p>
+
+    <h2>Important Disclaimers</h2>
+    <p>This calculator provides estimates only. Your actual payment may differ based on income recertification, loan type eligibility, plan availability, and regulatory changes. SAVE plan benefits are subject to ongoing litigation as of 2024-2025. Always verify with your loan servicer and studentaid.gov.</p>
+  </div>
+
+  <div class="footer">
+    <p>Part of <a href="/profiterole-blog/finance/">Profiterole Finance Hub</a> — Free financial calculators.</p>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" class="coffee-btn" target="_blank" rel="noopener">Buy me a coffee</a>
+
+<script>
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const fmtD = (n) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  function togglePSLF() {
+    // Re-run calc if results already shown
+    if (document.getElementById('results').style.display === 'block') {
+      calculate();
+    }
+  }
+
+  // Federal Poverty Line (2024, contiguous US)
+  function getFPL(familySize) {
+    const base = 15060;
+    const perPerson = 5380;
+    return base + (familySize - 1) * perPerson;
+  }
+
+  // SAVE poverty line multiplier: 225%
+  // PAYE / IBR: 150%
+  function getPovertyMultiplier(plan) {
+    return plan === 'SAVE' ? 2.25 : 1.50;
+  }
+
+  // Discretionary income: max(0, annual_income - mult * FPL)
+  function getDiscretionaryIncome(annualIncome, familySize, plan) {
+    const fpl = getFPL(familySize);
+    const mult = getPovertyMultiplier(plan);
+    return Math.max(0, annualIncome - mult * fpl);
+  }
+
+  // Income % of discretionary by plan
+  function getIncomePercent(plan) {
+    if (plan === 'SAVE') return 0.05;
+    if (plan === 'PAYE') return 0.10;
+    if (plan === 'IBR_NEW') return 0.10;
+    if (plan === 'IBR_OLD') return 0.15;
+    return 0.10;
+  }
+
+  // IDR forgiveness term in months
+  function getIDRTerm(plan) {
+    if (plan === 'IBR_OLD') return 300; // 25 years
+    // SAVE, PAYE, IBR_NEW: 20 years (240 months) for undergrad
+    // We default to 20 years; user note covers the 25-yr grad case
+    return 240;
+  }
+
+  function getIDRTermYears(plan) {
+    return getIDRTerm(plan) / 12;
+  }
+
+  function getPlanLabel(plan) {
+    if (plan === 'SAVE') return 'SAVE';
+    if (plan === 'PAYE') return 'PAYE';
+    if (plan === 'IBR_NEW') return 'IBR (new)';
+    if (plan === 'IBR_OLD') return 'IBR (old)';
+    return plan;
+  }
+
+  // Project balance forward: simulate payments made so far were at the current monthly rate
+  // Then project remaining balance at forgiveness point
+  function projectBalance(startingBalance, annualRate, monthlyPayment, months) {
+    const r = annualRate / 100 / 12;
+    let balance = startingBalance;
+    let totalPaid = 0;
+    for (let i = 0; i < months; i++) {
+      if (balance <= 0) break;
+      const interest = balance * r;
+      balance = balance + interest - monthlyPayment;
+      totalPaid += monthlyPayment;
+      if (balance < 0) {
+        // Loan paid off before forgiveness
+        totalPaid += balance; // negative adjustment (overpayment correction)
+        balance = 0;
+        break;
+      }
+    }
+    return { balance: Math.max(0, balance), totalPaid };
+  }
+
+  function calculate() {
+    const loanBalance   = parseFloat(document.getElementById('loanBalance').value)   || 0;
+    const interestRate  = parseFloat(document.getElementById('interestRate').value)   || 0;
+    const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value)  || 0;
+    const familySize    = parseInt(document.getElementById('familySize').value)       || 1;
+    const plan          = document.getElementById('idrPlan').value;
+    const paymentsMade  = parseInt(document.getElementById('paymentsMade').value)     || 0;
+    const pursuePSLF    = document.getElementById('pursuePSLF').checked;
+
+    const annualIncome = monthlyIncome * 12;
+    const fpl = getFPL(familySize);
+    const povertyMult = getPovertyMultiplier(plan);
+    const povertyLineAmt = povertyMult * fpl;
+    const discretionary = getDiscretionaryIncome(annualIncome, familySize, plan);
+    const incomePercent = getIncomePercent(plan);
+    const monthlyPayment = Math.max(0, discretionary * incomePercent / 12);
+
+    // --- Update payment summary ---
+    document.getElementById('monthlyPaymentVal').textContent = fmtD(monthlyPayment);
+    document.getElementById('paymentPlanSub').textContent = getPlanLabel(plan) + ' plan';
+    document.getElementById('annualIncomeVal').textContent = fmt(annualIncome);
+    document.getElementById('discretionaryVal').textContent = fmt(discretionary);
+    document.getElementById('povertyLineSub').textContent =
+      (povertyMult * 100).toFixed(0) + '% FPL = ' + fmt(povertyLineAmt);
+
+    // --- PSLF ---
+    const pslfTotal = 120;
+    const pslfRemaining = Math.max(0, pslfTotal - paymentsMade);
+    const pslfYears = pslfRemaining / 12;
+
+    // Project balance at PSLF forgiveness: how many more months of payments?
+    const pslfProjection = projectBalance(loanBalance, interestRate, monthlyPayment, pslfRemaining);
+    const pslfForgiven = pslfProjection.balance;
+    const pslfTotalPaid = pslfProjection.totalPaid;
+
+    // --- IDR ---
+    const idrTotalPayments = getIDRTerm(plan);
+    const idrRemaining = Math.max(0, idrTotalPayments - paymentsMade);
+    const idrYears = idrRemaining / 12;
+
+    const idrProjection = projectBalance(loanBalance, interestRate, monthlyPayment, idrRemaining);
+    const idrForgiven = idrProjection.balance;
+    const idrTotalPaid = idrProjection.totalPaid;
+
+    // --- Update IDR section label ---
+    const idrTermYrs = getIDRTermYears(plan);
+    document.getElementById('idrSectionLabel').innerHTML =
+      'IDR Forgiveness Path <span class="tag tag-idr">' + idrTermYrs + ' yrs</span>';
+
+    // --- Populate IDR results ---
+    document.getElementById('idrPaymentsLeft').textContent = idrRemaining.toLocaleString();
+    document.getElementById('idrYearsLeft').textContent = idrYears.toFixed(1) + ' years remaining';
+    document.getElementById('idrForgiven').textContent = fmt(idrForgiven);
+    document.getElementById('idrTotalPaid').textContent = fmt(idrTotalPaid);
+
+    // --- PSLF block visibility ---
+    const pslfBlock = document.getElementById('pslfBlock');
+    if (pursuePSLF) {
+      pslfBlock.style.display = 'block';
+      document.getElementById('pslfPaymentsLeft').textContent = pslfRemaining.toLocaleString();
+      document.getElementById('pslfYearsLeft').textContent = pslfYears.toFixed(1) + ' years remaining';
+      document.getElementById('pslfForgiven').textContent = fmt(pslfForgiven);
+      document.getElementById('pslfTotalPaid').textContent = fmt(pslfTotalPaid);
+    } else {
+      pslfBlock.style.display = 'none';
+    }
+
+    // --- Comparison card ---
+    const comparisonContent = document.getElementById('comparisonContent');
+    const warningArea = document.getElementById('warningArea');
+
+    let comparisonHTML = '';
+    let warningHTML = '';
+
+    if (pursuePSLF) {
+      const pslfSavings = idrTotalPaid - pslfTotalPaid;
+      const pslfYearsSaved = (idrRemaining - pslfRemaining) / 12;
+      const pslfExtraForgiven = pslfForgiven - idrForgiven;
+
+      if (pslfRemaining < idrRemaining) {
+        comparisonHTML += `
+          <div class="note-box">
+            <strong>PSLF is your faster path.</strong>
+            Forgiveness ${pslfYearsSaved.toFixed(1)} years sooner than IDR.
+            You'd pay ${fmt(Math.abs(pslfSavings))} ${pslfSavings >= 0 ? 'less' : 'more'} in total payments,
+            and have ${fmt(pslfExtraForgiven)} more forgiven tax-free.
+          </div>`;
+      } else if (pslfRemaining === idrRemaining) {
+        comparisonHTML += `<div class="note-box"><strong>PSLF and IDR reach forgiveness at the same time</strong> given your payments already made.</div>`;
+      } else {
+        comparisonHTML += `<div class="note-box"><strong>IDR forgiveness comes sooner</strong> than PSLF given your current payment count — but PSLF forgiveness is tax-free at the federal level.</div>`;
+      }
+    }
+
+    if (monthlyPayment === 0) {
+      warningHTML += `<div class="warning-box"><strong>Your calculated IDR payment is $0/mo.</strong> This happens when your income is below the poverty-line threshold. $0 payments still count as qualifying payments for both PSLF and IDR forgiveness — but your balance will grow with unpaid interest. SAVE has interest subsidies that may help.</div>`;
+    }
+
+    if (pslfRemaining === 0 || idrRemaining === 0) {
+      warningHTML += `<div class="note-box"><strong>You may already qualify for forgiveness!</strong> Based on payments already made, you have reached or exceeded the forgiveness threshold. Contact your loan servicer or visit studentaid.gov to apply.</div>`;
+    }
+
+    if (plan === 'SAVE') {
+      warningHTML += `<div class="warning-box"><strong>Note on SAVE:</strong> The SAVE plan is subject to ongoing federal court litigation as of 2024-2025. Some SAVE benefits may be suspended or modified. Verify current plan status at studentaid.gov before making financial decisions.</div>`;
+    }
+
+    comparisonContent.innerHTML = comparisonHTML || `<div class="note-box">Enable the PSLF toggle above to compare PSLF vs. IDR paths side by side.</div>`;
+    warningArea.innerHTML = warningHTML;
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  // Auto-calculate on load with defaults
+  calculate();
+</script>
+</body>
+</html>
