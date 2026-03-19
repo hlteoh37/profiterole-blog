@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortgage Payment Calculator — Monthly Payment & Amortization</title>
+  <meta name="description" content="Calculate your monthly mortgage payment, total interest paid, and see a full amortization schedule. Free, instant, no signup required.">
+  <meta name="keywords" content="mortgage calculator, mortgage payment calculator, monthly mortgage payment, amortization schedule, home loan calculator, mortgage interest calculator">
+  <meta property="og:title" content="Mortgage Payment Calculator — Monthly Payment & Amortization">
+  <meta property="og:description" content="Calculate your monthly mortgage payment, total interest paid, and full amortization schedule. Free, no login.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/finance/mortgage-calculator/">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/finance/mortgage-calculator/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>💰</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 40px 20px 100px;
+    }
+    .container { max-width: 760px; margin: 0 auto; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #58a6ff; text-decoration: none; font-size: 0.85rem; margin-bottom: 32px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .hero { margin-bottom: 32px; }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #f0f6fc; margin-bottom: 8px; line-height: 1.25; }
+    .hero p { color: #8b949e; font-size: 1rem; line-height: 1.6; }
+
+    .card {
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 12px; padding: 28px; margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: #8b949e; font-weight: 600; margin-bottom: 20px;
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.85rem; font-weight: 500; color: #c9d1d9; }
+    .field .hint { font-size: 0.75rem; color: #8b949e; }
+    .field input[type="number"],
+    .field select {
+      background: #0d1117; border: 1px solid #30363d;
+      border-radius: 8px; color: #e6edf3;
+      font-size: 1rem; padding: 10px 14px;
+      width: 100%; outline: none; transition: border-color 0.15s;
+    }
+    .field input:focus, .field select:focus { border-color: #58a6ff; }
+    .field select option { background: #161b22; }
+
+    .calc-btn {
+      margin-top: 24px; width: 100%;
+      background: #238636; border: 1px solid #2ea043;
+      border-radius: 8px; color: #fff;
+      font-size: 1rem; font-weight: 600; padding: 12px 24px;
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
+    }
+    .calc-btn:hover { background: #2ea043; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    .results { display: none; }
+    .results.visible { display: block; }
+
+    .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 560px) { .results-grid { grid-template-columns: 1fr; } }
+
+    .stat-box {
+      background: #0d1117; border: 1px solid #30363d;
+      border-radius: 10px; padding: 20px; text-align: center;
+    }
+    .stat-box.highlight { border-color: #3fb950; background: rgba(63, 185, 80, 0.06); }
+    .stat-box.warning { border-color: #d29922; background: rgba(210, 153, 34, 0.06); }
+    .stat-label {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #8b949e; font-weight: 600; margin-bottom: 8px;
+    }
+    .stat-value { font-size: 1.9rem; font-weight: 700; color: #e6edf3; line-height: 1; }
+    .stat-box.highlight .stat-value { color: #3fb950; }
+    .stat-box.warning .stat-value { color: #d29922; }
+    .stat-sub { font-size: 0.78rem; color: #8b949e; margin-top: 6px; }
+
+    /* Payment breakdown bar */
+    .breakdown-bar { margin: 8px 0 16px; }
+    .bar-track { background: #21262d; border-radius: 8px; height: 20px; overflow: hidden; display: flex; }
+    .bar-principal { background: #3fb950; height: 100%; }
+    .bar-interest { background: #d29922; height: 100%; }
+    .bar-legend {
+      display: flex; gap: 20px; margin-top: 10px; flex-wrap: wrap;
+      font-size: 0.8rem; color: #8b949e;
+    }
+    .legend-dot {
+      display: inline-block; width: 10px; height: 10px;
+      border-radius: 2px; margin-right: 5px; vertical-align: middle;
+    }
+
+    /* Amortization table */
+    .amort-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .amort-table th {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #8b949e; font-weight: 600; padding: 8px 10px;
+      text-align: right; border-bottom: 1px solid #30363d;
+    }
+    .amort-table th:first-child { text-align: left; }
+    .amort-table td {
+      padding: 8px 10px; color: #c9d1d9;
+      border-bottom: 1px solid #21262d; text-align: right;
+    }
+    .amort-table td:first-child { text-align: left; color: #8b949e; }
+    .amort-table tr:last-child td { border-bottom: none; }
+    .amort-table .interest-cell { color: #d29922; }
+    .amort-table .principal-cell { color: #3fb950; }
+
+    .show-more-btn {
+      margin-top: 12px; width: 100%;
+      background: transparent; border: 1px solid #30363d;
+      border-radius: 8px; color: #58a6ff;
+      font-size: 0.88rem; font-weight: 500; padding: 10px;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .show-more-btn:hover { border-color: #58a6ff; background: rgba(88,166,255,0.06); }
+
+    .note-box {
+      background: rgba(88, 166, 255, 0.06);
+      border: 1px solid rgba(88, 166, 255, 0.2);
+      border-radius: 8px; padding: 14px 18px;
+      font-size: 0.83rem; color: #8b949e; line-height: 1.6; margin-top: 16px;
+    }
+    .note-box strong { color: #58a6ff; }
+
+    .error-msg {
+      background: rgba(248, 81, 73, 0.1);
+      border: 1px solid rgba(248, 81, 73, 0.3);
+      border-radius: 8px; padding: 12px 16px;
+      color: #f85149; font-size: 0.88rem; margin-top: 12px; display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    .coffee-btn {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #FFDD00; color: #000;
+      border: none; border-radius: 50px;
+      padding: 12px 20px; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 100;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .coffee-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.5); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a href="/profiterole-blog/finance/" class="back-link">&#8592; All Calculators</a>
+
+  <div class="hero">
+    <h1>Mortgage Payment Calculator</h1>
+    <p>Calculate your monthly payment, total interest over the life of the loan, and see exactly how each payment splits between principal and interest.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Loan Details</div>
+    <div class="form-grid">
+      <div class="field">
+        <label for="homePrice">Home Price ($)</label>
+        <input type="number" id="homePrice" value="400000" min="0" step="1000">
+      </div>
+      <div class="field">
+        <label for="downPayment">Down Payment ($)</label>
+        <input type="number" id="downPayment" value="80000" min="0" step="1000">
+        <span class="hint" id="downPctHint">20.0% down</span>
+      </div>
+      <div class="field">
+        <label for="interestRate">Annual Interest Rate (%)</label>
+        <input type="number" id="interestRate" value="6.8" min="0" max="30" step="0.05">
+      </div>
+      <div class="field">
+        <label for="loanTerm">Loan Term</label>
+        <select id="loanTerm">
+          <option value="30" selected>30 years</option>
+          <option value="20">20 years</option>
+          <option value="15">15 years</option>
+          <option value="10">10 years</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="propertyTax">Annual Property Tax ($)</label>
+        <input type="number" id="propertyTax" value="4000" min="0" step="100">
+        <span class="hint">Optional — for total monthly estimate</span>
+      </div>
+      <div class="field">
+        <label for="insurance">Annual Home Insurance ($)</label>
+        <input type="number" id="insurance" value="1200" min="0" step="50">
+        <span class="hint">Optional — for total monthly estimate</span>
+      </div>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+    <button class="calc-btn" onclick="calculate()">Calculate Mortgage</button>
+  </div>
+
+  <div class="results" id="results">
+    <div class="card">
+      <div class="card-title">Monthly Payment Breakdown</div>
+      <div class="results-grid">
+        <div class="stat-box highlight">
+          <div class="stat-label">Monthly P&amp;I Payment</div>
+          <div class="stat-value" id="monthlyPI">—</div>
+          <div class="stat-sub">Principal + Interest</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Total Monthly (PITI)</div>
+          <div class="stat-value" id="monthlyTotal">—</div>
+          <div class="stat-sub" id="pitiBreakdown"></div>
+        </div>
+        <div class="stat-box warning">
+          <div class="stat-label">Total Interest Paid</div>
+          <div class="stat-value" id="totalInterest">—</div>
+          <div class="stat-sub" id="totalInterestSub"></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Total Cost</div>
+          <div class="stat-value" id="totalCost">—</div>
+          <div class="stat-sub" id="totalCostSub"></div>
+        </div>
+      </div>
+
+      <div class="card-title" style="margin-top:8px;">Principal vs. Interest</div>
+      <div class="breakdown-bar">
+        <div class="bar-track">
+          <div class="bar-principal" id="barPrincipal" style="width:50%"></div>
+          <div class="bar-interest" id="barInterest" style="width:50%"></div>
+        </div>
+        <div class="bar-legend">
+          <span><span class="legend-dot" style="background:#3fb950"></span>Principal: <strong id="legendPrincipal">—</strong></span>
+          <span><span class="legend-dot" style="background:#d29922"></span>Interest: <strong id="legendInterest">—</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Amortization Schedule <span id="amortTitle" style="font-weight:400;text-transform:none;letter-spacing:0;color:#8b949e;font-size:0.8rem;"></span></div>
+      <table class="amort-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody id="amortBody"></tbody>
+      </table>
+      <button class="show-more-btn" id="showMoreBtn" onclick="toggleAmort()" style="display:none">Show all years</button>
+      <div class="note-box">
+        <strong>Note:</strong> This calculator covers principal and interest only.
+        Property taxes, insurance, and PMI (if down payment &lt; 20%) affect your total monthly payment.
+        PMI typically runs 0.5–1.5% of the loan amount annually.
+      </div>
+    </div>
+  </div>
+</div>
+
+<a href="https://buymeacoffee.com/gl89tu25lp" target="_blank" rel="noopener" class="coffee-btn">
+  &#9749; Buy me a coffee
+</a>
+
+<script>
+  var fullAmort = [];
+  var showingFull = false;
+
+  // Update down payment % hint on input
+  document.getElementById('homePrice').addEventListener('input', updateDownPctHint);
+  document.getElementById('downPayment').addEventListener('input', updateDownPctHint);
+
+  function updateDownPctHint() {
+    var price = parseFloat(document.getElementById('homePrice').value) || 0;
+    var dp = parseFloat(document.getElementById('downPayment').value) || 0;
+    var hint = document.getElementById('downPctHint');
+    if (price > 0) {
+      hint.textContent = (dp / price * 100).toFixed(1) + '% down';
+    }
+  }
+
+  function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+  function calculate() {
+    var errorEl = document.getElementById('errorMsg');
+    errorEl.classList.remove('visible');
+
+    var price = parseFloat(document.getElementById('homePrice').value) || 0;
+    var dp = parseFloat(document.getElementById('downPayment').value) || 0;
+    var rate = parseFloat(document.getElementById('interestRate').value) || 0;
+    var term = parseInt(document.getElementById('loanTerm').value);
+    var propTax = parseFloat(document.getElementById('propertyTax').value) || 0;
+    var insurance = parseFloat(document.getElementById('insurance').value) || 0;
+
+    if (price <= 0) { showError('Please enter a valid home price.'); return; }
+    if (dp >= price) { showError('Down payment must be less than the home price.'); return; }
+    if (rate < 0 || rate > 30) { showError('Please enter a valid interest rate (0–30%).'); return; }
+
+    var principal = price - dp;
+    var monthlyRate = rate / 100 / 12;
+    var n = term * 12;
+    var monthlyPI;
+
+    if (monthlyRate === 0) {
+      monthlyPI = principal / n;
+    } else {
+      monthlyPI = principal * (monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+    }
+
+    var totalPI = monthlyPI * n;
+    var totalInterest = totalPI - principal;
+    var monthlyTax = propTax / 12;
+    var monthlyIns = insurance / 12;
+    var monthlyTotal = monthlyPI + monthlyTax + monthlyIns;
+    var totalCost = totalPI + propTax * term + insurance * term;
+
+    document.getElementById('monthlyPI').textContent = fmt(monthlyPI);
+    document.getElementById('monthlyTotal').textContent = fmt(monthlyTotal);
+    var pitiParts = ['P&I: ' + fmt(monthlyPI)];
+    if (propTax > 0) pitiParts.push('Tax: ' + fmt(monthlyTax) + '/mo');
+    if (insurance > 0) pitiParts.push('Ins: ' + fmt(monthlyIns) + '/mo');
+    document.getElementById('pitiBreakdown').textContent = pitiParts.join(' · ');
+    document.getElementById('totalInterest').textContent = fmt(totalInterest);
+    document.getElementById('totalInterestSub').textContent = 'over ' + term + ' years';
+    document.getElementById('totalCost').textContent = fmt(totalCost);
+    document.getElementById('totalCostSub').textContent = 'total paid including taxes & insurance';
+
+    // Bar
+    var principalPct = (principal / totalPI * 100).toFixed(1);
+    var interestPct = (totalInterest / totalPI * 100).toFixed(1);
+    document.getElementById('barPrincipal').style.width = principalPct + '%';
+    document.getElementById('barInterest').style.width = interestPct + '%';
+    document.getElementById('legendPrincipal').textContent = fmt(principal) + ' (' + principalPct + '%)';
+    document.getElementById('legendInterest').textContent = fmt(totalInterest) + ' (' + interestPct + '%)';
+
+    // Build amortization by year
+    fullAmort = [];
+    var balance = principal;
+    for (var yr = 1; yr <= term; yr++) {
+      var yearPrincipal = 0, yearInterest = 0;
+      for (var mo = 0; mo < 12; mo++) {
+        var intPayment = balance * monthlyRate;
+        var prinPayment = monthlyPI - intPayment;
+        if (balance - prinPayment < 0.01) prinPayment = balance; // final payment cleanup
+        yearInterest += intPayment;
+        yearPrincipal += prinPayment;
+        balance = Math.max(0, balance - prinPayment);
+      }
+      fullAmort.push({ year: yr, principal: yearPrincipal, interest: yearInterest, balance: balance });
+    }
+
+    document.getElementById('amortTitle').textContent = '— ' + term + '-year schedule';
+    showingFull = false;
+    renderAmort();
+
+    document.getElementById('results').classList.add('visible');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderAmort() {
+    var tbody = document.getElementById('amortBody');
+    tbody.innerHTML = '';
+    var rows = showingFull ? fullAmort : fullAmort.slice(0, 10);
+    rows.forEach(function(row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>Year ' + row.year + '</td>' +
+        '<td class="principal-cell">' + fmt(row.principal) + '</td>' +
+        '<td class="interest-cell">' + fmt(row.interest) + '</td>' +
+        '<td>' + fmt(row.balance) + '</td>';
+      tbody.appendChild(tr);
+    });
+    var btn = document.getElementById('showMoreBtn');
+    if (fullAmort.length > 10) {
+      btn.style.display = 'block';
+      btn.textContent = showingFull ? 'Show less' : 'Show all ' + fullAmort.length + ' years';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+
+  function toggleAmort() {
+    showingFull = !showingFull;
+    renderAmort();
+  }
+
+  function showError(msg) {
+    var el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') calculate();
+  });
+</script>
+</body>
+</html>
