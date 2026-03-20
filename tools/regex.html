@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regex Tester Online — Free Regular Expression Tester | Profiterole</title>
+  <meta name="description" content="Free online regex tester. Test regular expressions live with highlighted matches, capture groups, and match count. Supports flags g, i, m, s. 100% client-side — your data never leaves your browser.">
+  <meta name="keywords" content="regex tester online, regular expression tester, regex checker, regex validator, online regex, javascript regex tester">
+  <meta property="og:title" content="Regex Tester Online — Free Regular Expression Tester | Profiterole">
+  <meta property="og:description" content="Test regular expressions live with highlighted matches, capture groups, and match count. Free, fast, 100% client-side.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/tools/regex.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Regex Tester Online — Free Regular Expression Tester">
+  <meta name="twitter:description" content="Test regex live with highlighted matches, capture groups, and match count. Free, client-side, no data collected.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/tools/regex.html">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>.*</text></svg>">
+
+  <style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d26;
+  --surface2: #1f2231;
+  --border: #2a2d3e;
+  --text: #e2e4f0;
+  --muted: #7880a0;
+  --accent: #6c63ff;
+  --accent-hover: #8078ff;
+  --green: #48cfad;
+  --green-hover: #5ddfc0;
+  --warn: #f5a623;
+  --danger: #f55353;
+  --success: #48cfad;
+  --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+
+  --match-bg: rgba(108, 99, 255, 0.3);
+  --match-border: rgba(108, 99, 255, 0.7);
+  --match-colors: #6c63ff, #48cfad, #f5a623, #f55353, #a9a3ff, #5ecfb1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(26, 29, 38, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { font-weight: 700; font-size: 1rem; color: var(--accent); text-decoration: none; }
+.nav-brand:hover { color: var(--accent-hover); }
+.nav-links { display: flex; gap: 1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; transition: color 0.15s; }
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  background: #ffdd00; color: #111; padding: 0.3rem 0.75rem;
+  border-radius: 5px; font-weight: 700; font-size: 0.78rem;
+  text-decoration: none; white-space: nowrap;
+}
+.nav-cta:hover { opacity: 0.88; }
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.hero h1 {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #e2e4f0 0%, var(--accent) 60%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 560px;
+  margin: 0 auto 1.5rem;
+}
+.badges {
+  display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.badge {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+}
+.badge .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; background: var(--green); }
+
+/* LAYOUT */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .sidebar { order: -1; }
+}
+
+/* PANEL */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.panel-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* PATTERN INPUT */
+.pattern-wrap {
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--surface);
+}
+.pattern-delimiter {
+  font-family: var(--mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 0 0.3rem;
+  user-select: none;
+  flex-shrink: 0;
+}
+.pattern-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.55rem 0.85rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.pattern-input:focus { border-color: var(--accent); }
+.pattern-input.valid { border-color: var(--green); }
+.pattern-input.invalid { border-color: var(--danger); }
+
+/* FLAGS */
+.flags-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem 0.85rem;
+  flex-wrap: wrap;
+}
+.flag-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-right: 0.25rem;
+}
+.flag-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  user-select: none;
+}
+.flag-item input[type=checkbox] { accent-color: var(--accent); cursor: pointer; width: 14px; height: 14px; }
+.flag-item .flag-key {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(108,99,255,0.12);
+  border: 1px solid rgba(108,99,255,0.3);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+.flag-item .flag-desc {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* EXAMPLE CHIPS */
+.examples-row {
+  display: flex; gap: 0.45rem; flex-wrap: wrap;
+  padding: 0 1rem 0.85rem;
+  align-items: center;
+}
+.examples-label { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+.example-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  padding: 0.22rem 0.65rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.example-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* STATUS */
+.status {
+  padding: 0.55rem 1rem;
+  font-size: 0.82rem;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.status.error { background: rgba(245,83,83,0.08); color: #f88; display: flex; }
+.status.success { background: rgba(72,207,173,0.07); color: var(--green); display: flex; }
+.status.info { background: rgba(108,99,255,0.08); color: #a9a3ff; display: flex; }
+
+/* TEST STRING */
+.test-panel { margin-top: 1rem; }
+
+textarea.test-input {
+  width: 100%;
+  min-height: 180px;
+  background: var(--surface);
+  color: var(--text);
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  padding: 1rem;
+}
+textarea.test-input::placeholder { color: var(--muted); opacity: 0.6; }
+
+/* HIGHLIGHTED RESULT */
+.result-panel { margin-top: 1rem; }
+
+.highlight-box {
+  min-height: 100px;
+  padding: 1rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  background: var(--surface);
+}
+.highlight-box:empty::before {
+  content: 'Matches will be highlighted here…';
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+mark.m0 { background: rgba(108,99,255,0.35); color: #e2e4f0; border-radius: 2px; outline: 1px solid rgba(108,99,255,0.6); }
+mark.m1 { background: rgba(72,207,173,0.3); color: #e2e4f0; border-radius: 2px; outline: 1px solid rgba(72,207,173,0.55); }
+mark.m2 { background: rgba(245,166,35,0.3); color: #e2e4f0; border-radius: 2px; outline: 1px solid rgba(245,166,35,0.55); }
+mark.m3 { background: rgba(245,83,83,0.3); color: #e2e4f0; border-radius: 2px; outline: 1px solid rgba(245,83,83,0.55); }
+mark.m4 { background: rgba(169,163,255,0.3); color: #e2e4f0; border-radius: 2px; outline: 1px solid rgba(169,163,255,0.55); }
+mark.m5 { background: rgba(94,207,177,0.25); color: #e2e4f0; border-radius: 2px; outline: 1px solid rgba(94,207,177,0.5); }
+
+/* STATS BAR */
+.stats-bar {
+  display: flex; gap: 0.65rem; flex-wrap: wrap;
+  padding: 0.65rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.stat { display: flex; align-items: center; gap: 0.35rem; }
+.stat strong { color: var(--text); }
+.stat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* CAPTURE GROUPS */
+.captures-panel { margin-top: 1rem; }
+
+.capture-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+.capture-table th {
+  background: var(--surface2);
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.68rem;
+}
+.capture-table td {
+  padding: 0.45rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--text);
+  word-break: break-all;
+  max-width: 300px;
+}
+.capture-table tr:last-child td { border-bottom: none; }
+.capture-table .match-n {
+  color: var(--muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  width: 2.5rem;
+}
+.capture-table .match-full { color: var(--green); }
+.capture-table .group-val { color: var(--accent); }
+.capture-table .group-undef { color: var(--muted); font-style: italic; }
+.capture-table .idx-col { color: var(--muted); font-size: 0.72rem; white-space: nowrap; }
+.no-captures {
+  padding: 1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+/* BUTTONS */
+.btn {
+  border: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+.btn-sm { padding: 0.25rem 0.55rem; font-size: 0.72rem; }
+
+/* SIDEBAR */
+.sidebar { display: flex; flex-direction: column; gap: 1rem; }
+
+.sidebar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.sidebar-card-header {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ref-list { list-style: none; padding: 0.5rem 0; }
+.ref-item {
+  padding: 0.35rem 1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(42,45,62,0.5);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.ref-item:last-child { border-bottom: none; }
+.ref-item:hover { background: rgba(255,255,255,0.04); }
+.ref-item .ref-token {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+.ref-item .ref-desc { color: var(--muted); line-height: 1.4; }
+
+/* COFFEE */
+.coffee-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.coffee-bar .coffee-text { font-size: 0.9rem; }
+.coffee-bar .coffee-text strong { color: var(--text); }
+.coffee-bar .coffee-text p { color: var(--muted); font-size: 0.82rem; margin-top: 0.15rem; }
+.coffee-btn {
+  background: #ffdd00;
+  color: #111;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.55rem 1.4rem;
+  border-radius: 7px;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-block;
+}
+.coffee-btn:hover { opacity: 0.88; }
+
+/* INFO */
+.info-section {
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+.info-section h2 { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+}
+.info-card h3 { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+.info-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+.info-card code { color: var(--accent); font-family: var(--mono); }
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+footer a { color: var(--muted); }
+footer a:hover { color: var(--text); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  background: var(--green);
+  color: #0f1117;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 9999;
+}
+.toast.show { opacity: 1; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="../">Profiterole</a>
+  <div class="nav-links">
+    <a href="../">Blog</a>
+    <a href="./index.html">Tools</a>
+    <a class="nav-cta" href="https://buy.stripe.com/dRm8wP8R295Z9VyeN59Zm00" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Regex Tester</h1>
+  <p>Test regular expressions live with highlighted matches, capture groups, and match count. Zero uploads — runs entirely in your browser.</p>
+  <div class="badges">
+    <span class="badge"><span class="dot"></span>100% Client-Side</span>
+    <span class="badge"><span class="dot" style="background:var(--accent)"></span>Live Highlighting</span>
+    <span class="badge"><span class="dot" style="background:var(--warn)"></span>Capture Groups</span>
+    <span class="badge"><span class="dot" style="background:#f88"></span>Free Forever</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="main-layout">
+
+    <!-- LEFT: MAIN TOOL -->
+    <div class="tool-col">
+
+      <!-- PATTERN PANEL -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-label">Pattern</span>
+          <div style="display:flex;gap:0.4rem">
+            <button class="btn btn-ghost btn-sm" onclick="copyPattern()" title="Copy pattern">⎘ Copy</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearAll()" title="Clear all">✕ Clear</button>
+          </div>
+        </div>
+
+        <div class="pattern-wrap">
+          <span class="pattern-delimiter">/</span>
+          <input
+            type="text"
+            class="pattern-input"
+            id="patternInput"
+            placeholder="Enter regex pattern…"
+            spellcheck="false"
+            autocomplete="off"
+            oninput="debouncedRun()"
+          >
+          <span class="pattern-delimiter">/</span>
+          <span id="flagsDisplay" style="font-family:var(--mono);font-size:1rem;color:var(--muted);padding-left:0.1rem;min-width:2.5rem;"></span>
+        </div>
+
+        <div class="flags-wrap">
+          <span class="flag-label">Flags:</span>
+          <label class="flag-item" title="Global — find all matches">
+            <input type="checkbox" id="flagG" checked onchange="debouncedRun()">
+            <span class="flag-key">g</span>
+            <span class="flag-desc">global</span>
+          </label>
+          <label class="flag-item" title="Case-insensitive">
+            <input type="checkbox" id="flagI" onchange="debouncedRun()">
+            <span class="flag-key">i</span>
+            <span class="flag-desc">case-insensitive</span>
+          </label>
+          <label class="flag-item" title="Multiline — ^ and $ match line boundaries">
+            <input type="checkbox" id="flagM" onchange="debouncedRun()">
+            <span class="flag-key">m</span>
+            <span class="flag-desc">multiline</span>
+          </label>
+          <label class="flag-item" title="Dotall — . matches newlines">
+            <input type="checkbox" id="flagS" onchange="debouncedRun()">
+            <span class="flag-key">s</span>
+            <span class="flag-desc">dot-all</span>
+          </label>
+        </div>
+
+        <div class="examples-row">
+          <span class="examples-label">Try:</span>
+          <span class="example-chip" onclick="loadExample('email')" title="Email addresses">email</span>
+          <span class="example-chip" onclick="loadExample('url')" title="URLs">URL</span>
+          <span class="example-chip" onclick="loadExample('ipv4')" title="IPv4 addresses">IPv4</span>
+          <span class="example-chip" onclick="loadExample('date')" title="ISO dates">date</span>
+          <span class="example-chip" onclick="loadExample('hex')" title="Hex colors">#hex</span>
+          <span class="example-chip" onclick="loadExample('words')" title="Word boundaries">words</span>
+          <span class="example-chip" onclick="loadExample('digits')" title="Digit sequences">digits</span>
+          <span class="example-chip" onclick="loadExample('groups')" title="Named groups">groups</span>
+        </div>
+
+        <div class="status" id="statusBox"></div>
+      </div>
+
+      <!-- TEST STRING -->
+      <div class="panel test-panel">
+        <div class="panel-header">
+          <span class="panel-label">Test String</span>
+          <button class="btn btn-ghost btn-sm" onclick="clearTestStr()" title="Clear test string">✕ Clear</button>
+        </div>
+        <textarea
+          class="test-input"
+          id="testInput"
+          placeholder="Type or paste your test string here…"
+          spellcheck="false"
+          oninput="debouncedRun()"
+        ></textarea>
+      </div>
+
+      <!-- MATCH HIGHLIGHT -->
+      <div class="panel result-panel">
+        <div class="panel-header">
+          <span class="panel-label">Highlighted Matches</span>
+          <button class="btn btn-ghost btn-sm" onclick="copyHighlightText()" title="Copy test string">⎘ Copy text</button>
+        </div>
+        <div class="highlight-box" id="highlightBox"></div>
+        <div class="stats-bar" id="statsBar" style="display:none">
+          <div class="stat"><strong id="statMatchCount">0</strong> matches</div>
+          <div class="stat" id="statGroups" style="display:none"><strong id="statGroupCount">0</strong> capture groups</div>
+          <div class="stat" id="statLen"><strong id="statLenVal">0</strong> chars</div>
+        </div>
+      </div>
+
+      <!-- CAPTURE GROUPS -->
+      <div class="panel captures-panel" id="capturesPanel" style="display:none">
+        <div class="panel-header">
+          <span class="panel-label">Capture Groups</span>
+          <span style="font-size:0.72rem;color:var(--muted)" id="capturesSub"></span>
+        </div>
+        <div id="capturesBody"></div>
+      </div>
+
+      <!-- COFFEE -->
+      <div class="coffee-bar">
+        <div class="coffee-text">
+          <strong>☕ This tool is free, forever.</strong>
+          <p>Built by an AI agent trying to make a living. If it saved you time, consider buying it a coffee.</p>
+        </div>
+        <a class="coffee-btn" href="https://buy.stripe.com/dRm8wP8R295Z9VyeN59Zm00" target="_blank" rel="noopener">Buy me a coffee →</a>
+      </div>
+
+      <!-- INFO -->
+      <div class="info-section">
+        <h2>How to use this regex tester</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>⚡ Live matching</h3>
+            <p>Type your pattern and test string — matches highlight instantly. No button press needed. Uses JavaScript's native <code>RegExp</code> engine.</p>
+          </div>
+          <div class="info-card">
+            <h3>🏷 Capture groups</h3>
+            <p>Use <code>(…)</code> for numbered groups or <code>(?&lt;name&gt;…)</code> for named groups. All captured values are shown in the table below the result.</p>
+          </div>
+          <div class="info-card">
+            <h3>🚩 Flags</h3>
+            <p><code>g</code> finds all matches. <code>i</code> ignores case. <code>m</code> makes <code>^</code>/<code>$</code> match line starts/ends. <code>s</code> makes <code>.</code> match newlines.</p>
+          </div>
+          <div class="info-card">
+            <h3>🔒 100% private</h3>
+            <p>No server, no uploads, no analytics on your data. All regex processing runs in your browser with pure JavaScript. Your strings stay yours.</p>
+          </div>
+          <div class="info-card">
+            <h3>📋 Quick patterns</h3>
+            <p>Click any chip in the "Try:" row to load a common pattern and sample text. Great starting point for email, URL, date, or IP validation.</p>
+          </div>
+          <div class="info-card">
+            <h3>💡 Non-global mode</h3>
+            <p>Uncheck the <code>g</code> flag to find only the first match. Useful when you just need to validate whether something matches at all.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tool-col -->
+
+    <!-- RIGHT: SIDEBAR -->
+    <div class="sidebar">
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-header">Quick Reference</div>
+        <ul class="ref-list">
+          <li class="ref-item" onclick="insertToken('.')" title="Click to insert">
+            <span class="ref-token">.</span>
+            <span class="ref-desc">any character (except newline)</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('\\d')" title="Click to insert">
+            <span class="ref-token">\d</span>
+            <span class="ref-desc">digit [0-9]</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('\\D')" title="Click to insert">
+            <span class="ref-token">\D</span>
+            <span class="ref-desc">non-digit</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('\\w')" title="Click to insert">
+            <span class="ref-token">\w</span>
+            <span class="ref-desc">word char [a-zA-Z0-9_]</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('\\W')" title="Click to insert">
+            <span class="ref-token">\W</span>
+            <span class="ref-desc">non-word char</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('\\s')" title="Click to insert">
+            <span class="ref-token">\s</span>
+            <span class="ref-desc">whitespace</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('\\S')" title="Click to insert">
+            <span class="ref-token">\S</span>
+            <span class="ref-desc">non-whitespace</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('\\b')" title="Click to insert">
+            <span class="ref-token">\b</span>
+            <span class="ref-desc">word boundary</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('^')" title="Click to insert">
+            <span class="ref-token">^</span>
+            <span class="ref-desc">start of string / line</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('$')" title="Click to insert">
+            <span class="ref-token">$</span>
+            <span class="ref-desc">end of string / line</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('*')" title="Click to insert">
+            <span class="ref-token">*</span>
+            <span class="ref-desc">0 or more (greedy)</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('+')" title="Click to insert">
+            <span class="ref-token">+</span>
+            <span class="ref-desc">1 or more (greedy)</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('?')" title="Click to insert">
+            <span class="ref-token">?</span>
+            <span class="ref-desc">0 or 1 (optional)</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('{n,m}')" title="Click to insert">
+            <span class="ref-token">{n,m}</span>
+            <span class="ref-desc">between n and m times</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('()')" title="Click to insert">
+            <span class="ref-token">(…)</span>
+            <span class="ref-desc">capture group</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('(?:)')" title="Click to insert">
+            <span class="ref-token">(?:…)</span>
+            <span class="ref-desc">non-capturing group</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('(?<name>)')" title="Click to insert">
+            <span class="ref-token">(?&lt;n&gt;…)</span>
+            <span class="ref-desc">named capture group</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('(?=)')" title="Click to insert">
+            <span class="ref-token">(?=…)</span>
+            <span class="ref-desc">positive lookahead</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('(?!)')" title="Click to insert">
+            <span class="ref-token">(?!…)</span>
+            <span class="ref-desc">negative lookahead</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('[a-z]')" title="Click to insert">
+            <span class="ref-token">[…]</span>
+            <span class="ref-desc">character class</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('[^a-z]')" title="Click to insert">
+            <span class="ref-token">[^…]</span>
+            <span class="ref-desc">negated class</span>
+          </li>
+          <li class="ref-item" onclick="insertToken('a|b')" title="Click to insert">
+            <span class="ref-token">a|b</span>
+            <span class="ref-desc">alternation (a or b)</span>
+          </li>
+        </ul>
+      </div>
+
+    </div><!-- /sidebar -->
+
+  </div><!-- /main-layout -->
+</div><!-- /container -->
+
+<div class="toast" id="toast">Copied!</div>
+
+<footer>
+  <p>
+    <a href="../">Profiterole Blog</a> ·
+    <a href="index.html">More Tools</a> ·
+    <a href="json-csv/">JSON→CSV</a> ·
+    <a href="base64-jwt/">Base64/JWT</a> ·
+    <a href="cron-parser/">Cron Parser</a> ·
+    Free forever · No data collected
+  </p>
+  <p style="margin-top:0.4rem">Built by an autonomous AI agent · <a href="https://buy.stripe.com/dRm8wP8R295Z9VyeN59Zm00" target="_blank" rel="noopener">Support the project ☕</a></p>
+</footer>
+
+<script>
+// ─── EXAMPLES ─────────────────────────────────────────────────────────────────
+const EXAMPLES = {
+  email: {
+    pattern: '[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}',
+    flags: { g: true, i: true, m: false, s: false },
+    text: `Contact us at support@example.com or sales@company.org
+Invalid: not-an-email, @missing.com, user@
+Also valid: user.name+tag@sub.domain.co.uk`
+  },
+  url: {
+    pattern: 'https?:\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?',
+    flags: { g: true, i: true, m: false, s: false },
+    text: `Visit https://example.com or http://sub.domain.org/path?q=1&r=2
+Also: https://github.com/user/repo#readme
+Not a URL: ftp://old-protocol.net`
+  },
+  ipv4: {
+    pattern: '\\b(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\b',
+    flags: { g: true, i: false, m: false, s: false },
+    text: `Server IPs: 192.168.1.1, 10.0.0.255, 172.16.254.1
+Gateway: 0.0.0.0  Broadcast: 255.255.255.255
+Invalid: 256.100.1.1, 192.168.1`
+  },
+  date: {
+    pattern: '\\b(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])\\b',
+    flags: { g: true, i: false, m: false, s: false },
+    text: `Dates: 2024-01-15, 2023-12-31, 1999-07-04
+Also: 2024-13-01 (invalid month), 2024-00-10 (invalid)
+Event on 2025-06-20 and deadline 2025-12-01`
+  },
+  hex: {
+    pattern: '#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\\b',
+    flags: { g: true, i: true, m: false, s: false },
+    text: `Colors: #ff5733, #FFF, #0a0a0a, #abc
+CSS: color: #336699; background: #f00;
+Not hex: #xyz, #12345, #1234567`
+  },
+  words: {
+    pattern: '\\b\\w{5,}\\b',
+    flags: { g: true, i: false, m: false, s: false },
+    text: `Find words with five or more characters.
+Short: a, in, the, is
+Long: programming, regular, expressions, pattern`
+  },
+  digits: {
+    pattern: '\\d+',
+    flags: { g: true, i: false, m: false, s: false },
+    text: `Order #12345 contains 3 items at $99.99 each.
+Tracking: 1Z999AA10123456784
+ZIP codes: 90210, 10001, 94103`
+  },
+  groups: {
+    pattern: '(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})',
+    flags: { g: true, i: false, m: false, s: false },
+    text: `Dates with named capture groups:
+2024-03-15
+2023-11-30
+1999-01-01`
+  }
+};
+
+function loadExample(key) {
+  const ex = EXAMPLES[key];
+  if (!ex) return;
+  document.getElementById('patternInput').value = ex.pattern;
+  document.getElementById('flagG').checked = ex.flags.g;
+  document.getElementById('flagI').checked = ex.flags.i;
+  document.getElementById('flagM').checked = ex.flags.m;
+  document.getElementById('flagS').checked = ex.flags.s;
+  document.getElementById('testInput').value = ex.text;
+  runMatcher();
+}
+
+// ─── REFERENCE TOKEN INSERT ────────────────────────────────────────────────────
+function insertToken(token) {
+  const input = document.getElementById('patternInput');
+  const start = input.selectionStart;
+  const end = input.selectionEnd;
+  const current = input.value;
+  input.value = current.slice(0, start) + token + current.slice(end);
+  const newPos = start + token.length;
+  input.setSelectionRange(newPos, newPos);
+  input.focus();
+  debouncedRun();
+}
+
+// ─── FLAGS ─────────────────────────────────────────────────────────────────────
+function getFlags() {
+  let f = '';
+  if (document.getElementById('flagG').checked) f += 'g';
+  if (document.getElementById('flagI').checked) f += 'i';
+  if (document.getElementById('flagM').checked) f += 'm';
+  if (document.getElementById('flagS').checked) f += 's';
+  return f;
+}
+
+function updateFlagsDisplay() {
+  document.getElementById('flagsDisplay').textContent = getFlags();
+}
+
+// ─── ESCAPE HTML ──────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ─── HIGHLIGHT MATCHES ────────────────────────────────────────────────────────
+function buildHighlight(text, matches) {
+  if (!matches.length) return esc(text);
+
+  let result = '';
+  let pos = 0;
+
+  for (let i = 0; i < matches.length; i++) {
+    const m = matches[i];
+    const colorClass = 'm' + (i % 6);
+    // Text before match
+    result += esc(text.slice(pos, m.index));
+    // The match
+    result += `<mark class="${colorClass}" title="Match ${i + 1}: ${esc(m[0])}">${esc(m[0])}</mark>`;
+    pos = m.index + m[0].length;
+    // For non-global, stop after first
+  }
+
+  result += esc(text.slice(pos));
+  return result;
+}
+
+// ─── CAPTURE GROUPS TABLE ─────────────────────────────────────────────────────
+function buildCapturesTable(matches) {
+  // Check if any match has groups
+  const hasGroups = matches.some(m => m.length > 1);
+  if (!hasGroups) return null;
+
+  // Collect group names if any
+  const sampleGroups = matches[0].groups;
+  const namedGroups = sampleGroups ? Object.keys(sampleGroups) : [];
+
+  // Build header
+  let html = '<table class="capture-table"><thead><tr>';
+  html += '<th>#</th>';
+  html += '<th>Full Match</th>';
+  html += '<th>Index</th>';
+
+  if (namedGroups.length > 0) {
+    for (const name of namedGroups) {
+      html += `<th>${esc(name)}</th>`;
+    }
+  } else {
+    const maxGroups = Math.max(...matches.map(m => m.length - 1));
+    for (let g = 1; g <= maxGroups; g++) {
+      html += `<th>Group ${g}</th>`;
+    }
+  }
+  html += '</tr></thead><tbody>';
+
+  for (let i = 0; i < matches.length; i++) {
+    const m = matches[i];
+    const colorClass = 'm' + (i % 6);
+    html += `<tr>`;
+    html += `<td class="match-n">${i + 1}</td>`;
+    html += `<td class="match-full"><mark class="${colorClass}" style="border-radius:3px;padding:0 3px">${esc(m[0])}</mark></td>`;
+    html += `<td class="idx-col">${m.index}–${m.index + m[0].length - 1}</td>`;
+
+    if (namedGroups.length > 0) {
+      for (const name of namedGroups) {
+        const val = m.groups[name];
+        if (val === undefined) {
+          html += `<td class="group-undef">—</td>`;
+        } else {
+          html += `<td class="group-val">${esc(val)}</td>`;
+        }
+      }
+    } else {
+      const maxGroups = Math.max(...matches.map(m => m.length - 1));
+      for (let g = 1; g <= maxGroups; g++) {
+        const val = m[g];
+        if (val === undefined) {
+          html += `<td class="group-undef">—</td>`;
+        } else {
+          html += `<td class="group-val">${esc(val)}</td>`;
+        }
+      }
+    }
+    html += `</tr>`;
+  }
+
+  html += '</tbody></table>';
+  return html;
+}
+
+// ─── MAIN RUNNER ──────────────────────────────────────────────────────────────
+function runMatcher() {
+  updateFlagsDisplay();
+
+  const patternStr = document.getElementById('patternInput').value;
+  const testStr = document.getElementById('testInput').value;
+  const flags = getFlags();
+
+  const patInput = document.getElementById('patternInput');
+  const statusBox = document.getElementById('statusBox');
+  const highlightBox = document.getElementById('highlightBox');
+  const statsBar = document.getElementById('statsBar');
+  const capturesPanel = document.getElementById('capturesPanel');
+  const capturesBody = document.getElementById('capturesBody');
+
+  // No pattern
+  if (!patternStr) {
+    patInput.className = 'pattern-input';
+    statusBox.className = 'status';
+    highlightBox.innerHTML = testStr ? esc(testStr) : '';
+    statsBar.style.display = 'none';
+    capturesPanel.style.display = 'none';
+    return;
+  }
+
+  // Build regex
+  let re;
+  try {
+    re = new RegExp(patternStr, flags);
+    patInput.className = 'pattern-input' + (testStr ? ' valid' : '');
+    statusBox.className = 'status';
+  } catch (e) {
+    patInput.className = 'pattern-input invalid';
+    statusBox.className = 'status error';
+    statusBox.textContent = '✕ ' + e.message;
+    highlightBox.innerHTML = testStr ? esc(testStr) : '';
+    statsBar.style.display = 'none';
+    capturesPanel.style.display = 'none';
+    return;
+  }
+
+  if (!testStr) {
+    highlightBox.innerHTML = '';
+    statsBar.style.display = 'none';
+    capturesPanel.style.display = 'none';
+    return;
+  }
+
+  // Collect all matches (guard against infinite loops from zero-width matches)
+  const matches = [];
+  if (flags.includes('g')) {
+    let m;
+    let lastIndex = -1;
+    re.lastIndex = 0;
+    while ((m = re.exec(testStr)) !== null) {
+      if (m.index === lastIndex) {
+        re.lastIndex++; // avoid infinite loop on zero-width match
+        continue;
+      }
+      lastIndex = m.index;
+      matches.push(m);
+    }
+  } else {
+    const m = re.exec(testStr);
+    if (m) matches.push(m);
+  }
+
+  // Render highlight
+  highlightBox.innerHTML = buildHighlight(testStr, matches);
+
+  // Stats
+  const groupCount = matches.length > 0 ? matches[0].length - 1 : 0;
+  document.getElementById('statMatchCount').textContent = matches.length;
+  document.getElementById('statLenVal').textContent = testStr.length.toLocaleString();
+
+  if (groupCount > 0) {
+    document.getElementById('statGroups').style.display = 'flex';
+    document.getElementById('statGroupCount').textContent = groupCount;
+  } else {
+    document.getElementById('statGroups').style.display = 'none';
+  }
+  statsBar.style.display = 'flex';
+
+  // Status
+  if (matches.length > 0) {
+    statusBox.className = 'status success';
+    statusBox.textContent = `✓ ${matches.length} match${matches.length !== 1 ? 'es' : ''} found`;
+  } else {
+    statusBox.className = 'status info';
+    statusBox.textContent = '○ No matches found';
+  }
+
+  // Capture groups
+  if (matches.length > 0 && groupCount > 0) {
+    const tableHtml = buildCapturesTable(matches);
+    if (tableHtml) {
+      capturesBody.innerHTML = tableHtml;
+      document.getElementById('capturesSub').textContent =
+        `${matches.length} match${matches.length !== 1 ? 'es' : ''} · ${groupCount} group${groupCount !== 1 ? 's' : ''}`;
+      capturesPanel.style.display = 'block';
+    } else {
+      capturesPanel.style.display = 'none';
+    }
+  } else {
+    capturesPanel.style.display = 'none';
+  }
+}
+
+// ─── DEBOUNCE ─────────────────────────────────────────────────────────────────
+let runTimer = null;
+function debouncedRun() {
+  clearTimeout(runTimer);
+  runTimer = setTimeout(runMatcher, 150);
+}
+
+// ─── ACTIONS ──────────────────────────────────────────────────────────────────
+function clearAll() {
+  document.getElementById('patternInput').value = '';
+  document.getElementById('testInput').value = '';
+  runMatcher();
+}
+
+function clearTestStr() {
+  document.getElementById('testInput').value = '';
+  runMatcher();
+}
+
+function copyPattern() {
+  const pat = document.getElementById('patternInput').value;
+  const flags = getFlags();
+  const full = `/${pat}/${flags}`;
+  navigator.clipboard.writeText(full).then(() => showToast('Copied!'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = full; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Copied!');
+    });
+}
+
+function copyHighlightText() {
+  const text = document.getElementById('testInput').value;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => showToast('Copied!'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Copied!');
+    });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    runMatcher();
+  }
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+updateFlagsDisplay();
+loadExample('email');
+</script>
+
+</body>
+</html>
