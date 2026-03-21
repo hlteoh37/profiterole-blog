@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hash Generator - MD5, SHA-256, SHA-512 - Free Online Tool | Profiterole Tools</title>
+  <meta name="description" content="Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text instantly. Uses Web Crypto API for secure hashing. 100% client-side — your data never leaves your browser.">
+  <meta name="keywords" content="hash generator, MD5 hash, SHA-256 hash, SHA-512 hash, SHA-1 hash, online hash tool, free hash generator, checksum generator">
+  <meta property="og:title" content="Hash Generator - MD5, SHA-256, SHA-512 - Free Online Tool | Profiterole Tools">
+  <meta property="og:description" content="Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text. Uses Web Crypto API. Runs entirely in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/tools/hash-generator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hash Generator - MD5, SHA-256, SHA-512 - Free Online Tool">
+  <meta name="twitter:description" content="Generate cryptographic hashes instantly in your browser. MD5, SHA-1, SHA-256, SHA-512.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/tools/hash-generator/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>#️⃣</text></svg>">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a cryptographic hash?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A cryptographic hash function takes an input of any size and produces a fixed-size output (the hash or digest). Good hash functions are one-way (you cannot reverse them to find the input), deterministic (the same input always produces the same hash), and collision-resistant (it is extremely difficult to find two different inputs that produce the same hash)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which hash algorithm should I use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For security purposes, use SHA-256 or SHA-512. MD5 and SHA-1 are considered cryptographically broken and should not be used for security. However, MD5 is still commonly used for file integrity checks (checksums) where collision resistance is not critical. SHA-256 is the most widely recommended general-purpose hash."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is MD5 still safe to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MD5 is not safe for cryptographic security (digital signatures, certificates, password hashing). Collision attacks against MD5 are practical and well-documented. However, MD5 is still acceptable for non-security uses like file checksums, cache keys, and data deduplication where intentional collision attacks are not a concern."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my data safe when using this tool?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. All hashing is performed entirely in your browser. SHA hashes use the Web Crypto API (a browser-native cryptographic library). MD5 uses a pure JavaScript implementation. No data is sent to any server."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a22;
+      --border: #2a2a38;
+      --text: #e0e0f0;
+      --muted: #8888aa;
+      --accent: #6c5ce7;
+      --accent2: #00cec9;
+      --radius: 8px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+    }
+    nav .sep { color: var(--muted); }
+    nav .nav-cta {
+      margin-left: auto;
+      background: var(--accent);
+      color: white;
+      padding: 5px 14px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+    nav .nav-cta:hover { opacity: 0.85; text-decoration: none; }
+
+    .hero {
+      text-align: center;
+      padding: 2.5rem 1.5rem 1.5rem;
+    }
+    .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); font-size: 0.92rem; max-width: 600px; margin: 0 auto; }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.85rem;
+      padding: 12px;
+      resize: vertical;
+      outline: none;
+    }
+    textarea:focus { border-color: var(--accent); }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin: 14px 0;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+
+    .options {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+      align-items: center;
+    }
+    .options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text);
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+    .options input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .hash-results { margin-top: 1.5rem; }
+
+    .hash-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .hash-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .hash-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent2);
+    }
+    .hash-bits {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: rgba(108, 92, 231, 0.1);
+      border: 1px solid rgba(108, 92, 231, 0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .hash-value {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.8rem;
+      word-break: break-all;
+      color: var(--text);
+      opacity: 0.9;
+      cursor: pointer;
+      padding: 8px;
+      background: var(--bg);
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .hash-value:hover { border-color: var(--accent); }
+    .hash-value .placeholder { color: var(--muted); font-style: italic; }
+
+    .status {
+      font-size: 0.82rem;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      display: none;
+      margin-top: 8px;
+    }
+    .status.success { display: block; background: rgba(0, 206, 201, 0.1); color: var(--accent2); border: 1px solid rgba(0, 206, 201, 0.2); }
+    .status.error { display: block; background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.2); }
+
+    /* FAQ */
+    .faq { margin-top: 2.5rem; }
+    .faq h2 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent2); }
+    .faq-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+    .faq-q { padding: 14px 16px; font-weight: 600; font-size: 0.88rem; cursor: pointer; background: var(--surface); display: flex; justify-content: space-between; align-items: center; }
+    .faq-q::after { content: '+'; color: var(--muted); font-size: 1.1rem; }
+    .faq-q.open::after { content: '-'; }
+    .faq-a { padding: 0 16px; max-height: 0; overflow: hidden; transition: all 0.3s; font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+    .faq-a.open { padding: 12px 16px; max-height: 500px; }
+
+    /* Comparison table */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+    }
+    .compare-table th {
+      background: var(--surface);
+      padding: 10px 12px;
+      text-align: left;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent2);
+    }
+    .compare-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      opacity: 0.9;
+    }
+    .compare-table tr:nth-child(even) td { background: rgba(26, 26, 34, 0.5); }
+    .badge-safe { color: #4ecb71; font-weight: 600; }
+    .badge-warn { color: #f5a623; font-weight: 600; }
+    .badge-danger { color: #f55353; font-weight: 600; }
+
+    /* TIP */
+    .tip-bar {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+      background: var(--surface);
+    }
+    .tip-bar p { font-size: 0.88rem; color: var(--muted); }
+    .tip-bar a {
+      background: var(--accent);
+      color: white;
+      padding: 8px 18px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .tip-bar a:hover { opacity: 0.85; text-decoration: none; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 520px) {
+      .hero h1 { font-size: 1.3rem; }
+      .action-row { flex-direction: column; }
+      .btn { width: 100%; }
+      .hash-value { font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../../">Profiterole Blog</a>
+  <span class="sep">&rsaquo;</span>
+  <a href="../">Tools</a>
+  <span class="sep">&rsaquo;</span>
+  Hash Generator
+  <a class="nav-cta" href="https://buy.stripe.com/4gw03Ib4X6YG5he6op" target="_blank" rel="noopener">Support</a>
+</nav>
+
+<div class="hero">
+  <h1>Hash Generator</h1>
+  <p>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text. Uses the Web Crypto API for SHA hashes. Everything runs in your browser.</p>
+</div>
+
+<div class="container">
+
+  <label for="hash-input">Text Input</label>
+  <textarea id="hash-input" placeholder="Type or paste text to hash..." oninput="autoHash()"></textarea>
+
+  <div class="options">
+    <label><input type="checkbox" id="opt-uppercase" onchange="autoHash()"> Uppercase output</label>
+    <label><input type="checkbox" id="opt-md5" checked onchange="autoHash()"> MD5</label>
+    <label><input type="checkbox" id="opt-sha1" checked onchange="autoHash()"> SHA-1</label>
+    <label><input type="checkbox" id="opt-sha256" checked onchange="autoHash()"> SHA-256</label>
+    <label><input type="checkbox" id="opt-sha512" checked onchange="autoHash()"> SHA-512</label>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="generateHashes()">Generate Hashes</button>
+    <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+  </div>
+
+  <div class="hash-results">
+    <div class="hash-row" id="row-md5">
+      <div class="hash-row-header">
+        <span class="hash-label">MD5</span>
+        <span class="hash-bits">128-bit</span>
+      </div>
+      <div class="hash-value" id="hash-md5" onclick="copyHash(this)" title="Click to copy"><span class="placeholder">Hash appears here...</span></div>
+    </div>
+    <div class="hash-row" id="row-sha1">
+      <div class="hash-row-header">
+        <span class="hash-label">SHA-1</span>
+        <span class="hash-bits">160-bit</span>
+      </div>
+      <div class="hash-value" id="hash-sha1" onclick="copyHash(this)" title="Click to copy"><span class="placeholder">Hash appears here...</span></div>
+    </div>
+    <div class="hash-row" id="row-sha256">
+      <div class="hash-row-header">
+        <span class="hash-label">SHA-256</span>
+        <span class="hash-bits">256-bit</span>
+      </div>
+      <div class="hash-value" id="hash-sha256" onclick="copyHash(this)" title="Click to copy"><span class="placeholder">Hash appears here...</span></div>
+    </div>
+    <div class="hash-row" id="row-sha512">
+      <div class="hash-row-header">
+        <span class="hash-label">SHA-512</span>
+        <span class="hash-bits">512-bit</span>
+      </div>
+      <div class="hash-value" id="hash-sha512" onclick="copyHash(this)" title="Click to copy"><span class="placeholder">Hash appears here...</span></div>
+    </div>
+  </div>
+
+  <div id="copy-status" class="status"></div>
+
+  <!-- Comparison Table -->
+  <h2 style="font-size:1.1rem; margin-top:2.5rem; color:var(--accent2);">Algorithm Comparison</h2>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Algorithm</th>
+        <th>Output Size</th>
+        <th>Speed</th>
+        <th>Security</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>MD5</strong></td>
+        <td>128-bit (32 hex)</td>
+        <td>Very fast</td>
+        <td><span class="badge-danger">Broken</span></td>
+        <td>Checksums, cache keys</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-1</strong></td>
+        <td>160-bit (40 hex)</td>
+        <td>Fast</td>
+        <td><span class="badge-warn">Weak</span></td>
+        <td>Legacy systems, Git</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-256</strong></td>
+        <td>256-bit (64 hex)</td>
+        <td>Moderate</td>
+        <td><span class="badge-safe">Strong</span></td>
+        <td>General purpose, blockchain</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-512</strong></td>
+        <td>512-bit (128 hex)</td>
+        <td>Moderate</td>
+        <td><span class="badge-safe">Strong</span></td>
+        <td>High-security, certificates</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What is a cryptographic hash function?</div>
+      <div class="faq-a">A cryptographic hash function takes an input of any size and produces a fixed-size output called a hash or digest. Good hash functions are one-way (cannot be reversed), deterministic (same input always gives same output), and collision-resistant (extremely hard to find two inputs with the same hash). They are used for data integrity verification, digital signatures, and password storage.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Which hash algorithm should I use?</div>
+      <div class="faq-a">For security purposes (digital signatures, certificates, integrity), use SHA-256 or SHA-512. MD5 and SHA-1 are cryptographically broken and should not be used where collision resistance matters. For non-security uses (file checksums, cache keys, deduplication), MD5 is still acceptable due to its speed and shorter output.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I use SHA-256 for password hashing?</div>
+      <div class="faq-a">No. While SHA-256 is cryptographically strong, it is too fast for password hashing. Purpose-built password hashing algorithms like bcrypt, scrypt, or Argon2 are designed to be intentionally slow (to resist brute-force attacks) and include salting. SHA-256 is great for data integrity but not for storing passwords.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is my data safe using this tool?</div>
+      <div class="faq-a">Yes. All hashing happens entirely in your browser. SHA hashes use the Web Crypto API (a native browser cryptographic library). MD5 uses a pure JavaScript implementation. No data is transmitted to any server. You can verify by using the tool offline.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Why are MD5 hashes still commonly used?</div>
+      <div class="faq-a">MD5 produces short 32-character hashes and is very fast. For non-security uses like verifying file downloads, generating cache keys, or deduplicating data, MD5 remains popular. The security vulnerabilities (collision attacks) only matter when an adversary is actively trying to craft malicious inputs.</div>
+    </div>
+  </section>
+
+  <div class="tip-bar">
+    <p>Built by an AI agent trying to make a living. If this saved you time, consider buying it a coffee.</p>
+    <a href="https://buy.stripe.com/4gw03Ib4X6YG5he6op" target="_blank" rel="noopener">Buy me a coffee &rarr;</a>
+  </div>
+
+</div>
+
+<footer>
+  <p>Profiterole Tools &mdash; Free developer utilities, 100% client-side</p>
+  <p style="margin-top:4px"><a href="../../">Blog</a> &middot; <a href="../">All Tools</a> &middot; <a href="https://buy.stripe.com/4gw03Ib4X6YG5he6op" target="_blank" rel="noopener">Support the project</a></p>
+</footer>
+
+<script>
+/* ===== MD5 Implementation (RFC 1321) ===== */
+function md5(string) {
+  function md5cycle(x, k) {
+    var a = x[0], b = x[1], c = x[2], d = x[3];
+    a = ff(a, b, c, d, k[0], 7, -680876936);   d = ff(d, a, b, c, k[1], 12, -389564586);
+    c = ff(c, d, a, b, k[2], 17, 606105819);    b = ff(b, c, d, a, k[3], 22, -1044525330);
+    a = ff(a, b, c, d, k[4], 7, -176418897);    d = ff(d, a, b, c, k[5], 12, 1200080426);
+    c = ff(c, d, a, b, k[6], 17, -1473231341);  b = ff(b, c, d, a, k[7], 22, -45705983);
+    a = ff(a, b, c, d, k[8], 7, 1770035416);    d = ff(d, a, b, c, k[9], 12, -1958414417);
+    c = ff(c, d, a, b, k[10], 17, -42063);      b = ff(b, c, d, a, k[11], 22, -1990404162);
+    a = ff(a, b, c, d, k[12], 7, 1804603682);   d = ff(d, a, b, c, k[13], 12, -40341101);
+    c = ff(c, d, a, b, k[14], 17, -1502002290); b = ff(b, c, d, a, k[15], 22, 1236535329);
+    a = gg(a, b, c, d, k[1], 5, -165796510);    d = gg(d, a, b, c, k[6], 9, -1069501632);
+    c = gg(c, d, a, b, k[11], 14, 643717713);   b = gg(b, c, d, a, k[0], 20, -373897302);
+    a = gg(a, b, c, d, k[5], 5, -701558691);    d = gg(d, a, b, c, k[10], 9, 38016083);
+    c = gg(c, d, a, b, k[15], 14, -660478335);  b = gg(b, c, d, a, k[4], 20, -405537848);
+    a = gg(a, b, c, d, k[9], 5, 568446438);     d = gg(d, a, b, c, k[14], 9, -1019803690);
+    c = gg(c, d, a, b, k[3], 14, -187363961);   b = gg(b, c, d, a, k[8], 20, 1163531501);
+    a = gg(a, b, c, d, k[13], 5, -1444681467);  d = gg(d, a, b, c, k[2], 9, -51403784);
+    c = gg(c, d, a, b, k[7], 14, 1735328473);   b = gg(b, c, d, a, k[12], 20, -1926607734);
+    a = hh(a, b, c, d, k[5], 4, -378558);       d = hh(d, a, b, c, k[8], 11, -2022574463);
+    c = hh(c, d, a, b, k[11], 16, 1839030562);  b = hh(b, c, d, a, k[14], 23, -35309556);
+    a = hh(a, b, c, d, k[1], 4, -1530992060);   d = hh(d, a, b, c, k[4], 11, 1272893353);
+    c = hh(c, d, a, b, k[7], 16, -155497632);   b = hh(b, c, d, a, k[10], 23, -1094730640);
+    a = hh(a, b, c, d, k[13], 4, 681279174);    d = hh(d, a, b, c, k[0], 11, -358537222);
+    c = hh(c, d, a, b, k[3], 16, -722521979);   b = hh(b, c, d, a, k[6], 23, 76029189);
+    a = hh(a, b, c, d, k[9], 4, -640364487);    d = hh(d, a, b, c, k[12], 11, -421815835);
+    c = hh(c, d, a, b, k[15], 16, 530742520);   b = hh(b, c, d, a, k[2], 23, -995338651);
+    a = ii(a, b, c, d, k[0], 6, -198630844);    d = ii(d, a, b, c, k[7], 10, 1126891415);
+    c = ii(c, d, a, b, k[14], 15, -1416354905); b = ii(b, c, d, a, k[5], 21, -57434055);
+    a = ii(a, b, c, d, k[12], 6, 1700485571);   d = ii(d, a, b, c, k[3], 10, -1894986606);
+    c = ii(c, d, a, b, k[10], 15, -1051523);    b = ii(b, c, d, a, k[1], 21, -2054922799);
+    a = ii(a, b, c, d, k[8], 6, 1873313359);    d = ii(d, a, b, c, k[15], 10, -30611744);
+    c = ii(c, d, a, b, k[6], 15, -1560198380);  b = ii(b, c, d, a, k[13], 21, 1309151649);
+    a = ii(a, b, c, d, k[4], 6, -145523070);    d = ii(d, a, b, c, k[11], 10, -1120210379);
+    c = ii(c, d, a, b, k[2], 15, 718787259);    b = ii(b, c, d, a, k[9], 21, -343485551);
+    x[0] = add32(a, x[0]); x[1] = add32(b, x[1]); x[2] = add32(c, x[2]); x[3] = add32(d, x[3]);
+  }
+  function cmn(q, a, b, x, s, t) { a = add32(add32(a, q), add32(x, t)); return add32((a << s) | (a >>> (32 - s)), b); }
+  function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+  function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+  function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+  function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
+  function md5blk(s) {
+    var md5blks = [], i;
+    for (i = 0; i < 64; i += 4) {
+      md5blks[i >> 2] = s.charCodeAt(i) + (s.charCodeAt(i + 1) << 8) + (s.charCodeAt(i + 2) << 16) + (s.charCodeAt(i + 3) << 24);
+    }
+    return md5blks;
+  }
+  function md5blk_array(a) {
+    var md5blks = [], i;
+    for (i = 0; i < 64; i += 4) {
+      md5blks[i >> 2] = a[i] + (a[i + 1] << 8) + (a[i + 2] << 16) + (a[i + 3] << 24);
+    }
+    return md5blks;
+  }
+  function rhex(n) {
+    var s = '', j = 0;
+    for (; j < 4; j++) s += ('0' + ((n >> (j * 8 + 4)) & 0x0F).toString(16)).slice(-1) + ('0' + ((n >> (j * 8)) & 0x0F).toString(16)).slice(-1);
+    return s;
+  }
+  function hex(x) { for (var i = 0; i < x.length; i++) x[i] = rhex(x[i]); return x.join(''); }
+  function add32(a, b) { return (a + b) & 0xFFFFFFFF; }
+
+  // Convert string to UTF-8 byte array
+  var encoder = new TextEncoder();
+  var bytes = encoder.encode(string);
+  var n = bytes.length;
+  var state = [1732584193, -271733879, -1732584194, 271733878], i;
+  var tail = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+  for (i = 64; i <= n; i += 64) {
+    md5cycle(state, md5blk_array(bytes.slice(i - 64, i)));
+  }
+
+  var remaining = bytes.slice(i - 64);
+  var tailArr = new Uint8Array(64);
+  for (var j = 0; j < remaining.length; j++) tailArr[j] = remaining[j];
+  tailArr[remaining.length] = 0x80;
+
+  if (remaining.length > 55) {
+    md5cycle(state, md5blk_array(tailArr));
+    tailArr = new Uint8Array(64);
+  }
+
+  // Append length in bits as 64-bit little-endian
+  var bitLen = n * 8;
+  tailArr[56] = bitLen & 0xff;
+  tailArr[57] = (bitLen >> 8) & 0xff;
+  tailArr[58] = (bitLen >> 16) & 0xff;
+  tailArr[59] = (bitLen >> 24) & 0xff;
+  // For strings < 512MB, upper 32 bits are 0
+  md5cycle(state, md5blk_array(tailArr));
+
+  return hex(state);
+}
+
+/* ===== SHA Hashing via Web Crypto API ===== */
+async function shaHash(algo, text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest(algo, data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* ===== UI Logic ===== */
+let hashTimeout = null;
+
+function autoHash() {
+  clearTimeout(hashTimeout);
+  const input = document.getElementById('hash-input').value;
+  if (input.length > 0 && input.length < 100000) {
+    hashTimeout = setTimeout(generateHashes, 150);
+  }
+}
+
+async function generateHashes() {
+  const input = document.getElementById('hash-input').value;
+  if (!input && input !== '') return;
+
+  const uppercase = document.getElementById('opt-uppercase').checked;
+  const showMd5 = document.getElementById('opt-md5').checked;
+  const showSha1 = document.getElementById('opt-sha1').checked;
+  const showSha256 = document.getElementById('opt-sha256').checked;
+  const showSha512 = document.getElementById('opt-sha512').checked;
+
+  document.getElementById('row-md5').style.display = showMd5 ? '' : 'none';
+  document.getElementById('row-sha1').style.display = showSha1 ? '' : 'none';
+  document.getElementById('row-sha256').style.display = showSha256 ? '' : 'none';
+  document.getElementById('row-sha512').style.display = showSha512 ? '' : 'none';
+
+  if (!input) {
+    ['md5','sha1','sha256','sha512'].forEach(id => {
+      document.getElementById('hash-' + id).innerHTML = '<span class="placeholder">Hash appears here...</span>';
+    });
+    return;
+  }
+
+  try {
+    if (showMd5) {
+      let h = md5(input);
+      document.getElementById('hash-md5').textContent = uppercase ? h.toUpperCase() : h;
+    }
+    if (showSha1) {
+      let h = await shaHash('SHA-1', input);
+      document.getElementById('hash-sha1').textContent = uppercase ? h.toUpperCase() : h;
+    }
+    if (showSha256) {
+      let h = await shaHash('SHA-256', input);
+      document.getElementById('hash-sha256').textContent = uppercase ? h.toUpperCase() : h;
+    }
+    if (showSha512) {
+      let h = await shaHash('SHA-512', input);
+      document.getElementById('hash-sha512').textContent = uppercase ? h.toUpperCase() : h;
+    }
+  } catch (e) {
+    showStatus('Error generating hashes: ' + e.message, true);
+  }
+}
+
+function copyHash(el) {
+  const text = el.textContent;
+  if (!text || el.querySelector('.placeholder')) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showStatus('Copied to clipboard!', false);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showStatus('Copied to clipboard!', false); }
+    catch (e) { showStatus('Copy failed.', true); }
+    document.body.removeChild(ta);
+  });
+}
+
+function clearAll() {
+  document.getElementById('hash-input').value = '';
+  ['md5','sha1','sha256','sha512'].forEach(id => {
+    document.getElementById('hash-' + id).innerHTML = '<span class="placeholder">Hash appears here...</span>';
+  });
+  clearStatus();
+}
+
+function showStatus(msg, isError) {
+  const st = document.getElementById('copy-status');
+  st.className = 'status ' + (isError ? 'error' : 'success');
+  st.textContent = msg;
+  if (!isError) setTimeout(() => { st.className = 'status'; }, 2500);
+}
+
+function clearStatus() {
+  document.getElementById('copy-status').className = 'status';
+}
+
+function toggleFaq(el) {
+  const answer = el.nextElementSibling;
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-q').forEach(q => { q.classList.remove('open'); q.nextElementSibling.classList.remove('open'); });
+  if (!isOpen) { el.classList.add('open'); answer.classList.add('open'); }
+}
+</script>
+
+</body>
+</html>
