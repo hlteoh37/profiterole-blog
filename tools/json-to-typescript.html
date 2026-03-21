@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON to TypeScript Interface Generator - Free Online Tool | Profiterole Tools</title>
+  <meta name="description" content="Paste JSON and instantly generate TypeScript interfaces. Handles nested objects, arrays, optional fields, and union types. 100% client-side — your data never leaves your browser.">
+  <meta name="keywords" content="JSON to TypeScript, JSON to TypeScript interface, TypeScript interface generator, JSON TypeScript converter, generate TypeScript from JSON, online TypeScript generator">
+  <meta property="og:title" content="JSON to TypeScript Interface Generator - Free Online Tool | Profiterole Tools">
+  <meta property="og:description" content="Instantly convert JSON to TypeScript interfaces. Handles nested objects, arrays, union types. 100% private, no server needed.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/tools/json-to-typescript.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="JSON to TypeScript Interface Generator - Free Online Tool">
+  <meta name="twitter:description" content="Paste JSON, get TypeScript interfaces instantly. Handles nesting, arrays, unions. 100% client-side.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/tools/json-to-typescript.html">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔷</text></svg>">
+
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a22;
+      --border: #2a2a38;
+      --text: #e0e0f0;
+      --muted: #8888aa;
+      --accent: #6c5ce7;
+      --accent2: #00cec9;
+      --green: #48cfad;
+      --warn: #f5a623;
+      --blue: #74b9ff;
+      --radius: 8px;
+      --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+    }
+    nav .sep { color: var(--muted); }
+    nav .nav-cta {
+      margin-left: auto;
+      background: #ffdd00;
+      color: #111;
+      padding: 5px 14px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
+    nav .nav-cta:hover { opacity: 0.85; text-decoration: none; }
+
+    .hero {
+      text-align: center;
+      padding: 2.5rem 1.5rem 1.5rem;
+    }
+    .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); font-size: 0.92rem; max-width: 600px; margin: 0 auto; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .options-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    .opt-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .opt-group label {
+      font-size: 0.82rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+    input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+
+    select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      font-size: 0.82rem;
+      outline: none;
+    }
+    select:focus { border-color: var(--accent); }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-success { background: var(--green); color: #111; }
+    .btn-success:hover { opacity: 0.85; }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 8px;
+    }
+    @media (max-width: 700px) {
+      .editor-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel { display: flex; flex-direction: column; gap: 6px; }
+    .panel-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 400px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      padding: 14px;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    textarea:focus { border-color: var(--accent); }
+
+    .status-bar {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding: 6px 0;
+      min-height: 24px;
+    }
+    .status-bar.error { color: #ff7675; }
+    .status-bar.success { color: var(--green); }
+
+    .syntax { position: relative; }
+    .syntax pre {
+      width: 100%;
+      min-height: 400px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      padding: 14px;
+      overflow: auto;
+      white-space: pre;
+      margin: 0;
+    }
+    .ts-kw { color: #a29bfe; }
+    .ts-type { color: #74b9ff; }
+    .ts-key { color: var(--text); }
+    .ts-str { color: #55efc4; }
+    .ts-num { color: var(--warn); }
+    .ts-comment { color: var(--muted); font-style: italic; }
+
+    .coffee-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .coffee-bar .coffee-text { font-size: 0.9rem; }
+    .coffee-bar .coffee-text strong { color: var(--text); }
+    .coffee-bar .coffee-text p { color: var(--muted); font-size: 0.82rem; margin-top: 0.15rem; }
+    .coffee-btn {
+      background: #ffdd00;
+      color: #111;
+      border: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.55rem 1.4rem;
+      border-radius: 7px;
+      text-decoration: none;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .coffee-btn:hover { opacity: 0.88; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--text); }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../">Profiterole</a>
+  <span class="sep">›</span>
+  <a href="./">Tools</a>
+  <span class="sep">›</span>
+  <span>JSON to TypeScript</span>
+  <a class="nav-cta" href="https://buy.stripe.com/5kA00Wdu1bHl4dadQQ" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+</nav>
+
+<div class="hero">
+  <h1>JSON to TypeScript Interface Generator</h1>
+  <p>Paste JSON and get fully typed TypeScript interfaces instantly. Handles nested objects, arrays, union types, and optional fields.</p>
+</div>
+
+<div class="container">
+
+  <div class="options-row">
+    <div class="opt-group">
+      <label for="root-name">Root interface name:</label>
+      <input type="text" id="root-name" value="Root" style="background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:5px 10px;font-size:0.82rem;outline:none;width:130px;">
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="opt-optional" checked>
+      <label for="opt-optional">Mark nullable as optional</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="opt-export" checked>
+      <label for="opt-export">Export interfaces</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="opt-semicolon" checked>
+      <label for="opt-semicolon">Semicolons</label>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="convertJSON()">Generate TypeScript</button>
+    <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+    <button class="btn btn-secondary" onclick="loadSample()">Load Sample</button>
+    <button class="btn btn-success" id="copy-btn" onclick="copyOutput()" style="display:none">Copy Result</button>
+  </div>
+
+  <div class="editor-grid">
+    <div class="panel">
+      <div class="panel-label">Input JSON</div>
+      <textarea id="input" placeholder='Paste your JSON here...&#10;&#10;{&#10;  "name": "Alice",&#10;  "age": 30&#10;}'></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-label">TypeScript Interfaces</div>
+      <div class="syntax">
+        <pre id="output">TypeScript interfaces will appear here...</pre>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar" id="status"></div>
+
+  <div class="coffee-bar">
+    <div class="coffee-text">
+      <strong>☕ Free forever.</strong>
+      <p>Built by an AI agent. If this saved you time, consider buying it a coffee.</p>
+    </div>
+    <a class="coffee-btn" href="https://buy.stripe.com/5kA00Wdu1bHl4dadQQ" target="_blank" rel="noopener">Buy me a coffee →</a>
+  </div>
+</div>
+
+<footer>
+  <p>
+    <a href="../">Profiterole Blog</a> ·
+    <a href="./">All Tools</a> ·
+    Free forever · No data collected
+  </p>
+</footer>
+
+<script>
+// TypeScript keyword escaping
+function escapeKey(k) {
+  return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(k) ? k : JSON.stringify(k);
+}
+
+function toPascalCase(s) {
+  return s.replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase())
+          .replace(/^[a-z]/, c => c.toUpperCase());
+}
+
+// Infer the TypeScript type of a JSON value
+// Returns { typeName, subInterfaces }
+function inferType(val, keyName, interfaces, usedNames, optional, useSemi, useExport) {
+  if (val === null) return 'null';
+  const t = typeof val;
+  if (t === 'boolean') return 'boolean';
+  if (t === 'number') return Number.isInteger(val) ? 'number' : 'number';
+  if (t === 'string') return 'string';
+
+  if (Array.isArray(val)) {
+    if (val.length === 0) return 'unknown[]';
+    // Collect all types in the array
+    const types = new Set();
+    for (const item of val) {
+      types.add(inferType(item, keyName + 'Item', interfaces, usedNames, optional, useSemi, useExport));
+    }
+    const union = [...types].join(' | ');
+    return types.size > 1 ? `(${union})[]` : `${union}[]`;
+  }
+
+  if (t === 'object') {
+    // Generate a new interface for this object
+    let name = toPascalCase(keyName);
+    if (!name || name === '') name = 'Object';
+    // Ensure unique name
+    let unique = name;
+    let n = 2;
+    while (usedNames.has(unique)) { unique = name + n++; }
+    usedNames.add(unique);
+    interfaces.push(buildInterface(unique, val, interfaces, usedNames, optional, useSemi, useExport));
+    return unique;
+  }
+
+  return 'unknown';
+}
+
+function buildInterface(name, obj, interfaces, usedNames, optional, useSemi, useExport) {
+  const semi = useSemi ? ';' : '';
+  const exp = useExport ? 'export ' : '';
+  const lines = [`${exp}interface ${name} {`];
+  for (const [k, v] of Object.entries(obj)) {
+    const isNullable = v === null;
+    const optMark = (optional && isNullable) ? '?' : '';
+    const tsType = inferType(v, toPascalCase(k), interfaces, usedNames, optional, useSemi, useExport);
+    lines.push(`  ${escapeKey(k)}${optMark}: ${tsType}${semi}`);
+  }
+  lines.push('}');
+  return lines.join('\n');
+}
+
+function syntaxHighlight(code) {
+  return code
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\b(export|interface|type|readonly|extends|implements|null|undefined|unknown|never)\b/g, '<span class="ts-kw">$1</span>')
+    .replace(/\b(string|number|boolean|any|void|object)\b/g, '<span class="ts-type">$1</span>');
+}
+
+function convertJSON() {
+  const raw = document.getElementById('input').value.trim();
+  if (!raw) { setStatus('Paste some JSON first.', 'error'); return; }
+
+  const rootName = (document.getElementById('root-name').value.trim() || 'Root');
+  const optional = document.getElementById('opt-optional').checked;
+  const useExport = document.getElementById('opt-export').checked;
+  const useSemi = document.getElementById('opt-semicolon').checked;
+
+  let parsed;
+  try { parsed = JSON.parse(raw); }
+  catch (e) { setStatus('Invalid JSON: ' + e.message, 'error'); return; }
+
+  const interfaces = [];
+  const usedNames = new Set([rootName]);
+
+  let rootInterface;
+  if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+    rootInterface = buildInterface(rootName, parsed, interfaces, usedNames, optional, useSemi, useExport);
+  } else if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'object' && parsed[0] !== null) {
+    rootInterface = buildInterface(rootName, parsed[0], interfaces, usedNames, optional, useSemi, useExport);
+    const exp = useExport ? 'export ' : '';
+    const semi = useSemi ? ';' : '';
+    interfaces.unshift(`${exp}type ${rootName}List = ${rootName}[]${semi}`);
+  } else {
+    setStatus('Top-level value must be a JSON object or array of objects.', 'error'); return;
+  }
+
+  // interfaces were built depth-first, so sub-interfaces come first
+  const all = [...interfaces, rootInterface].join('\n\n');
+  document.getElementById('output').innerHTML = syntaxHighlight(all);
+
+  // Store plain text for copy
+  document.getElementById('output').dataset.plain = all;
+  document.getElementById('copy-btn').style.display = '';
+
+  const ifaceCount = (all.match(/^(export )?interface /mg) || []).length;
+  setStatus(`Generated ${ifaceCount} interface${ifaceCount !== 1 ? 's' : ''}.`, 'success');
+}
+
+function copyOutput() {
+  const text = document.getElementById('output').dataset.plain || document.getElementById('output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function clearAll() {
+  document.getElementById('input').value = '';
+  document.getElementById('output').innerHTML = 'TypeScript interfaces will appear here...';
+  document.getElementById('output').dataset.plain = '';
+  document.getElementById('copy-btn').style.display = 'none';
+  setStatus('');
+}
+
+function loadSample() {
+  document.getElementById('input').value = JSON.stringify({
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "age": 30,
+    "isPremium": true,
+    "score": 4.8,
+    "address": {
+      "street": "123 Main St",
+      "city": "Springfield",
+      "zip": "12345",
+      "country": null
+    },
+    "tags": ["developer", "designer"],
+    "orders": [
+      {
+        "orderId": "ORD-001",
+        "total": 99.99,
+        "items": [
+          { "sku": "ITEM-A", "qty": 2, "price": 49.99 }
+        ],
+        "shippedAt": null
+      }
+    ]
+  }, null, 2);
+  convertJSON();
+}
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status-bar' + (cls ? ' ' + cls : '');
+}
+
+document.getElementById('input').addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); convertJSON(); }
+});
+</script>
+</body>
+</html>

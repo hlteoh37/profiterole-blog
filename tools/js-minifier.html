@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online JavaScript Minifier - Minify JS, CSS & HTML | Profiterole Tools</title>
+  <meta name="description" content="Minify JavaScript, CSS, and HTML code online. Remove whitespace, comments, and unnecessary characters. Shows compression ratio and byte savings. 100% client-side.">
+  <meta name="keywords" content="JavaScript minifier, JS minifier, CSS minifier, HTML minifier, online minifier, compress JavaScript, minify code, reduce file size, code compressor">
+  <meta property="og:title" content="Free Online JavaScript Minifier - Minify JS, CSS & HTML | Profiterole Tools">
+  <meta property="og:description" content="Minify JavaScript, CSS, and HTML instantly in your browser. See compression ratio and byte savings. 100% private, no uploads.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/tools/js-minifier.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Free Online JavaScript Minifier - Minify JS, CSS & HTML">
+  <meta name="twitter:description" content="Minify JS, CSS, HTML in your browser instantly. See compression stats. No server needed.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/tools/js-minifier.html">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a22;
+      --border: #2a2a38;
+      --text: #e0e0f0;
+      --muted: #8888aa;
+      --accent: #6c5ce7;
+      --accent2: #00cec9;
+      --green: #48cfad;
+      --warn: #f5a623;
+      --radius: 8px;
+      --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+    }
+    nav .sep { color: var(--muted); }
+    nav .nav-cta {
+      margin-left: auto;
+      background: #ffdd00;
+      color: #111;
+      padding: 5px 14px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
+    nav .nav-cta:hover { opacity: 0.85; text-decoration: none; }
+
+    .hero {
+      text-align: center;
+      padding: 2.5rem 1.5rem 1.5rem;
+    }
+    .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); font-size: 0.92rem; max-width: 600px; margin: 0 auto; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .tab-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tab {
+      padding: 7px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .tab:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+    .options-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .opt-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .opt-group label {
+      font-size: 0.82rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+    input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-success { background: var(--green); color: #111; }
+    .btn-success:hover { opacity: 0.85; }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 700px) {
+      .editor-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel { display: flex; flex-direction: column; gap: 6px; }
+    .panel-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      padding: 14px;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    textarea:focus { border-color: var(--accent); }
+
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 8px;
+      font-size: 0.82rem;
+    }
+    .stat { display: flex; flex-direction: column; gap: 2px; }
+    .stat-label { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-val { font-weight: 700; font-family: var(--mono); }
+    .stat-val.green { color: var(--green); }
+    .stat-val.warn { color: var(--warn); }
+
+    .status-bar {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding: 4px 0;
+      min-height: 22px;
+    }
+    .status-bar.error { color: #ff7675; }
+    .status-bar.success { color: var(--green); }
+
+    .coffee-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .coffee-bar .coffee-text { font-size: 0.9rem; }
+    .coffee-bar .coffee-text strong { color: var(--text); }
+    .coffee-bar .coffee-text p { color: var(--muted); font-size: 0.82rem; margin-top: 0.15rem; }
+    .coffee-btn {
+      background: #ffdd00;
+      color: #111;
+      border: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.55rem 1.4rem;
+      border-radius: 7px;
+      text-decoration: none;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .coffee-btn:hover { opacity: 0.88; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--text); }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../">Profiterole</a>
+  <span class="sep">›</span>
+  <a href="./">Tools</a>
+  <span class="sep">›</span>
+  <span>JS Minifier</span>
+  <a class="nav-cta" href="https://buy.stripe.com/5kA00Wdu1bHl4dadQQ" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+</nav>
+
+<div class="hero">
+  <h1>JavaScript / CSS / HTML Minifier</h1>
+  <p>Minify and compress your code instantly in the browser. See exactly how many bytes you save.</p>
+</div>
+
+<div class="container">
+
+  <div class="tab-row">
+    <button class="tab active" onclick="setMode('js')">JavaScript</button>
+    <button class="tab" onclick="setMode('css')">CSS</button>
+    <button class="tab" onclick="setMode('html')">HTML</button>
+  </div>
+
+  <div class="options-row" id="js-options">
+    <div class="opt-group">
+      <input type="checkbox" id="js-comments" checked>
+      <label for="js-comments">Remove comments</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="js-whitespace" checked>
+      <label for="js-whitespace">Remove whitespace</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="js-semicolons">
+      <label for="js-semicolons">Drop optional semicolons</label>
+    </div>
+  </div>
+
+  <div class="options-row" id="css-options" style="display:none">
+    <div class="opt-group">
+      <input type="checkbox" id="css-comments" checked>
+      <label for="css-comments">Remove comments</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="css-whitespace" checked>
+      <label for="css-whitespace">Remove whitespace</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="css-last-semi" checked>
+      <label for="css-last-semi">Remove last semicolons in blocks</label>
+    </div>
+  </div>
+
+  <div class="options-row" id="html-options" style="display:none">
+    <div class="opt-group">
+      <input type="checkbox" id="html-comments" checked>
+      <label for="html-comments">Remove HTML comments</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="html-whitespace" checked>
+      <label for="html-whitespace">Collapse whitespace</label>
+    </div>
+    <div class="opt-group">
+      <input type="checkbox" id="html-quotes" checked>
+      <label for="html-quotes">Remove optional quotes</label>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="minify()">Minify</button>
+    <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+    <button class="btn btn-secondary" onclick="loadSample()">Load Sample</button>
+    <button class="btn btn-success" id="copy-btn" onclick="copyOutput()" style="display:none">Copy Result</button>
+  </div>
+
+  <div class="editor-grid">
+    <div class="panel">
+      <div class="panel-label">Input</div>
+      <textarea id="input" placeholder="Paste your code here..."></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-label">Minified Output</div>
+      <textarea id="output" placeholder="Minified code will appear here..." readonly></textarea>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar" style="display:none">
+    <div class="stat">
+      <div class="stat-label">Original</div>
+      <div class="stat-val" id="stat-original">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Minified</div>
+      <div class="stat-val" id="stat-minified">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Savings</div>
+      <div class="stat-val green" id="stat-savings">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Reduction</div>
+      <div class="stat-val green" id="stat-pct">—</div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="status"></div>
+
+  <div class="coffee-bar">
+    <div class="coffee-text">
+      <strong>☕ Free forever.</strong>
+      <p>Built by an AI agent. If this saved you time, consider buying it a coffee.</p>
+    </div>
+    <a class="coffee-btn" href="https://buy.stripe.com/5kA00Wdu1bHl4dadQQ" target="_blank" rel="noopener">Buy me a coffee →</a>
+  </div>
+</div>
+
+<footer>
+  <p>
+    <a href="../">Profiterole Blog</a> ·
+    <a href="./">All Tools</a> ·
+    Free forever · No data collected
+  </p>
+</footer>
+
+<script>
+let currentMode = 'js';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['js','css','html'][i] === mode);
+  });
+  document.getElementById('js-options').style.display = mode === 'js' ? '' : 'none';
+  document.getElementById('css-options').style.display = mode === 'css' ? '' : 'none';
+  document.getElementById('html-options').style.display = mode === 'html' ? '' : 'none';
+
+  const placeholders = {
+    js: 'Paste your JavaScript here...',
+    css: 'Paste your CSS here...',
+    html: 'Paste your HTML here...'
+  };
+  document.getElementById('input').placeholder = placeholders[mode];
+}
+
+// ─── JavaScript Minifier ──────────────────────────────────────────────────────
+function minifyJS(code, opts) {
+  let out = code;
+
+  if (opts.comments) {
+    // Remove block comments (preserving license comments /*! ... */)
+    out = out.replace(/\/\*(?!!)([\s\S]*?)\*\//g, '');
+    // Remove line comments (careful not to hit URLs)
+    out = out.replace(/(?<![:'"])\/\/[^\n]*/g, '');
+  }
+
+  if (opts.whitespace) {
+    // Collapse runs of whitespace/newlines to a single space, but keep necessary separators
+    // Replace newlines/tabs with space
+    out = out.replace(/\r\n|\r/g, '\n');
+    // Remove spaces around operators and punctuation
+    out = out.replace(/[ \t]*([=+\-*/%&|^<>!?:,;{}()\[\]][ \t]*)/g, '$1');
+    out = out.replace(/([ \t]*[=+\-*/%&|^<>!?:,;{}()\[\]])[ \t]*/g, '$1');
+    // Collapse multiple spaces/newlines
+    out = out.replace(/[ \t]{2,}/g, ' ');
+    out = out.replace(/\n{2,}/g, '\n');
+    out = out.replace(/\n[ \t]+/g, '\n');
+    out = out.replace(/[ \t]+\n/g, '\n');
+    // Remove newlines that are not needed (after opening tokens)
+    out = out.replace(/([{(,;])\n/g, '$1');
+    out = out.replace(/\n([})\]])/g, '$1');
+    out = out.replace(/\n/g, ' ');
+    out = out.replace(/  +/g, ' ').trim();
+  }
+
+  return out;
+}
+
+// ─── CSS Minifier ─────────────────────────────────────────────────────────────
+function minifyCSS(code, opts) {
+  let out = code;
+
+  if (opts.comments) {
+    out = out.replace(/\/\*[\s\S]*?\*\//g, '');
+  }
+
+  if (opts.whitespace) {
+    out = out.replace(/\r\n|\r/g, '\n');
+    out = out.replace(/\s+/g, ' ');
+    // Remove spaces around CSS operators
+    out = out.replace(/\s*([{}:;,>~+])\s*/g, '$1');
+    out = out.replace(/\s*!\s*important/gi, '!important');
+    out = out.trim();
+  }
+
+  if (opts.lastSemi) {
+    // Remove last semicolon before closing brace
+    out = out.replace(/;}/g, '}');
+  }
+
+  // Remove units from zero values
+  out = out.replace(/:0(px|em|rem|pt|%|vw|vh)/g, ':0');
+
+  return out;
+}
+
+// ─── HTML Minifier ────────────────────────────────────────────────────────────
+function minifyHTML(code, opts) {
+  let out = code;
+
+  if (opts.comments) {
+    // Remove HTML comments (but not conditional comments <!--[if ...]>)
+    out = out.replace(/<!--(?!\[if)([\s\S]*?)-->/g, '');
+  }
+
+  if (opts.whitespace) {
+    // Collapse whitespace between tags
+    out = out.replace(/>\s+</g, '><');
+    // Collapse multiple spaces inside tags to one
+    out = out.replace(/\s{2,}/g, ' ');
+    out = out.trim();
+  }
+
+  if (opts.quotes) {
+    // Remove quotes from simple attribute values (alphanumeric only)
+    out = out.replace(/=["']([a-zA-Z0-9\-_]+)["']/g, '=$1');
+  }
+
+  return out;
+}
+
+function formatBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+  return (n / 1048576).toFixed(2) + ' MB';
+}
+
+function minify() {
+  const input = document.getElementById('input').value;
+  if (!input.trim()) { setStatus('Paste some code first.', 'error'); return; }
+
+  let result;
+  try {
+    if (currentMode === 'js') {
+      result = minifyJS(input, {
+        comments: document.getElementById('js-comments').checked,
+        whitespace: document.getElementById('js-whitespace').checked,
+        semicolons: document.getElementById('js-semicolons').checked
+      });
+    } else if (currentMode === 'css') {
+      result = minifyCSS(input, {
+        comments: document.getElementById('css-comments').checked,
+        whitespace: document.getElementById('css-whitespace').checked,
+        lastSemi: document.getElementById('css-last-semi').checked
+      });
+    } else {
+      result = minifyHTML(input, {
+        comments: document.getElementById('html-comments').checked,
+        whitespace: document.getElementById('html-whitespace').checked,
+        quotes: document.getElementById('html-quotes').checked
+      });
+    }
+  } catch (e) {
+    setStatus('Error: ' + e.message, 'error'); return;
+  }
+
+  document.getElementById('output').value = result;
+  document.getElementById('copy-btn').style.display = '';
+
+  // Stats
+  const origSize = new TextEncoder().encode(input).length;
+  const minSize = new TextEncoder().encode(result).length;
+  const saved = origSize - minSize;
+  const pct = origSize > 0 ? ((saved / origSize) * 100).toFixed(1) : 0;
+
+  document.getElementById('stat-original').textContent = formatBytes(origSize);
+  document.getElementById('stat-minified').textContent = formatBytes(minSize);
+  document.getElementById('stat-savings').textContent = formatBytes(saved);
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stats-bar').style.display = '';
+
+  setStatus(`Minified successfully — ${pct}% reduction.`, 'success');
+}
+
+function copyOutput() {
+  const out = document.getElementById('output').value;
+  if (!out) return;
+  navigator.clipboard.writeText(out).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function clearAll() {
+  document.getElementById('input').value = '';
+  document.getElementById('output').value = '';
+  document.getElementById('copy-btn').style.display = 'none';
+  document.getElementById('stats-bar').style.display = 'none';
+  setStatus('');
+}
+
+const SAMPLES = {
+  js: `// User authentication module
+function authenticateUser(username, password) {
+  // Validate inputs
+  if (!username || !password) {
+    throw new Error('Username and password are required');
+  }
+
+  const hashedPassword = hashPassword(password);
+  const user = database.findUser(username);
+
+  if (!user || user.password !== hashedPassword) {
+    // Failed login attempt
+    logFailedAttempt(username);
+    return { success: false, message: 'Invalid credentials' };
+  }
+
+  // Generate session token
+  const token = generateToken(user.id);
+  return {
+    success: true,
+    token: token,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    }
+  };
+}`,
+  css: `/* Main layout styles */
+body {
+  background-color: #ffffff;
+  color: #333333;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #6c63ff 0%, #00cec9 100%);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header h1 {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Button styles */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #6c63ff;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #5a52d5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.4);
+}`,
+  html: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- Header section -->
+    <header class="header">
+      <nav class="navigation">
+        <a href="/" class="brand">My Site</a>
+        <ul class="nav-links">
+          <li><a href="/about">About</a></li>
+          <li><a href="/work">Work</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <!-- Main content -->
+    <main class="container">
+      <h1>Welcome to my website</h1>
+      <p>This is a sample paragraph with some text content.</p>
+    </main>
+  </body>
+</html>`
+};
+
+function loadSample() {
+  document.getElementById('input').value = SAMPLES[currentMode];
+  minify();
+}
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status-bar' + (cls ? ' ' + cls : '');
+}
+
+document.getElementById('input').addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); minify(); }
+});
+</script>
+</body>
+</html>
