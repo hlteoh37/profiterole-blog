@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Table Generator — Free Online Table Builder</title>
+  <meta name="description" content="Free online markdown table generator. Visually create and edit markdown tables — add rows and columns, edit cells inline, copy the markdown output instantly. No signup required.">
+  <meta name="keywords" content="markdown table generator online free, markdown table creator, markdown table builder, create markdown table, table to markdown">
+  <meta property="og:title" content="Markdown Table Generator — Free Online Tool">
+  <meta property="og:description" content="Build markdown tables visually. Add rows and columns, edit inline, copy the markdown instantly. Runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hlteoh37.github.io/profiterole-blog/tools/markdown-table/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Markdown Table Generator — Free Online Tool">
+  <meta name="twitter:description" content="Build markdown tables visually. Add rows and columns, edit inline, copy the markdown instantly. Runs in your browser.">
+  <link rel="canonical" href="https://hlteoh37.github.io/profiterole-blog/tools/markdown-table/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⊞</text></svg>">
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a22;
+      --surface2: #22222e;
+      --border: #2a2a38;
+      --text: #e0e0f0;
+      --muted: #8888aa;
+      --accent: #7c6af5;
+      --accent2: #5ecfb1;
+      --warn: #f5a623;
+      --danger: #f55353;
+      --success: #4ecb71;
+      --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+    [data-theme="light"] {
+      --bg: #f5f5f8;
+      --surface: #ffffff;
+      --surface2: #ebebf0;
+      --border: #d0d0e0;
+      --text: #1a1a2e;
+      --muted: #666680;
+      --accent: #5548d9;
+      --accent2: #3aab8f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 15px; line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(26,26,34,0.95); border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1.5rem; display: flex; align-items: center;
+      justify-content: space-between; backdrop-filter: blur(8px);
+    }
+    [data-theme="light"] .nav { background: rgba(255,255,255,0.95); }
+    .nav-brand { font-weight: 700; color: var(--accent); text-decoration: none; font-size: 1rem; }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-back { color: var(--muted); font-size: 0.85rem; }
+    .theme-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 0.3rem 0.7rem; border-radius: 6px;
+      cursor: pointer; font-size: 0.8rem; transition: background 0.15s;
+    }
+    .theme-btn:hover { background: var(--border); }
+
+    /* Layout */
+    .page { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 1rem; align-items: center;
+    }
+    .btn {
+      padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.88rem;
+      font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-success { background: var(--accent2); color: #0f0f13; }
+    .btn-danger { background: #2a1a1a; color: var(--danger); border: 1px solid rgba(245,83,83,0.3); }
+    .spacer { flex: 1; }
+    .toolbar-sep {
+      width: 1px; height: 24px; background: var(--border); margin: 0 0.25rem;
+    }
+
+    /* Main layout */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 800px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+
+    /* Editor pane */
+    .pane {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .pane-header {
+      padding: 0.6rem 1rem; border-bottom: 1px solid var(--border);
+      background: var(--surface2); font-size: 0.82rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .pane-header .copy-btn {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 0.2rem 0.6rem; border-radius: 4px; cursor: pointer;
+      font-size: 0.75rem; transition: all 0.15s;
+    }
+    .pane-header .copy-btn:hover { color: var(--text); border-color: var(--accent2); }
+    .pane-header .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    /* Table editor */
+    .table-editor-wrap {
+      padding: 1rem; overflow: auto;
+      min-height: 320px;
+    }
+
+    .table-editor {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .table-editor th,
+    .table-editor td {
+      border: 1px solid var(--border);
+      padding: 0;
+      position: relative;
+      min-width: 80px;
+    }
+    .table-editor th { background: rgba(124,106,245,0.08); }
+    .table-editor tr:hover td,
+    .table-editor tr:hover th { background: rgba(255,255,255,0.02); }
+
+    .cell-input {
+      width: 100%; height: 100%;
+      background: transparent; border: none; outline: none;
+      color: var(--text); font-family: var(--mono); font-size: 0.83rem;
+      padding: 0.5rem 0.6rem;
+      min-width: 80px;
+      resize: none;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .cell-input:focus {
+      background: rgba(124,106,245,0.1);
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      border-radius: 2px;
+    }
+    th .cell-input { font-weight: 700; color: var(--accent2); }
+
+    /* Alignment row */
+    .align-row td, .align-row th {
+      padding: 0; text-align: center;
+    }
+    .align-select {
+      width: 100%; background: transparent; border: none; outline: none;
+      color: var(--muted); font-size: 0.75rem; padding: 0.3rem 0.2rem;
+      cursor: pointer; text-align: center;
+      font-family: var(--mono);
+    }
+    .align-select:focus { background: rgba(124,106,245,0.1); }
+    option { background: var(--surface2); color: var(--text); }
+
+    /* Row/col controls */
+    .col-ctrl-row th, .col-ctrl-row td {
+      border: none; background: none; padding: 0.25rem 0.15rem; text-align: center;
+    }
+    .row-ctrl-col td {
+      border: none; background: none; padding: 0.15rem 0.25rem; text-align: center;
+      vertical-align: middle;
+    }
+    .ctrl-btn {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      width: 22px; height: 22px; border-radius: 4px; cursor: pointer;
+      font-size: 0.75rem; line-height: 1; display: inline-flex; align-items: center;
+      justify-content: center; transition: all 0.15s; padding: 0;
+    }
+    .ctrl-btn:hover { color: var(--danger); border-color: var(--danger); background: rgba(245,83,83,0.08); }
+    .ctrl-btn.add { color: var(--accent2); border-color: var(--accent2); }
+    .ctrl-btn.add:hover { background: rgba(94,207,177,0.1); }
+
+    /* Add row button row */
+    .add-row-bar {
+      padding: 0.5rem 1rem; border-top: 1px solid var(--border);
+    }
+    .add-row-btn {
+      background: none; border: 1px dashed var(--border); color: var(--muted);
+      width: 100%; padding: 0.4rem; border-radius: 6px; cursor: pointer;
+      font-size: 0.82rem; transition: all 0.15s;
+    }
+    .add-row-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+    /* Output pane */
+    .output-wrap {
+      flex: 1; overflow: auto; padding: 1rem;
+      min-height: 320px;
+    }
+    pre#md-output {
+      font-family: var(--mono); font-size: 0.85rem; line-height: 1.7;
+      white-space: pre; word-break: normal;
+      color: var(--text);
+      margin: 0;
+    }
+
+    /* Options bar */
+    .options-bar {
+      display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+      margin-bottom: 1rem;
+      padding: 0.7rem 1rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.83rem;
+    }
+    .options-bar label { display: flex; align-items: center; gap: 0.4rem; color: var(--muted); cursor: pointer; }
+    .options-bar input[type="checkbox"] { accent-color: var(--accent); }
+
+    /* Info section */
+    .info { margin-top: 3rem; }
+    .info h2 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent2); }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .info-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem;
+    }
+    .info-card h3 { font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .info-card p { font-size: 0.83rem; color: var(--muted); }
+
+    .back-link { margin-top: 2.5rem; font-size: 0.85rem; color: var(--muted); }
+
+    /* Status */
+    .status {
+      padding: 0.4rem 1rem; font-size: 0.8rem;
+      border-top: 1px solid var(--border); color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    /* Keyboard hint */
+    kbd {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 3px; padding: 0.1rem 0.3rem; font-size: 0.75rem;
+      font-family: var(--mono); color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="../../">Profiterole</a>
+  <div class="nav-right">
+    <a class="nav-back" href="../">← Tools</a>
+    <button class="theme-btn" onclick="toggleTheme()">☀ Light</button>
+  </div>
+</nav>
+
+<div class="page">
+  <h1>Markdown Table Generator</h1>
+  <p class="subtitle">Build markdown tables visually — edit cells inline, add rows and columns, copy the output. Free, no signup, runs in your browser.</p>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" onclick="addColumn()">+ Column</button>
+    <button class="btn btn-secondary" onclick="addRow()">+ Row</button>
+    <div class="toolbar-sep"></div>
+    <button class="btn btn-secondary" onclick="loadSample()">Load sample</button>
+    <button class="btn btn-danger" onclick="clearTable()">✕ Clear</button>
+    <span class="spacer"></span>
+    <span style="font-size:0.8rem;color:var(--muted);">
+      <kbd>Tab</kbd> to move between cells
+    </span>
+  </div>
+
+  <div class="options-bar">
+    <label><input type="checkbox" id="opt-pretty" checked onchange="renderOutput()"> Aligned columns</label>
+    <label><input type="checkbox" id="opt-header" checked onchange="renderOutput()"> Bold header row</label>
+    <label>
+      <span style="color:var(--muted)">Size:</span>
+      <select id="opt-size" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:0.2rem 0.4rem;border-radius:4px;font-size:0.82rem;" onchange="updateSize()">
+        <option value="">Current</option>
+        <option value="2x2">2×2</option>
+        <option value="3x3">3×3</option>
+        <option value="4x4">4×4</option>
+        <option value="5x5">5×5</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="main-layout">
+    <!-- Editor pane -->
+    <div class="pane">
+      <div class="pane-header">
+        <span>Table Editor</span>
+        <span style="font-size:0.75rem;color:var(--muted);font-weight:400;text-transform:none;">Click any cell to edit</span>
+      </div>
+      <div class="table-editor-wrap" id="editor-wrap">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="add-row-bar">
+        <button class="add-row-btn" onclick="addRow()">+ Add row</button>
+      </div>
+    </div>
+
+    <!-- Output pane -->
+    <div class="pane">
+      <div class="pane-header">
+        <span>Markdown Output</span>
+        <button class="copy-btn" id="copy-btn" onclick="copyOutput(this)">Copy</button>
+      </div>
+      <div class="output-wrap">
+        <pre id="md-output"></pre>
+      </div>
+      <div class="status" id="status-bar">0 rows · 0 cols</div>
+    </div>
+  </div>
+
+  <!-- Feature info -->
+  <div class="info">
+    <h2>How to use</h2>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Edit Inline</h3>
+        <p>Click any cell to start typing. Use <kbd>Tab</kbd> to move right, <kbd>Enter</kbd> to go to the next row.</p>
+      </div>
+      <div class="info-card">
+        <h3>Column Alignment</h3>
+        <p>Use the dropdown under each column header to set left, center, or right alignment in the rendered markdown.</p>
+      </div>
+      <div class="info-card">
+        <h3>Add &amp; Remove</h3>
+        <p>Use + Column / + Row buttons to grow your table. Remove individual rows or columns with the × buttons.</p>
+      </div>
+      <div class="info-card">
+        <h3>Privacy First</h3>
+        <p>Everything runs in your browser — no data is ever sent to a server. Your table data stays local.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="back-link">← <a href="../">Back to Developer Tools</a></p>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let state = {
+  // headers: array of strings
+  headers: ['Name', 'Role', 'Status'],
+  // alignments: 'left' | 'center' | 'right'
+  alignments: ['left', 'left', 'left'],
+  // rows: array of arrays
+  rows: [
+    ['Alice', 'Engineer', 'Active'],
+    ['Bob', 'Designer', 'Active'],
+    ['Carol', 'Manager', 'On leave'],
+  ]
+};
+
+// ── Render table editor ───────────────────────────────────────────────────────
+function renderEditor() {
+  const wrap = document.getElementById('editor-wrap');
+  const cols = state.headers.length;
+  const rows = state.rows.length;
+
+  let html = '<table class="table-editor">';
+
+  // Column remove buttons row
+  html += '<tr class="col-ctrl-row"><td style="border:none;width:28px"></td>';
+  for (let c = 0; c < cols; c++) {
+    html += `<th><button class="ctrl-btn" title="Remove column" onclick="removeColumn(${c})">×</button></th>`;
+  }
+  html += '<th style="border:none;padding:0.25rem"><button class="ctrl-btn add" title="Add column" onclick="addColumn()">+</button></th>';
+  html += '</tr>';
+
+  // Header row
+  html += '<tr><td class="row-ctrl-col"><span style="font-size:0.7rem;color:var(--muted)">H</span></td>';
+  for (let c = 0; c < cols; c++) {
+    html += `<th><input class="cell-input" data-row="-1" data-col="${c}" value="${escAttr(state.headers[c])}"
+      oninput="onCellInput(-1,${c},this.value)"
+      onkeydown="onCellKeydown(event,-1,${c})"
+      placeholder="Header ${c+1}"></th>`;
+  }
+  html += '<td style="border:none"></td></tr>';
+
+  // Alignment row
+  html += '<tr class="align-row"><td class="row-ctrl-col"></td>';
+  for (let c = 0; c < cols; c++) {
+    html += `<td><select class="align-select" onchange="onAlignChange(${c},this.value)" title="Column alignment">
+      <option value="left" ${state.alignments[c]==='left'?'selected':''}>:--- left</option>
+      <option value="center" ${state.alignments[c]==='center'?'selected':''}>:--: center</option>
+      <option value="right" ${state.alignments[c]==='right'?'selected':''}>---: right</option>
+    </select></td>`;
+  }
+  html += '<td style="border:none"></td></tr>';
+
+  // Data rows
+  for (let r = 0; r < rows; r++) {
+    html += '<tr>';
+    html += `<td class="row-ctrl-col"><button class="ctrl-btn" title="Remove row" onclick="removeRow(${r})">×</button></td>`;
+    for (let c = 0; c < cols; c++) {
+      const val = state.rows[r][c] || '';
+      html += `<td><input class="cell-input" data-row="${r}" data-col="${c}" value="${escAttr(val)}"
+        oninput="onCellInput(${r},${c},this.value)"
+        onkeydown="onCellKeydown(event,${r},${c})"
+        placeholder="…"></td>`;
+    }
+    html += '<td style="border:none"></td></tr>';
+  }
+
+  html += '</table>';
+  wrap.innerHTML = html;
+  renderOutput();
+}
+
+function escAttr(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// ── Cell events ───────────────────────────────────────────────────────────────
+function onCellInput(row, col, value) {
+  if (row === -1) {
+    state.headers[col] = value;
+  } else {
+    if (!state.rows[row]) state.rows[row] = [];
+    state.rows[row][col] = value;
+  }
+  renderOutput();
+}
+
+function onAlignChange(col, value) {
+  state.alignments[col] = value;
+  renderOutput();
+}
+
+function onCellKeydown(e, row, col) {
+  const cols = state.headers.length;
+  const rows = state.rows.length;
+
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const shift = e.shiftKey;
+    let nextRow = row, nextCol = col;
+    if (shift) {
+      nextCol--;
+      if (nextCol < 0) { nextCol = cols - 1; nextRow--; }
+      if (nextRow < -1) { nextRow = rows - 1; }
+    } else {
+      nextCol++;
+      if (nextCol >= cols) { nextCol = 0; nextRow++; }
+      if (nextRow >= rows) { nextRow = -1; }
+    }
+    focusCell(nextRow, nextCol);
+  } else if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (row === -1) {
+      focusCell(0, col);
+    } else if (row < rows - 1) {
+      focusCell(row + 1, col);
+    } else {
+      // last row — add a new row and focus it
+      addRow();
+      focusCell(row + 1, col);
+    }
+  } else if (e.key === 'ArrowDown' && e.altKey) {
+    e.preventDefault();
+    if (row < rows - 1) focusCell(row + 1, col);
+  } else if (e.key === 'ArrowUp' && e.altKey) {
+    e.preventDefault();
+    if (row > 0) focusCell(row - 1, col);
+    else if (row === 0) focusCell(-1, col);
+  }
+}
+
+function focusCell(row, col) {
+  const el = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+  if (el) { el.focus(); el.select(); }
+}
+
+// ── Table mutations ───────────────────────────────────────────────────────────
+function addRow() {
+  state.rows.push(new Array(state.headers.length).fill(''));
+  renderEditor();
+}
+
+function removeRow(r) {
+  if (state.rows.length <= 1) return;
+  state.rows.splice(r, 1);
+  renderEditor();
+}
+
+function addColumn() {
+  state.headers.push('Col ' + (state.headers.length + 1));
+  state.alignments.push('left');
+  state.rows = state.rows.map(row => [...row, '']);
+  renderEditor();
+}
+
+function removeColumn(c) {
+  if (state.headers.length <= 1) return;
+  state.headers.splice(c, 1);
+  state.alignments.splice(c, 1);
+  state.rows = state.rows.map(row => { row.splice(c, 1); return row; });
+  renderEditor();
+}
+
+function clearTable() {
+  state = {
+    headers: ['Header 1', 'Header 2', 'Header 3'],
+    alignments: ['left', 'left', 'left'],
+    rows: [
+      ['', '', ''],
+      ['', '', ''],
+    ]
+  };
+  renderEditor();
+}
+
+function loadSample() {
+  state = {
+    headers: ['Name', 'Role', 'Status', 'Joined'],
+    alignments: ['left', 'left', 'center', 'right'],
+    rows: [
+      ['Alice', 'Engineer', 'Active', '2021-03-15'],
+      ['Bob', 'Designer', 'Active', '2022-07-01'],
+      ['Carol', 'Manager', 'On leave', '2020-11-22'],
+      ['Dave', 'Intern', 'Pending', '2024-01-08'],
+    ]
+  };
+  renderEditor();
+}
+
+function updateSize() {
+  const val = document.getElementById('opt-size').value;
+  if (!val) return;
+  const [r, c] = val.split('x').map(Number);
+  const oldHeaders = state.headers;
+  const oldAligns = state.alignments;
+  const oldRows = state.rows;
+
+  state.headers = Array.from({length: c}, (_, i) => oldHeaders[i] || `Col ${i+1}`);
+  state.alignments = Array.from({length: c}, (_, i) => oldAligns[i] || 'left');
+  state.rows = Array.from({length: r}, (_, ri) =>
+    Array.from({length: c}, (_, ci) => (oldRows[ri] && oldRows[ri][ci]) || '')
+  );
+  document.getElementById('opt-size').value = '';
+  renderEditor();
+}
+
+// ── Markdown output ───────────────────────────────────────────────────────────
+function renderOutput() {
+  const pretty = document.getElementById('opt-pretty').checked;
+  const cols = state.headers.length;
+  const rows = state.rows.length;
+
+  // Compute column widths for alignment
+  const widths = state.headers.map((h, c) => {
+    let w = h.length;
+    state.rows.forEach(row => { w = Math.max(w, (row[c] || '').length); });
+    // Ensure minimum width for separator
+    const align = state.alignments[c];
+    if (align === 'center') w = Math.max(w, 5);
+    else if (align === 'right') w = Math.max(w, 4);
+    else w = Math.max(w, 4);
+    return w;
+  });
+
+  function pad(s, w, align) {
+    if (!pretty) return s;
+    const str = String(s);
+    if (align === 'right') return str.padStart(w);
+    if (align === 'center') {
+      const total = w - str.length;
+      const left = Math.floor(total / 2);
+      const right = total - left;
+      return ' '.repeat(Math.max(0, left)) + str + ' '.repeat(Math.max(0, right));
+    }
+    return str.padEnd(w);
+  }
+
+  function separator(w, align) {
+    if (align === 'center') return ':' + '-'.repeat(w - 2) + ':';
+    if (align === 'right') return '-'.repeat(w - 1) + ':';
+    return '-'.repeat(w); // left default
+  }
+
+  // Build header row
+  const headerCells = state.headers.map((h, c) => pad(h, widths[c], state.alignments[c]));
+  const sepCells = state.alignments.map((a, c) => separator(widths[c], a));
+
+  let md = '| ' + headerCells.join(' | ') + ' |\n';
+  md += '| ' + sepCells.join(' | ') + ' |\n';
+
+  state.rows.forEach(row => {
+    const cells = state.headers.map((_, c) => pad(row[c] || '', widths[c], state.alignments[c]));
+    md += '| ' + cells.join(' | ') + ' |\n';
+  });
+
+  document.getElementById('md-output').textContent = md;
+  document.getElementById('status-bar').textContent =
+    `${rows} data row${rows !== 1 ? 's' : ''} · ${cols} column${cols !== 1 ? 's' : ''}`;
+}
+
+// ── Copy ──────────────────────────────────────────────────────────────────────
+function copyOutput(btn) {
+  const text = document.getElementById('md-output').textContent;
+  if (!text.trim()) return;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.querySelector('.theme-btn');
+  if (html.dataset.theme === 'light') {
+    html.removeAttribute('data-theme');
+    btn.textContent = '☀ Light';
+    localStorage.setItem('mdt-theme', 'dark');
+  } else {
+    html.dataset.theme = 'light';
+    btn.textContent = '☾ Dark';
+    localStorage.setItem('mdt-theme', 'light');
+  }
+}
+(function() {
+  const saved = localStorage.getItem('mdt-theme');
+  if (saved === 'light') {
+    document.documentElement.dataset.theme = 'light';
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.querySelector('.theme-btn');
+      if (btn) btn.textContent = '☾ Dark';
+    });
+  }
+})();
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderEditor();
+});
+</script>
+</body>
+</html>
