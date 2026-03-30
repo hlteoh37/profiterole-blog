@@ -187,12 +187,45 @@ a:hover { text-decoration: underline; }
 }
 .footer a { color: var(--accent); }
 
+/* Two-column tool comparison */
+.tool-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+.tc-col { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.tc-header { padding: 0.7rem 1rem; font-weight: 700; font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.tc-header-free { background: rgba(78,203,113,0.12); color: var(--success); border-bottom: 1px solid rgba(78,203,113,0.2); }
+.tc-header-pro { background: rgba(124,106,245,0.12); color: var(--accent); border-bottom: 1px solid rgba(124,106,245,0.2); }
+.tc-list { padding: 0.6rem 0.5rem; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.tc-item { font-family: var(--mono); font-size: 0.78rem; color: var(--text); background: rgba(255,255,255,0.04); border-radius: 4px; padding: 0.2rem 0.45rem; white-space: nowrap; }
+.tc-item.pro-item { color: var(--muted); }
+
+/* Start here box */
+.start-here {
+  background: rgba(94,207,177,0.06); border: 1px solid rgba(94,207,177,0.25);
+  border-radius: 10px; padding: 1.5rem; margin: 2rem 0;
+}
+.start-here-title { color: var(--accent2); font-weight: 700; font-size: 1rem; margin-bottom: 1rem; }
+.start-prompt { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.prompt-text { font-family: var(--mono); font-size: 0.85rem; color: var(--text); background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.7rem; }
+.prompt-note { color: var(--muted); font-size: 0.82rem; }
+.prompt-note code { color: var(--accent); font-family: var(--mono); font-size: 0.8rem; }
+.start-here > p { color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; }
+
+/* Trial steps */
+.trial-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+.trial-step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; position: relative; }
+.trial-step-num { color: var(--accent2); font-size: 1.3rem; font-weight: 800; font-family: var(--mono); margin-bottom: 0.4rem; }
+.trial-step h4 { color: #fff; font-size: 0.95rem; margin-bottom: 0.3rem; }
+.trial-step p { color: var(--muted); font-size: 0.85rem; }
+.trial-step.last-step { border-color: rgba(245,166,35,0.3); }
+.trial-step.last-step .trial-step-num { color: var(--warn); }
+
 /* Responsive */
 @media (max-width: 600px) {
   .hero h1 { font-size: 1.6rem; }
   .features { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
+  .trial-steps { grid-template-columns: 1fr; }
   .tool-grid { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
+  .tool-comparison { grid-template-columns: 1fr; }
   .stats-bar { gap: 1.5rem; }
 }
   </style>
@@ -285,57 +318,96 @@ a:hover { text-decoration: underline; }
     </div>
   </div>
 
-  <h2 class="section-title" style="margin-top:3rem;">Free Tools (16 — forever)</h2>
-  <div class="tool-grid">
-    <div class="tool-card">uuid <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">hash (MD5/SHA) <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">base64 <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">timestamp <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">jwt_decode <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">random_string <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">url_encode <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">json_format <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">yaml_json <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">regex_test <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">cron_explain <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">hmac <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">color_convert <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">http_status <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">slug <span class="badge badge-free">FREE</span></div>
-    <div class="tool-card">escape_html <span class="badge badge-free">FREE</span></div>
+  <h2 class="section-title" style="margin-top:3rem;">All 45 Tools — Free vs Pro</h2>
+  <p class="section-subtitle">16 tools are free forever. 29 pro tools get 3 free uses each — no credit card, no sign-up.</p>
+  <div class="tool-comparison">
+    <div class="tc-col">
+      <div class="tc-header tc-header-free">✓ Free Forever (16)</div>
+      <div class="tc-list">
+        <span class="tc-item">uuid</span>
+        <span class="tc-item">hash</span>
+        <span class="tc-item">base64</span>
+        <span class="tc-item">timestamp</span>
+        <span class="tc-item">jwt_decode</span>
+        <span class="tc-item">random_string</span>
+        <span class="tc-item">url_encode</span>
+        <span class="tc-item">json_format</span>
+        <span class="tc-item">yaml_json</span>
+        <span class="tc-item">regex_test</span>
+        <span class="tc-item">cron_explain</span>
+        <span class="tc-item">hmac</span>
+        <span class="tc-item">color_convert</span>
+        <span class="tc-item">http_status</span>
+        <span class="tc-item">slug</span>
+        <span class="tc-item">escape_html</span>
+      </div>
+    </div>
+    <div class="tc-col">
+      <div class="tc-header tc-header-pro">⚡ Pro — 3 free tries (29)</div>
+      <div class="tc-list">
+        <span class="tc-item pro-item">semver_compare</span>
+        <span class="tc-item pro-item">chmod_calc</span>
+        <span class="tc-item pro-item">diff</span>
+        <span class="tc-item pro-item">number_base</span>
+        <span class="tc-item pro-item">lorem_ipsum</span>
+        <span class="tc-item pro-item">word_count</span>
+        <span class="tc-item pro-item">cidr</span>
+        <span class="tc-item pro-item">case_convert</span>
+        <span class="tc-item pro-item">markdown_toc</span>
+        <span class="tc-item pro-item">env_parse</span>
+        <span class="tc-item pro-item">ip_info</span>
+        <span class="tc-item pro-item">password_strength</span>
+        <span class="tc-item pro-item">data_size</span>
+        <span class="tc-item pro-item">string_escape</span>
+        <span class="tc-item pro-item">nanoid</span>
+        <span class="tc-item pro-item">csv_json</span>
+        <span class="tc-item pro-item">hex_encode</span>
+        <span class="tc-item pro-item">char_info</span>
+        <span class="tc-item pro-item">byte_count</span>
+        <span class="tc-item pro-item">json_diff</span>
+        <span class="tc-item pro-item">jwt_create</span>
+        <span class="tc-item pro-item">sql_format</span>
+        <span class="tc-item pro-item">json_query</span>
+        <span class="tc-item pro-item">epoch_convert</span>
+        <span class="tc-item pro-item">aes_encrypt</span>
+        <span class="tc-item pro-item">aes_decrypt</span>
+        <span class="tc-item pro-item">rsa_keygen</span>
+        <span class="tc-item pro-item">scrypt_hash</span>
+        <span class="tc-item pro-item">regex_replace</span>
+      </div>
+    </div>
   </div>
 
-  <h2 class="section-title" style="margin-top:2.5rem;">Pro Tools (29 — try 3 times free)</h2>
-  <div class="tool-grid">
-    <div class="tool-card pro">semver_compare <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">chmod_calc <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">diff <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">number_base <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">lorem_ipsum <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">word_count <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">cidr <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">case_convert <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">markdown_toc <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">env_parse <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">ip_info <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">password_strength <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">data_size <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">string_escape <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">nanoid <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">csv_json <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">hex_encode <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">char_info <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">byte_count <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">json_diff <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">jwt_create <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">sql_format <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">json_query <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">epoch_convert <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">aes_encrypt <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">aes_decrypt <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">rsa_keygen <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">scrypt_hash <span class="badge badge-pro">PRO</span></div>
-    <div class="tool-card pro">regex_replace <span class="badge badge-pro">PRO</span></div>
+  <h2 class="section-title" style="margin-top:3rem;">How the Trial Works</h2>
+  <div class="trial-steps">
+    <div class="trial-step">
+      <div class="trial-step-num">1</div>
+      <h4>Install — free, instant</h4>
+      <p>Add <code>npx mcp-devutils</code> to your AI assistant config. All 45 tools appear immediately. No account, no credit card.</p>
+    </div>
+    <div class="trial-step">
+      <div class="trial-step-num">2</div>
+      <h4>Try any pro tool — 3 uses free</h4>
+      <p>Ask your AI to use any of the 29 pro tools. Each individual tool gives you 3 free uses. After each use you'll see the remaining trial count.</p>
+    </div>
+    <div class="trial-step last-step">
+      <div class="trial-step-num">3</div>
+      <h4>Upgrade prompt → $5 one-time</h4>
+      <p>After 3 uses, the tool shows a short upgrade message with a direct Stripe link. Pay $5 once — unlocks all 29 pro tools permanently, no subscription.</p>
+    </div>
+  </div>
+
+  <div class="start-here">
+    <div class="start-here-title">🚀 Try these first</div>
+    <div class="start-prompt">
+      <span class="prompt-text">"What's the diff between these two JSON configs?"</span>
+      <span class="prompt-note">→ uses <code>json_diff</code> (pro) — uses 1 of your 3 free tries</span>
+    </div>
+    <div class="start-prompt">
+      <span class="prompt-text">"Generate a NanoID for my session token"</span>
+      <span class="prompt-note">→ uses <code>nanoid</code> (pro) — uses 1 of your 3 free tries</span>
+    </div>
+    <p>Each prompt uses 1 of the 3 free trial uses for that specific tool. You have 3 free tries <em>per tool</em> — so up to 87 free pro uses total before hitting any limit.</p>
   </div>
 
   <div class="cta-section">
